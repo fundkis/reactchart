@@ -77,7 +77,7 @@
 //     }
 //   };
 // };
-// 
+//
 // m.normalizeDataSpace = function (dataSpace) {
 //   return {
 //     c: normalize(dataSpace.c, 'relative'),
