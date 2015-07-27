@@ -7,7 +7,6 @@
 var _ = require('underscore');
 var space = require('./space-transf.cs.js');
 var stepMgr = require('../base/ticker.cs.js');
-var moment = require('moment');
 
 var m = {};
 
@@ -66,7 +65,8 @@ var m = {};
  * have a more aesthetic view.
  *
  * If no marginsO are defined, here are the rules:
- *  - ticks and ticks labels are 20 px,
+ *  - ticks and ticks labels are 20 px in the y dir (height of text),
+ *			40 px in the x dir (length of text).
  *  - we take a 10px margin on title and labels
  *  - bottom and right margin:
  *			- 20px + ({x,y}LabelFSize + 10 px) if a {x,y}Label is defined,

@@ -10,7 +10,7 @@ module.exports = React.createClass({
 		color:'none',
 		stroke: 'none',
 		strokeWidth: 0,
-		span:0,
+		span:10,
 		dir:90,
 		points: [],
 		mark: true,
