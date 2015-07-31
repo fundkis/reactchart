@@ -1,7 +1,7 @@
 var React = require('react');
 var Courbe = require('./Courbes.cs.jsx');
 var Stairs = require('./Stairs.cs.jsx');
-// var BarChart = require('./BarChart.cs.jsx');
+var BarChart = require('./BarChart.cs.jsx');
 // the graphs function generator
 var m = {};
 
