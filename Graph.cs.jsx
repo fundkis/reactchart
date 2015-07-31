@@ -48,7 +48,7 @@ module.exports = React.createClass({
 			width: '500',		// defines the universe's width
 			// this is a template, the minimum structure that MUST be respected
 			// other things can be added at the data s levels
-			data: {series:[{ type : 'curve', data : {series:[{x:0, y:0}], type: 'number'}, axe : 'left', color: 'black', stacked: undefined}], type: 'number'}, //
+			data: {series:[{ type : 'Plain', data : {series:[{x:0, y:0}], type: 'number'}, axe : 'left', color: 'black', stacked: undefined}], type: 'number'}, //
 			title: '',
 			titleFSize: 30,
 			// axis
