@@ -9,7 +9,7 @@ module.exports = React.createClass({
 			// general
 			height: '500',		// defines the universe's height
 			width: '500',		// defines the universe's width
-			data: {series:[{ type : 'Courbe', data : {series:[]}, axe : 'left', color: 'black'}], type: 'date'},
+			data: {series:[{ type : 'Plain', data : {series:[]}, axe : 'left', color: 'black'}], type: 'date'},
 			title: '',
 			titleFSize: 30,
 			// axis

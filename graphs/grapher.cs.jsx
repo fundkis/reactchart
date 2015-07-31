@@ -1,13 +1,13 @@
 var React = require('react');
-var Courbe = require('./Courbes.cs.jsx');
+var Plain = require('./Plain.cs.jsx');
 var Stairs = require('./Stairs.cs.jsx');
 var BarChart = require('./BarChart.cs.jsx');
 // the graphs function generator
 var m = {};
 
-m.Courbe = function(points,props,keyid){
+m.Plain = function(points,props,keyid){
 		var key = 'courbe' + keyid;
-		return <Courbe key={key} {...props} points={points} />;
+		return <Plain key={key} {...props} points={points} />;
 };
 
 m.Stairs = function(points,props,keyid){
