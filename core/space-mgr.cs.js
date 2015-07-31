@@ -285,28 +285,63 @@ m.space = function(datas,universe,axis,title){
 		// round them (specially in case of Date)
 		// to beautify the graph
 		var round_borders = function(ds,type){
+			// simple search
+			var search_closest = function(target,step){
+				var x = 0.0;
+				var olddist = target - x;
+				var prop = x + step * olddist / Math.abs(olddist);
+				var newdist = target - prop;
+				while(Math.abs(newdist) > Math.abs(olddist)){
+					x = prop;
+					olddist = newdist;
+					prop = x + step * olddist / Math.abs(olddist);
+					newdist = target - prop;
+				}
+				return x;
+			};
 			var stepper = stepMgr.stepper(ds,type);
 			if(type === 'date'){
 				ds.d.min -= Math.min(stepper.step.asMilliseconds(), 1000 * 3600 * 24 * 30 * 6); // max is 6 month, using moment's convention
 				if(ds.d.min < 0){ds.d.min = 0.0;}
 				ds.d.max += Math.min(stepper.step.asMilliseconds(), 1000 * 3600 * 24 * 30 * 6);
 			}else{
+				// stepper
+				var som = Math.pow(10, Math.floor(Math.log(stepper.toNum) / Math.log(10)) );
 				// get order of magnitude, min
-				var om = (ds.d.min > 0)?Math.pow(10, Math.floor(Math.log(ds.d.min) / Math.log(10)) ):
-					- Math.pow(10, Math.floor(Math.log(Math.abs(ds.d.min)) / Math.log(10)) + 1 );
+				var om = 0.0;
+				if(ds.d.min !== 0.0){
+					om = (ds.d.min > 0)?Math.pow(10, Math.floor(Math.log(ds.d.min) / Math.log(10)) ):
+						- Math.pow(10, Math.floor(Math.log(Math.abs(ds.d.min)) / Math.log(10)) + 1 );
+					// order of magnitude of step, if higher, then we need to start
+					// at this order of magniture, closest to min
+					if(Math.abs(som) > Math.abs(om)){
+						om = search_closest(ds.d.min,stepper.toNum);
+					}
+				}
 				while(om <= ds.d.min){
 					om += stepper.toNum;
 				}
-				om -= stepper.toNum;
+				om -= 0.75 * stepper.toNum;
+				if(om >= ds.d.min){om -= 0.25 * stepper.toNum;}
 				ds.d.min = om;
 
 				// get order of magnitude, max
-				om = (ds.d.max > 0)?Math.pow(10, Math.floor(Math.log(ds.d.max) / Math.log(10)) +1 ):
-					- Math.pow(10, Math.floor(Math.log(Math.abs(ds.d.max)) / Math.log(10)) );
+				om = 0.0;
+				if(ds.d.max !== 0.0){
+					om = (ds.d.max > 0)?Math.pow(10, Math.floor(Math.log(ds.d.max) / Math.log(10)) +1 ):
+						- Math.pow(10, Math.floor(Math.log(Math.abs(ds.d.max)) / Math.log(10)) );
+					// order of magnitude of step, if higher, then we need to start
+					// at this order of magniture, closest to max
+					// is that possible ??
+					if(Math.abs(som) > Math.abs(om)){
+						om = search_closest(ds.d.max,stepper.toNum);
+					}
+				}
 				while(om >= ds.d.max){
 					om -= stepper.toNum;
 				}
-				om += stepper.toNum;
+				om += 0.75 * stepper.toNum;
+				if(om <= ds.d.min){om += 0.25 * stepper.toNum;}
 				ds.d.max = om;
 			}
 			ds.c2d = (ds.d.max - ds.d.min) / (ds.c.max - ds.c.min);

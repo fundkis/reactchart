@@ -24,7 +24,7 @@ m.toC = m.toCy = m.toCx = function(ds, data) {
 
 m.toCwidth = function(ds, dist){
 	var d = (dist === undefined)?1.0:dist;
-	return ds.d2c * d;
+	return Math.abs(ds.d2c * d);
 };
 
 m.toD = m.toDy = m.toDx = function(ds, coord) {
@@ -33,7 +33,7 @@ m.toD = m.toDy = m.toDx = function(ds, coord) {
 
 m.toDwidth = function(ds, dist){
 	var d = (dist === undefined)?1.0:dist;
-	return ds.c2d * d;
+	return Math.abs(ds.c2d * d);
 };
 
 module.exports = m;
