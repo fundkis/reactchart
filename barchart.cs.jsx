@@ -7,7 +7,7 @@ module.exports = React.createClass({
 			// general
 			height: '500',		// defines the universe's height
 			width: '500',		// defines the universe's width
-			data: {series:[{ type : 'Bar', data : {series:[]}, axe : 'left', color: 'black'}], type: 'number'},
+			data: {series:[{ type : 'Bar', data : {series:[]}, axe : 'left', color: 'black'}], type: 'text'},
 			title: '',
 			titleFSize: 30,
 			// axis
@@ -31,8 +31,22 @@ module.exports = React.createClass({
 		// we imposed some stuff, whatever the user says
 		var props = this.props;
 		props.graphProps = [];
-		props.data.type = 'number';
+		props.data.type = 'text';
 		props.ymin = 0.0; // a density [of probability] is always > 0
+		if(!props.axisProps.tickProps){
+			props.axisProps.tickProps = {};
+			props.axisProps.tickProps.x = {};
+			props.axisProps.tickProps.x.tickProps = {};
+		}
+		if(!props.axisProps.tickProps.x){
+			props.axisProps.tickProps.x = {};
+			props.axisProps.tickProps.x.tickProps = {};
+		}
+		if(!props.axisProps.tickProps.x.tickProps){
+			props.axisProps.tickProps.x.tickProps = {};
+		}
+		props.axisProps.tickProps.x.tickProps.length = 0.0;
+		props.axisProps.tickProps.x.tickProps.labelFSize = 15;
 		// we provide some defaults
 		for(var i = 0; i < this.props.data.series.length; i++){
 			props.graphProps.push({
