@@ -68,7 +68,7 @@ module.exports = React.createClass({
 			ymax: undefined,
 				// margins
 			axisMargin: {l: 10, b: 10, r: 10, t: 10}, // left, bottom, right, top
-			outerMargin: {l: 10, b: 10, r: 10, t: 10}, // left, bottom, right, top
+			outerMargin: {}, // left, bottom, right, top
 			// lower level descriptions
 			axisProps: {},
 			graphProps: [{color: 'blue', mark: true, markSize: 3, markColor: 'red'}]
