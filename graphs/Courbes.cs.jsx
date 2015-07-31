@@ -16,6 +16,7 @@ module.exports = React.createClass({
 			markType: 'dot',
 			markProps: {},
 			points: [],
+			drops: [],
 			dsx: {}, // see space-mgr for details
 			dsy: {}  // see space-mgr for details
 			};
@@ -33,10 +34,17 @@ module.exports = React.createClass({
 				};
 			});
 		}
-			
-		var points = '';
-		for(var i = 0; i < this.props.points.length; i++){
-			points += ((i === 0)?'M ':'L ') + datas[i].x + ' ' + datas[i].y + ' ';
+
+		var points = 'M '+ datas[0].x + ' ' + datas[0].y; // init
+		for(var i = 1; i < this.props.points.length; i++){
+			points += ' L ' + datas[i].x + ' ' + datas[i].y;
+		}
+
+		// we close the curve, nothing is printed
+		var props = this.props;
+		var drops = (this.props.drops.length === 0)?_.map(this.props.points,function(/*point*/){return props.dsy.c.min;}):this.props.drops;
+		for(i = drops.length - 1; i >= 0; i--){
+			points += ' M ' + datas[i].x + ' ' + drops[i];
 		}
 
       // marks

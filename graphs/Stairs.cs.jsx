@@ -14,6 +14,7 @@ module.exports = React.createClass({
 			markType: 'dot',
 			markProps: {},
 			points: [],
+			drops: [],
          stairs: 'right',
 			dsx: {}, // see space-mgr for details
 			dsy: {}  // see space-mgr for details
@@ -28,6 +29,8 @@ module.exports = React.createClass({
 		if(Nd < 2){
 			throw 'stairs defined with less than 2 points!!';
 		}
+		var props = this.props;
+		var drops = (this.props.drops.length === 0)?_.map(this.props.points,function(/*point*/){return props.dsy.c.min;}):this.props.drops;
 
 		var datas = [{x:0,y:0}]; // dealing with empty values
 		if(this.props.points.length > 0){
@@ -45,12 +48,12 @@ module.exports = React.createClass({
 		switch(this.props.stairs){
 			case 'right':
 	// right stairs
-				data = + datas[0].x + ',' + this.props.dsy.c.min + ' ';
+				data = + datas[0].x + ',' + drops[0] + ' ';
 				for(var i = 0; i < Nd - 1; i++){
 					data += datas[i].x + ',' + datas[i].y + ' ' + datas[i+1].x + ',' + datas[i].y + ' ';
 				}
 				data += datas[Nd - 1].x + ',' + datas[Nd - 1].y + ' ' + (datas[Nd - 1].x + dx) + ',' + datas[Nd - 1].y; // last bin
-				data += ' ' + (datas[Nd - 1].x + dx) + ',' + this.props.dsy.c.min; // closing
+				data += ' ' + (datas[Nd - 1].x + dx) + ',' + drops[Nd-1]; // closing
 				break;
 			case 'left':
    // left stairs
@@ -58,7 +61,7 @@ module.exports = React.createClass({
 				for(i = 0; i < Nd; i++){
 					data +=  datas[i].x + ',' + datas[i+1].y + ' ' + ' ' + datas[i+1].x + ',' + datas[i+1].y + ' ';
 				}
-				data += data[Nd - 1].x  + ',' +  this.props.dsy.c.min; // closing
+				data += data[Nd - 1].x  + ',' +  drops[Nd - 1]; // closing
 				break;
 			default:
 				throw 'Stairs are either right or left';
