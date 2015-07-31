@@ -78,20 +78,24 @@ module.exports = React.createClass({
 
 		// getting dsx and dsy
 		var universe = {width: this.props.width, height: this.props.height};
-		var datas = this.props.data;
+		var datas  = this.props.data;
 		datas.xmin = this.props.xmin;
 		datas.xmax = this.props.xmax;
 		datas.ymin = this.props.ymin;
 		datas.ymax = this.props.ymax;
 
 		// dealing with stacked data here => good idea ???
-		// we just offset the data values of the concerned graphs
+		// we just offset the data values and drops of the concerned graphs
 		var xoffset = [];
 		var yoffset = [];
+		var drops = [];
 		for(var i = 0 ; i < this.props.data.series.length; i++){
+			drops[i] = [];
 			if(this.props.data.series[i].stacked){ // stacked in direction 'stacked', 'x' and 'y' are accepted
 				switch(this.props.data.series[i].stacked){
 					case 'x': // not asynchronous
+							// init drops
+						drops[i] = _.map(this.props.data.series[i].data.series,function(/*point*/){return 0.0;});
 						// init xoffset
 						if(xoffset.length === 0){
 							xoffset = _.map(this.props.data.series[i].data.series,function(/*point*/){return 0.0;});
@@ -104,10 +108,13 @@ module.exports = React.createClass({
 						for(var j = 0; j < xoffset.length; j++){
 							var c = this.props.data.series[i].data.series[j].x;
 							this.props.data.series[i].data.series[j].x += xoffset[j];
+							drops[i][j] = xoffset[j];
 							xoffset[j] += c;
 						}
 						break;
 					case 'y': // not asynchronous
+							// init drops
+						drops[i] = _.map(this.props.data.series[i].data.series,function(/*point*/){return 0.0;});
 							// init yoffset
 						if(yoffset.length === 0){
 							yoffset = _.map(this.props.data.series[i].data.series,function(/*point*/){return 0.0;});
@@ -120,10 +127,12 @@ module.exports = React.createClass({
 						for(var k = 0; k < yoffset.length; k++){
 							var o = this.props.data.series[i].data.series[k].y;
 							this.props.data.series[i].data.series[k].y += yoffset[k];
+							drops[i][k] = yoffset[k];
 							yoffset[k] += o;
 						}
 						break;
-					default:  // direction, we need both x and y
+					default:  // direction, we need both x and y, I have no drops for these
+							// init drops
 							// init xoffset
 						if(xoffset.length === 0){
 							xoffset = _.map(this.props.data.series[i].data.series,function(/*point*/){return 0.0;});
@@ -212,10 +221,12 @@ module.exports = React.createClass({
 			// the world
 			graphProps.dsx = ds.x;
 			graphProps.dsy = ds.y;
+			// the graph
 			graphProps.stroke = this.props.data.series[m].color;
 			graphProps.markProps = {};
 			graphProps.markProps.fill = this.props.data.series[m].color;
 			graphProps.mark = false;
+			graphProps.drops = drops[m];
 			prints.push(grapher[this.props.data.series[m].type](print,graphProps,m));
 		}
 
@@ -223,7 +234,7 @@ module.exports = React.createClass({
 		// it is assumed that we need them only once (same for everyone)
 		// and placed in the first graph
 		var btl = {x: undefined, y: undefined};
-		if(this.props.data.type === 'text' && this.props.data.serie.length !== 0){
+		if(this.props.data.type === 'text' && this.props.data.series.length !== 0){
 			btl.x = _.map(this.props.data.series[0].data.series, function(point){return {label: point.xlabel, coord: point.x};});
 			btl.y = _.map(this.props.data.series[0].data.series, function(point){return {label: point.ylabel, coord: point.y};});
 			// if undefined, no need to keep an array of undefined
@@ -237,14 +248,14 @@ module.exports = React.createClass({
 
 		var xT = (ds.x.c.max + ds.x.c.min) / 2;
 		var yT = title.titleFSize;
-      var axisProps = this.props.axisProps;
-      axisProps.label = {x: this.props.xLabel, y: this.props.yLabel};
+		var axisProps = this.props.axisProps;
+		axisProps.label = {x: this.props.xLabel, y: this.props.yLabel};
 
 		return <svg width={this.props.width} height={this.props.height}>
 				<g>
 					<text textAnchor='middle' fontSize={title.titleFSize} x={xT} y={yT}>{title.title}</text>
-					<Axes key='axes' {...axisProps} type={types} placement={placement} barTicksLabel={btl} ds={ds} />
 					<g>{prints}</g>
+					<Axes key='axes' {...axisProps} type={types} placement={placement} barTicksLabel={btl} ds={ds} />
 				</g>
 			</svg>;
 	}
