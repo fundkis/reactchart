@@ -51,8 +51,6 @@ var labelize = function(ds,step,i){
 // {min, next_step(step,dir), dist(step1,step2)}
 var default_step = function(type){
 	switch(type){
-		case 'text':
-			return {};
 		case 'number':
 			// 0.00001, 0.00005, 0.0001, 0.0005, ...
 			return {
@@ -139,7 +137,7 @@ var default_step = function(type){
 				}
 			};
 		default:
-			throw 'type is "text", "number" or "date"';
+			throw 'type is "number" or "date"';
 	}
 };
 
@@ -151,19 +149,7 @@ var m = {};
 //   - 2) no less than 25 px between ticks
 m.stepper = function(ds,type){
 
-	var max_ticks = 10; // rule 1)
-	var min_dist  = space.toDwidth(ds,25); // rule 2) in data space
-
-	var closest = function(step,stepper){
-
-		var step_up = stepper.next_step(step,'+');
-		var up = stepper.dist(step_up,step);
-
-		var step_down = stepper.next_step(step,'-');
-		var down = stepper.dist(step_down,step);
-
-		return (up < down)?step_up:step_down;
-	};
+	var step = 0.0;
 
 	// small helper function to deal with dates
 	// steps are duration (moment.duration())
@@ -171,20 +157,39 @@ m.stepper = function(ds,type){
 		return (type === 'date')?thing.asMilliseconds():thing;
 	};
 
-	// finding step
-	var def_step = default_step(type); // step defs
+	if(type === 'text'){
+		step = 1.0;
+	}else{
 
-	// by def, cond 1) will be respected
-	var step = (type === 'date')?moment.duration((ds.d.max - ds.d.min) / max_ticks, 'milliseconds'):(ds.d.max - ds.d.min) / max_ticks; // useless but let's be explicit
-	step = closest(step,def_step);
+		var max_ticks = 10; // rule 1)
+		var min_dist  = space.toDwidth(ds,25); // rule 2) in data space
 
-	// now inforcing cond 2), still checking cond 1)
-	var dist = toNum(step,type);
-	var n = (ds.d.max - ds.d.min)/dist;
-	while(dist < min_dist || n > max_ticks){
-		step = def_step.next_step(step,'+');
-		dist = toNum(step,type);
-		n = (ds.d.max - ds.d.min)/dist;
+		var closest = function(step,stepper){
+
+			var step_up = stepper.next_step(step,'+');
+			var up = stepper.dist(step_up,step);
+
+			var step_down = stepper.next_step(step,'-');
+			var down = stepper.dist(step_down,step);
+
+			return (up < down)?step_up:step_down;
+		};
+
+		// finding step
+		var def_step = default_step(type); // step defs
+
+		// by def, cond 1) will be respected
+		step = (type === 'date')?moment.duration((ds.d.max - ds.d.min) / max_ticks, 'milliseconds'):(ds.d.max - ds.d.min) / max_ticks; // useless but let's be explicit
+		step = closest(step,def_step);
+
+		// now inforcing cond 2), still checking cond 1)
+		var dist = toNum(step,type);
+		var n = (ds.d.max - ds.d.min)/dist;
+		while(dist < min_dist || n > max_ticks){
+			step = def_step.next_step(step,'+');
+			dist = toNum(step,type);
+			n = (ds.d.max - ds.d.min)/dist;
+		}
 	}
 
 	return {step: step, toNum: toNum(step,type)};
@@ -194,14 +199,17 @@ m.stepper = function(ds,type){
 // origin = {x, y}
 // ds = {c:{min, max}, d: {min, max}, d2c, c2d}
 // props.type = 'text' || 'number' || 'date'
-// props.labels = ['tick labels'] // if props.type === 'text'
+// props.labels = [{coord: , label:'tick labels'}] // if props.type === 'text'
 // props.placement = 'top' || 'bottom' || 'left' || 'right'
 m.ticks = function(origin,ds,dir,props){
+	// boolean to simplify writings
+	var text = (props.type === 'text');
 
 	// tick direction in degrees
 	var tickdir = parseFloat(dir) + 90; // forcing float addition
 	if(props.placement === 'left' || props.placement === 'top'){tickdir += 180;}
 	if(tickdir > 180){tickdir -= 360;}
+	var sdir = tickdir * Math.PI / 180.0; // perpendicular direction, direction where text do not have the info
 
 	// in data space, d_step = {step: Date || double, toNum: double}
 	var d_step = m.stepper(ds,props.type);
@@ -216,22 +224,28 @@ m.ticks = function(origin,ds,dir,props){
 		// steps
 	var c_stepx = space.toCwidth(ds, xdir * d_step.toNum);
 	var c_stepy = space.toCwidth(ds, ydir * d_step.toNum);
+		// in case of text, we have half the information
+	var xsstart = xstart * Math.cos(sdir);
+	var ysstart = ystart * Math.sin(sdir);
 
 	var out = [];
-	var nTick = Math.floor((ds.d.max - ds.d.min) / d_step.toNum) + 1;
+	var nTick = (text)?props.labels.length:Math.floor((ds.d.max - ds.d.min) / d_step.toNum) + 1;
 	var full_length = Math.abs(ds.c.max - ds.c.min);
 	var dist = function(x,y){
 		return Math.sqrt( (x - xstart) * (x - xstart) + (y - ystart) * (y - ystart) );
 	};
 	for(var i = 0; i < nTick; i++){
 
+		var xpos = (text)?xsstart + space.toC(ds,props.labels[i].coord) * xdir:xstart + i * c_stepx;
+		var ypos = (text)?ysstart - space.toC(ds,props.labels[i].coord) * ydir:ystart - i * c_stepy; // width do not have the sign info
+
 		var here = {
-			x: xstart + i * c_stepx,
-			y: ystart + i * c_stepy
+			x: xpos,
+			y: ypos
 		};
 		if(dist(here.x,here.y) > full_length){break;}
 
-		var me = (props.type === 'text')?props.labels[i]:labelize(ds,d_step,i);
+		var me = (text)?props.labels[i].label:labelize(ds,d_step,i);
 
 		out.push({dir:tickdir, here:here, me:me});
 	}
