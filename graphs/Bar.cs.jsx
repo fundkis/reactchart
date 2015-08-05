@@ -8,7 +8,7 @@ module.exports = React.createClass({
 		dsy: {}, // see space-mgr for details
 		x:0,
 		y:0,
-		drop:0,
+		drop:{x:0, y:0},
 		color:'none',
 		stroke: 'none',
 		strokeWidth: 0,
@@ -18,29 +18,19 @@ module.exports = React.createClass({
   },
   render : function() {
 
-	// y dir
-	var dirr = this.props.dir * Math.PI / 180;
-	var yContrib = Math.sin(dirr);
-	var xContrib = Math.cos(dirr);
-
-	// x dir
-	var sdir = ( (this.props.dir + 90)%180 ) * Math.PI / 180;
-	var ysContrib = Math.sin(sdir);
-	var xsContrib = Math.cos(sdir);
-
 	// 
-	var x = dataScale.toC(this.props.dsx, this.props.x - 0.5 * xsContrib * this.props.span); // all in dataSpace
-	var y = dataScale.toC(this.props.dsy, this.props.y * yContrib);
+	var x = dataScale.toC(this.props.dsx, this.props.x - 0.5 * this.props.span); // all in dataSpace
+	var y = dataScale.toC(this.props.dsy, this.props.y + this.props.drop.y );
 
-	var height = dataScale.toCwidth(this.props.dsy,(this.props.y - this.props.drop) * yContrib);
-	var width  = dataScale.toCwidth(this.props.dsx,this.props.span * xsContrib) + dataScale.toCwidth(this.props.dsy,this.props.span * ysContrib);
+	var height = dataScale.toCwidth(this.props.dsy, this.props.y - this.props.dsy.d.min);
+	var width  = dataScale.toCwidth(this.props.dsx, this.props.span);
 
 	// rotation
-	var xr = dataScale.toC(this.props.dsx,this.props.x - (this.props.x - this.props.dsx.d.min) * xsContrib); // all in dataSpace
-	var yr = dataScale.toC(this.props.dsy,this.props.y - (this.props.y - this.props.dsy.d.min) * yContrib); // all in dataSpace
+	var xr = dataScale.toC(this.props.dsx, 0.5 * width  + this.props.x ); // all in dataSpace
+	var yr = dataScale.toC(this.props.dsy, 0.5 * height + this.props.y ); // all in dataSpace
 
 	var rotate = 'rotate(' + (this.props.dir - 90) + ' ' + xr + ' ' + yr + ')';
-
+	var xt = dataScale.toC(this.props.dsx, this.props.x + 0.5 * this.props.span); // all in dataSpace
 	 return (
 			<rect x={x} y={y} height={height} width={width} transform={rotate}
 			stroke={this.props.stroke} strokeWidth={this.props.strokeWidth} 

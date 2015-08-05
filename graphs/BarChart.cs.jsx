@@ -33,11 +33,12 @@ module.exports = React.createClass({
 	};
 
 	var bars = [];
-	var Tprops = this.props;
-	var drops = (this.props.drops.length === 0)?_.map(this.props.points,function(/*point*/){return Tprops.dsy.c.min;}):this.props.drops;
+	var dropsx = (this.props.drops.x.length === 0)?_.map(this.props.points,function(/*point*/){return 0.0;}):this.props.drops.x;
+	var dropsy = (this.props.drops.y.length === 0)?_.map(this.props.points,function(/*point*/){return 0.0;}):this.props.drops.y;
+	var drops = _.map(dropsx,function(xd,index){return {x:xd, y:dropsy[index]};});
 	for(var i = 0; i < this.props.points.length; i++){
 		var key = this.props.key + '.b' + i;
-		bars.push(<Bar key={key} x={this.props.points[i].x} y={this.props.points[i].y} drop={this.props.drops[i]} {...props}/>);
+		bars.push(<Bar key={key} x={this.props.points[i].x} y={this.props.points[i].y} drop={drops[i]} {...props}/>);
 	}
 
 	 return <g>{bars}
