@@ -175,7 +175,7 @@ m.space = function(datas,universe,axis,title){
 			// min of all the abscissa: from inner to outer:
 			// for a (abs,y) point, get the abscissa, -> {abs}
 			var points = _.map(series, function(dataP) {
-				return _.map(dataP.data.series,function(point){return {x: toAbs(point), y: point.y};}
+				return _.map(dataP.data.series,function(point){return {x: toAbs(point) + point.dropx, y: point.y + point.dropy};}
 				);});
 			// do that for all points in the graph -> [abs, abs, ...]
 			// do that for all graph -> [[abs],[abs],...]

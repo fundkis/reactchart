@@ -90,12 +90,12 @@ module.exports = React.createClass({
 		var yoffset = [];
 		var drops = [];
 		for(var i = 0 ; i < this.props.data.series.length; i++){
-			drops[i] = [];
+			drops[i] = {x:[], y:[]};
 			if(this.props.data.series[i].stacked){ // stacked in direction 'stacked', 'x' and 'y' are accepted
 				switch(this.props.data.series[i].stacked){
 					case 'x': // not asynchronous
 							// init drops
-						drops[i] = _.map(this.props.data.series[i].data.series,function(/*point*/){return 0.0;});
+						drops[i].x = _.map(this.props.data.series[i].data.series,function(/*point*/){return 0.0;});
 						// init xoffset
 						if(xoffset.length === 0){
 							xoffset = _.map(this.props.data.series[i].data.series,function(/*point*/){return 0.0;});
@@ -107,14 +107,14 @@ module.exports = React.createClass({
 						// add, compute and update
 						for(var j = 0; j < xoffset.length; j++){
 							var c = this.props.data.series[i].data.series[j].x;
-							this.props.data.series[i].data.series[j].x += xoffset[j];
-							drops[i][j] = xoffset[j];
+							//this.props.data.series[i].data.series[j].x += xoffset[j];
+							drops[i].x[j] = xoffset[j];
 							xoffset[j] += c;
 						}
 						break;
 					case 'y': // not asynchronous
 							// init drops
-						drops[i] = _.map(this.props.data.series[i].data.series,function(/*point*/){return 0.0;});
+						drops[i].y = _.map(this.props.data.series[i].data.series,function(/*point*/){return 0.0;});
 							// init yoffset
 						if(yoffset.length === 0){
 							yoffset = _.map(this.props.data.series[i].data.series,function(/*point*/){return 0.0;});
@@ -126,46 +126,23 @@ module.exports = React.createClass({
 						// add, compute and update
 						for(var k = 0; k < yoffset.length; k++){
 							var o = this.props.data.series[i].data.series[k].y;
-							this.props.data.series[i].data.series[k].y += yoffset[k];
-							drops[i][k] = yoffset[k];
+							//this.props.data.series[i].data.series[k].y += yoffset[k];
+							drops[i].y[k] = yoffset[k];
 							yoffset[k] += o;
 						}
 						break;
 					default:  // direction, we need both x and y, I have no drops for these
-							// init drops
-							// init xoffset
-						if(xoffset.length === 0){
-							xoffset = _.map(this.props.data.series[i].data.series,function(/*point*/){return 0.0;});
-						}else{
-							if(xoffset.length !== this.props.data.series[i].data.series.length){
-								throw 'Stacked data needs to be of same size (x dir)!!';
-							}
-						}
-							// init yoffset
-						if(yoffset.length === 0){
-							yoffset = _.map(this.props.data.series[i].data.series,function(/*point*/){return 0.0;});
-						}else{
-							if(yoffset.length !== this.props.data.series[i].data.series.length){
-								throw 'Stacked data needs to be of same size (y dir)!!';
-							}
-						}
-						// add, compute and update
-						var theta = parseFloat(this.props.data.series[i].stacked) * Math.PI / 180;
-						var costheta = Math.cos(theta);
-						var sintheta = Math.sin(theta);
-						for(var l = 0; l < xoffset.length; l++){
-							var u = this.props.data.series[i].data.series[l].x;
-							var v = this.props.data.series[i].data.series[l].y;
-							this.props.data.series[i].data.series[l].x += xoffset[l] * costheta;
-							this.props.data.series[i].data.series[l].y += yoffset[l] * sintheta;
-							xoffset[k] += u;
-							yoffset[k] += v;
-						}
 						break;
 				}
 			}
 		}
-
+		// now adding the drops to the datas for space manager
+		for(var s = 0; s < datas.series.length; s++){
+			for(var p = 0; p < datas.series[s].data.series.length; p++){
+				datas.series[s].data.series[p].dropx = drops[s].x[p] || 0.0;
+				datas.series[s].data.series[p].dropy = drops[s].y[p] || 0.0;
+			}
+		}
 		var xaxis = this.props.xaxis;
 		var yaxis = this.props.yaxis;
 		if(!!this.props.axis){ //overrides xaxis and yaxis
