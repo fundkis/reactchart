@@ -16,21 +16,25 @@ module.exports = React.createClass({
 			markType: 'dot',
 			markProps: {},
 			points: [],
-			drops: [],
+			drops: {x:[], y:[]},
 			dsx: {}, // see space-mgr for details
 			dsy: {}  // see space-mgr for details
 			};
 	},
 	render: function(){
+		// getting values, easier
 		var dsx = this.props.dsx;
 		var dsy = this.props.dsy;
+		var props = this.props;
+		var dropsx = (this.props.drops.x.length === 0)?_.map(this.props.points,function(/*point*/){return 0.0;}):this.props.drops.x;
+		var dropsy = (this.props.drops.y.length === 0)?_.map(this.props.points,function(/*point*/){return 0.0;}):this.props.drops.y;
 
 		var datas = [{x:0,y:0}]; // dealing with empty values
 		if(this.props.points.length > 0){
-			datas = _.map(this.props.points, function(point){
+			datas = _.map(this.props.points, function(point,index){
 				return {
-					x: space.toC(dsx,point.x), 
-					y: space.toC(dsy,point.y)
+					x: space.toC(dsx,point.x + dropsx[index]), 
+					y: space.toC(dsy,point.y + dropsy[index])
 				};
 			});
 		}
@@ -41,10 +45,8 @@ module.exports = React.createClass({
 		}
 
 		// we close the curve, nothing is printed
-		var props = this.props;
-		var drops = (this.props.drops.length === 0)?_.map(this.props.points,function(/*point*/){return props.dsy.c.min;}):this.props.drops;
-		for(i = drops.length - 1; i >= 0; i--){
-			points += ' M ' + datas[i].x + ' ' + drops[i];
+		for(i = dropsy.length - 1; i >= 0; i--){
+			points += ' M ' + datas[i].x + ' ' + space.toC(dsy,dsy.d.min + dropsy[i]);
 		}
 
       // marks

@@ -14,7 +14,7 @@ module.exports = React.createClass({
 			markType: 'dot',
 			markProps: {},
 			points: [],
-			drops: [],
+			drops: {x:[], y:[]},
          stairs: 'right',
 			dsx: {}, // see space-mgr for details
 			dsy: {}  // see space-mgr for details
@@ -30,14 +30,15 @@ module.exports = React.createClass({
 			throw 'stairs defined with less than 2 points!!';
 		}
 		var props = this.props;
-		var drops = (this.props.drops.length === 0)?_.map(this.props.points,function(/*point*/){return props.dsy.c.min;}):this.props.drops;
+		var dropsx = (this.props.drops.x.length === 0)?_.map(this.props.points,function(/*point*/){return 0.0;}):this.props.drops.x;
+		var dropsy = (this.props.drops.y.length === 0)?_.map(this.props.points,function(/*point*/){return 0.0;}):this.props.drops.y;
 
 		var datas = [{x:0,y:0}]; // dealing with empty values
 		if(this.props.points.length > 0){
-			datas = _.map(this.props.points, function(point){
+			datas = _.map(this.props.points, function(point,index){
 				return {
-					x: space.toC(dsx,point.x), 
-					y: space.toC(dsy,point.y)
+					x: space.toC(dsx,point.x + dropsx[index]), 
+					y: space.toC(dsy,point.y + dropsy[index])
 				};}
 			);
 		}
@@ -48,12 +49,12 @@ module.exports = React.createClass({
 		switch(this.props.stairs){
 			case 'right':
 	// right stairs
-				data = + datas[0].x + ',' + drops[0] + ' ';
+				data = + datas[0].x + ',' + space.toC(dsy,dsy.d.min + dropsy[0]) + ' ';
 				for(var i = 0; i < Nd - 1; i++){
 					data += datas[i].x + ',' + datas[i].y + ' ' + datas[i+1].x + ',' + datas[i].y + ' ';
 				}
 				data += datas[Nd - 1].x + ',' + datas[Nd - 1].y + ' ' + (datas[Nd - 1].x + dx) + ',' + datas[Nd - 1].y; // last bin
-				data += ' ' + (datas[Nd - 1].x + dx) + ',' + drops[Nd-1]; // closing
+				data += ' ' + (datas[Nd - 1].x + dx) + ',' + space.toC(dsy, dsy.d.min + dropsy[Nd-1]); // closing
 				break;
 			case 'left':
    // left stairs
@@ -61,7 +62,7 @@ module.exports = React.createClass({
 				for(i = 0; i < Nd; i++){
 					data +=  datas[i].x + ',' + datas[i+1].y + ' ' + ' ' + datas[i+1].x + ',' + datas[i+1].y + ' ';
 				}
-				data += data[Nd - 1].x  + ',' +  drops[Nd - 1]; // closing
+				data += data[Nd - 1].x  + ',' +  space.toC(dsy, dsy.d.min + dropsy[Nd - 1]); // closing
 				break;
 			default:
 				throw 'Stairs are either right or left';
