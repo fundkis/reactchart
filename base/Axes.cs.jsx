@@ -17,9 +17,10 @@ module.exports = React.createClass({
 			majorGrid: {x:false, y: false},
 			minorGrid: {x:false, y: false},
 			stroke:    {x:'black', y:'black'},
-			strokeWidth: {x:'1', y:'1'},
+			strokeWidth: {x: 1, y: 1},
 			label: {x:'', y:''},
-			labelFSize: {x:'20', y:'20'},
+			labelDist: {x: 20, y: 20},
+			labelFSize: {x: 20, y: 20},
 			barTicksLabel: {x: [], y: []},
 			tickProps: {x:{}, y:{}},
 			placement: {x:'bottom', y:'left'},
@@ -59,12 +60,12 @@ module.exports = React.createClass({
 				<Axe key='axe x' dir='0' placement={this.props.placement.x} origin={origin.x} {...this.props.tickProps.x}
 					majorGrid={this.props.majorGrid.x} minorGrid={this.props.minorGrid.x}
 					stroke={this.props.stroke.x} strokeWidth={this.props.strokeWidth.x} label={this.props.label.x} 
-					ticksLabel={this.props.barTicksLabel.x}
+					ticksLabel={this.props.barTicksLabel.x} labelDist={this.props.labelDist.x}
 					labelFSize={this.props.labelFSize.x} ds={this.props.ds.x} type={this.props.type.x} gridLength={gridXlength}/>
 				<Axe key='axe y' dir='90' placement={this.props.placement.y} origin={origin.y} {...this.props.tickProps.y}
 					majorGrid={this.props.majorGrid.y} minorGrid={this.props.minorGrid.y}
 					stroke={this.props.stroke.y} strokeWidth={this.props.strokeWidth.y} label={this.props.label.y}
-					ticksLabel={this.props.barTicksLabel.y}
+					ticksLabel={this.props.barTicksLabel.y} labelDist={this.props.labelDist.y}
 					labelFSize={this.props.labelFSize.y} ds={this.props.ds.y} type={this.props.type.y[0]} gridLength={gridYlength}/>
 			</g>;
 }

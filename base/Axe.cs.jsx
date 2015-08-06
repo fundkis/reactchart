@@ -18,12 +18,13 @@ module.exports = React.createClass({
 			origin: {x:0, y:0},
 			ticksLabel: [], // bars, text labels and coord pos
 			label:'',
-			labelFSize:'20',
+			labelDist: 20,
+			labelFSize: 20 ,
 			majorGrid: false,
 			minorGrid: false,
 			gridLength: 0,
 			stroke: 'black',
-			strokeWidth: '1',
+			strokeWidth: 1,
 			// ticks
 			tickProps: {}
 		};
@@ -63,7 +64,8 @@ module.exports = React.createClass({
 		var yL = (yend + ystart)/2;
 		var textAnchor = 'middle';
 		// shifting from axis
-		var offset = function(fac){return 20 + fac * fs;}; // hard-coded for the moment, size of ticks
+		var labelDist = this.props.labelDist;
+		var offset = function(fac){return labelDist + fac * fs;}; // hard-coded for the moment, size of ticks
 		switch(this.props.placement){
 			case 'bottom':
 				yL += offset(1); // font height
