@@ -94,58 +94,66 @@ m.space = function(datas,universe,axis,title){
 		var xcmax = 0.0;
 		var ycmin = 0.0;
 		var ycmax = 0.0;
-		// nothing to compute,
-		// we require ALL the margins to
-		// be defined
-		// TODO more suppleness
-		if(!!axis.marginsO 	&& 
-			!!axis.marginsO.l && 
-			!!axis.marginsO.r && 
-			!!axis.marginsO.t && 
-			!!axis.marginsO.b){
+
+		// x labels
+		var xl = (axis.yLabel.length !== 0)?axis.yLabelFSize + 10.0:0.0; // we hardcode a 10px margin on labels
+
+		// default margin for ticks is 20px for the y dir,
+        // 40px for the x dir
+		var defx = 40.0;
+
+		// y axis => x dir margins
+		switch (axis.yPlace){
+		case 'left':
+			xlm += defx + xl;
+			break;
+		case 'right':
+			xrm += defx + xl;
+			break;
+		default:
+			throw 'Illegal value for "yaxis" prop. Use "left" or "right" instead of "' + this.props.yaxis + '"';
+		}
+
+		// y label
+		var yl = (axis.xLabel.length !== 0)?axis.xLabelFSize + 10.0:0.0; // we hardcode a 10px margin on labels
+
+		// title is at the top
+		ytm += (title.length !== 0)?title.titleFSize + 10.0:0.0;
+
+		// default margin for ticks is 20px for the y dir,
+		// 40px for the x dir
+		var defy = 20.0;
+
+		// x axis => y dir margins
+		switch(axis.xPlace){
+		case 'bottom':
+			ybm += defy + yl; 
+			break;
+		case 'top':
+			ytm += defy + yl; 
+			break;
+		default:
+			throw 'Illegal value for "xaxis" prop. Use "bottom" or "top" instead of "' + this.props.xaxis + '"';
+		}
+
+
+		// more suppleness, but less
+		// efficiencies: automatic
+		// margins computed whatever
+		// happens
+		if(!!axis.marginsO.l){
 			xlm = axis.marginsO.l;
+		}
+		if(!!axis.marginsO.r){
 			xrm = axis.marginsO.r;
+		}
+		if(!!axis.marginsO.t){
 			ytm = axis.marginsO.t;
+		}
+		if(!!axis.marginsO.b){
 			ybm = axis.marginsO.b;
+		}
 
-		}else{
-
-			// labels
-			var yl = (axis.xLabel.length !== 0)?axis.xLabelFSize + 10.0:0.0; // we hardcode a 10px margin on labels
-			var xl = (axis.yLabel.length !== 0)?axis.yLabelFSize + 10.0:0.0;
-
-			// title is at the top
-			ytm += (title.length !== 0)?title.titleFSize + 10.0:0.0;
-
-			// default margin for ticks is 20px for the y dir,
-         // 40px for the x dir
-			var defy = 20.0;
-			var defx = 40.0;
-
-			// x
-			switch(axis.xPlace){
-			case 'bottom':
-				ybm += defy + yl; 
-				break;
-			case 'top':
-				ytm += defy + yl; 
-				break;
-			default:
-				throw 'Illegal value for "xaxis" prop. Use "bottom" or "top" instead of "' + this.props.xaxis + '"';
-			}
-			// y
-			switch (axis.yPlace){
-			case 'left':
-				xlm += defx + xl;
-				break;
-			case 'right':
-				xrm += defx + xl;
-				break;
-			default:
-				throw 'Illegal value for "yaxis" prop. Use "left" or "right" instead of "' + this.props.yaxis + '"';
-			}
-
-		} // end if(!!axis.marginO)
 
 		ycmin = universe.height - ybm;
 		ycmax = ytm;
