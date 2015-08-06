@@ -7,10 +7,12 @@ module.exports = React.createClass({
 	getDefaultProps: function(){
 		return {
 			stroke: 'black',
-			strokeWidth: '1',
+			strokeWidth: 1,
 			fill: 'none',
 			opacity: 1,
 			mark: true,
+			markColor: 'black',
+			markSize: 3,
 			markType: 'dot',
 			markProps: {},
 			points: [],
@@ -68,7 +70,15 @@ module.exports = React.createClass({
 				throw 'Stairs are either right or left';
 		}
 
-      var marks = marker.marks(datas,this.props.markProps,this.props.mark,this.props.markType);
+      // marks
+		var markprops = this.props.markProps;
+		if(!!markprops.fill){
+			markprops.fill = this.props.markColor;
+		}
+		if(!!markprops.size){
+			markprops.size = this.props.markSize;
+		}
+      var marks = marker.marks(datas,markprops,this.props.mark,this.props.markType);
 
 
 		return <g>

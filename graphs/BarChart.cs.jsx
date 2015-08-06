@@ -11,11 +11,13 @@ module.exports = React.createClass({
 		color:'none',
 		stroke: 'none',
 		strokeWidth: 0,
-		span:0.5, // in dataSpace
-		dir:90,
+		span: 0.5, // in dataSpace
+		dir: 90,
 		points: [],
 		drops: [],
 		mark: true,
+		markColor: 'black',
+		markSize: 3,
 		markType: 'dot',
 		markProps: {}
 	 };
@@ -41,8 +43,19 @@ module.exports = React.createClass({
 		bars.push(<Bar key={key} x={this.props.points[i].x} y={this.props.points[i].y} drop={drops[i]} {...props}/>);
 	}
 
+    // marks
+	var markprops = this.props.markProps;
+	if(!!markprops.fill){
+		markprops.fill = this.props.markColor;
+	}
+	if(!!markprops.size){
+		markprops.size = this.props.markSize;
+	}
+
+	var marks = marker.marks(this.props.points,markprops,this.props.mark,this.props.markType);
+
 	 return <g>{bars}
-			{marker.marks(this.props.points,this.props.markProps,this.props.mark,this.props.markType)}
+				{marks}
 			</g>;
   }
 });

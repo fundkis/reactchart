@@ -10,10 +10,18 @@ module.exports = React.createClass({
 	getDefaultProps: function(){
 		return {
 			stroke: 'black',
-			strokeWidth: '1',
+			strokeWidth: 1,
 			fill: 'none',
+			// mark props, explicit at heigh level
+			// overwritten if present in markProps
 			mark: true,
+			markColor: 'black',
+			markSize: 3,
 			markType: 'dot',
+			// contains low-level description,
+			// i.e. specific things like radius
+			// for a dot, or anything.
+			// overrides high-level if conflicts
 			markProps: {},
 			points: [],
 			drops: {x:[], y:[]},
@@ -50,7 +58,14 @@ module.exports = React.createClass({
 		}
 
       // marks
-      var marks = marker.marks(datas,this.props.markProps,this.props.mark,this.props.markType);
+		var markprops = this.props.markProps;
+		if(!!markprops.fill){
+			markprops.fill = this.props.markColor;
+		}
+		if(!!markprops.size){
+			markprops.size = this.props.markSize;
+		}
+      var marks = marker.marks(datas,markprops,this.props.mark,this.props.markType);
 
 		return (<g>
 			<path 
