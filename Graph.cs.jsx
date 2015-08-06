@@ -44,8 +44,8 @@ module.exports = React.createClass({
 	getDefaultProps: function() {
 		return {
 			// general
-			height: '500',		// defines the universe's height
-			width: '500',		// defines the universe's width
+			height: 500,		// defines the universe's height
+			width: 500,		// defines the universe's width
 			// this is a template, the minimum structure that MUST be respected
 			// other things can be added at the data s levels
 			data: {series:[{ type : 'Plain', data : {series:[{x:0, y:0}], type: 'number'}, axe : 'left', color: 'black', stacked: undefined}], type: 'number'}, //
@@ -202,7 +202,6 @@ module.exports = React.createClass({
 			graphProps.stroke = this.props.data.series[m].color;
 			graphProps.markProps = {};
 			graphProps.markProps.fill = this.props.data.series[m].color;
-			graphProps.mark = false;
 			graphProps.drops = drops[m];
 			prints.push(grapher[this.props.data.series[m].type](print,graphProps,m));
 		}

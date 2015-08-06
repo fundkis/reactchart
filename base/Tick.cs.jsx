@@ -12,7 +12,7 @@ module.exports = React.createClass({
 			draw: 'true',
 			width: 0.5,
 			color: 'black',
-			where: {x: '0', y: '0'}, // where the tick is
+			where: {x: 0, y: 0}, // where the tick is
 			dir: 0,						// direction of tick
 			length: 15,					// length of tick
 			out: 0.25,					// proportion that is outside (-dir)

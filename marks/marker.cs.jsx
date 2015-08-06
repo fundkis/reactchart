@@ -9,12 +9,12 @@ m.marks_map = {};
 m.marks_map.dot = function(data,props){
 	var radius = 3; //default
 	if(!!props.radius){
-		radius= props.radius;
+		radius = props.radius;
 	}
 
 	var size = -1; // default
 	if(!!props.size){
-		size= props.size;
+		size = props.size;
 	}
 	var fill = 'black'; // default
 	if(!!props.fill){

@@ -5,9 +5,9 @@ module.exports = React.createClass({
 		return {
 			x: '0',
 			y: '0',
-			radius: '3',
+			radius: -1,
 			fill: 'black',
-			size: '-1'
+			size: 3
 		};
 	},
 	render: function(){
@@ -16,7 +16,7 @@ module.exports = React.createClass({
 		var r = this.props.radius;
 		var s = this.props.size;
 		var f = this.props.fill;
-		if(s > 0){r = s};
-		return <circle cx={x} cy={y} r={r} fill={f}/>;
+		if(r > 0){s = r;}
+		return <circle cx={x} cy={y} r={s} fill={f}/>;
 	}
 });
