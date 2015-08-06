@@ -41,7 +41,7 @@ var labelize = function(ds,step,i){
 		} else if(step.step.asMonths() >= 2){
 			return moment(new Date(cur_step)).format("YYYY");
 		} else {
-			return moment(new Date(cur_step)).format("DD/MM");
+			return moment(new Date(cur_step)).format("DD/MM/YY");
 		}
 	}
 };
@@ -100,19 +100,27 @@ var default_step = function(type){
 				next_step: function(step,dir){
 					// we're using moment.js convention to compute
 					// the step:
-					// 1 month = 30 days
 					// 1 year  = 365 days
 					// it is then translated back into a duration
 					var step_days = step.asDays();
-					var steps = [1,7,14,30,60,90,365];
+					var steps = [
+						moment.duration({day:1}).asDays(),
+						moment.duration({week:1}).asDays(),
+						moment.duration({week:2}).asDays(),
+						moment.duration({month:1}).asDays(),
+						moment.duration({month:2}).asDays(),
+						moment.duration({month:3}).asDays(),
+						moment.duration({year:1}).asDays()
+					];
 					var step_as = [
-						{n: 1,  t: 'day'},
-						{n: 7,  t: 'day'},
-						{n: 14, t: 'day'},
-						{n: 1,  t: 'month'},
-						{n: 2,  t: 'month'},
-						{n: 3,  t: 'month'},
-						{n: 1,  t: 'year'}];
+						{n: 1, t: 'day'},
+						{n: 1, t: 'week'},
+						{n: 2, t: 'week'},
+						{n: 1, t: 'month'},
+						{n: 2, t: 'month'},
+						{n: 3, t: 'month'},
+						{n: 1, t: 'year'}
+					];
 					var ic = 0;
 					while(steps[ic] < step_days){
 						ic++;
