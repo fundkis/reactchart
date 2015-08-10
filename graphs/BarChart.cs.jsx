@@ -19,7 +19,8 @@ module.exports = React.createClass({
 		markColor: 'black',
 		markSize: 3,
 		markType: 'dot',
-		markProps: {}
+		markProps: {},
+		xoffset: 0
 	 };
   },
   render : function() {
@@ -31,7 +32,8 @@ module.exports = React.createClass({
 		stroke:  this.props.stroke,
 		strokeWidth:  this.props.strokeWidth,
 		span: this.props.span,
-		dir: this.props.dir
+		dir: this.props.dir,
+		xoffset: this.props.xoffset
 	};
 
 	var bars = [];

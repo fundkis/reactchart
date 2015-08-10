@@ -12,14 +12,15 @@ module.exports = React.createClass({
 		color:'none',
 		stroke: 'none',
 		strokeWidth: 0,
-		span:0,
-		dir:90
+		span:0.5,
+		dir:90,
+		xoffset: 0
 	 };
   },
   render : function() {
 
 	// 
-	var x = dataScale.toC(this.props.dsx, this.props.x - 0.5 * this.props.span); // all in dataSpace
+	var x = dataScale.toC(this.props.dsx, this.props.x - 0.5 * this.props.span + this.props.xoffset); // all in dataSpace
 	var y = dataScale.toC(this.props.dsy, this.props.y + this.props.drop.y );
 
 	var height = dataScale.toCwidth(this.props.dsy, this.props.y - this.props.dsy.d.min);

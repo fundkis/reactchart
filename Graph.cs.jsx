@@ -89,7 +89,11 @@ module.exports = React.createClass({
 		var xoffset = [];
 		var yoffset = [];
 		var drops = [];
+		var nBar = 0;
 		for(var i = 0 ; i < this.props.data.series.length; i++){
+			if(this.props.data.series[i].type === 'Bars'){
+				nBar++;
+			}
 			drops[i] = {x:[], y:[]};
 			if(this.props.data.series[i].stacked){ // stacked in direction 'stacked', 'x' and 'y' are accepted
 				switch(this.props.data.series[i].stacked){
@@ -194,7 +198,15 @@ module.exports = React.createClass({
 			});
 			// the actual graph
 			var graphProps = {};
-			if(this.props.graphProps.length > m){graphProps = this.props.graphProps[m];}
+			if(this.props.graphProps.length > m){
+				graphProps = this.props.graphProps[m];
+			}
+			// if bars
+			if(this.props.data.series[m].type === 'Bars' && !this.props.data.series[m].stacked){
+				// necessary in x dir (for the moment)
+				graphProps.span = 0.8/nBar;
+				graphProps.xoffset = - 0.4 + (0.8 * m + 0.1)/nBar + 0.5 * graphProps.span;
+			}
 			// the world
 			graphProps.dsx = ds.x;
 			graphProps.dsy = ds.y;
