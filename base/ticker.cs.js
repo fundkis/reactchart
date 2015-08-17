@@ -3,45 +3,51 @@
  * put the ticks on an axis:
  *
  *  - step is imposed:
- *	    - number: 0.1, 0.5, 1 ...
- *     - date: 1 day, 1 week, 2 weeks, 1 month, 3 months, 6 months, N * year(s)
- *     - text: 
+ *		 - number: 0.1, 0.5, 1 ...
+ *		 - date: 1 day, 1 week, 2 weeks, 1 month, 3 months, 6 months, N * year(s)
+ *		 - text: 
  *  - label is taken care of:
- *	    - number, text: obvious
- *	    - date: format the date as follow:
- *          - YYYY if step > year
- *   	      - MMM  if step  = 2 months
- *          - YYYY if step > 2 month
- *          - DD/MM else
+ *		 - number, text: obvious
+ *		 - date: format the date as follow:
+ *				- YYYY if step > year
+ *				- MMM  if step = 1 month
+ *				- T    if step = 3 month
+ *				- YYYY if step > 3 month
+ *				- DD/MM else
  */
 
 var space  = require('../core/space-transf.cs.js');
 var moment = require('moment');
+var hd = require('../../tech/helpers/date.cs.js');
+var hmisc = require('../../tech/helpers/misc.cs.js');
 
 /*
  * responsible for printing the label
  * step is {step: , toNum:}
  */
-var labelize = function(ds,step,i){
+var labelize = function(val_d,step){
 
-// label i is (ds.d.min + i * step) textalized :)
-	var cur_step = ds.d.min + step.toNum * i;
-
+// label from date or number?
 	if(step.step === step.toNum){ // number
-		return (Math.round(cur_step.toFixed(5) * 1e5) / 1e5).toString(); // ce qu'il faut faire pour arrondir...
+		return (Math.round(val_d.toFixed(5) * 1e5) / 1e5).toString(); // ce qu'il faut faire pour arrondir...
 	}else{// date
-
-			// step > year
-		if(step.step.asYears() >= 1){
-			return moment(new Date(cur_step)).format("YYYY");
+		var val = new Date(val_d);
+			// step = 1 year
+		if( (step.step.asYears() === 1) ){
+			return moment(val).format("YYYY");
+			// step > 1 year
+		}else if(step.step.asYears() >= 1){
+			return moment(val).format("YYYY");
 			// step = 2 month
-		}else if(step.step.asMonths() === 2){
-			return moment(new Date(cur_step)).format("MMM");
-			// step >= 1 month
-		} else if(step.step.asMonths() >= 2){
-			return moment(new Date(cur_step)).format("YYYY");
+		}else if(step.step.asMonths() === 1){
+			return moment(val).format("MMM");
+			// step = 3 month
+		} else if(step.step.asMonths() === 3){
+				//this is the first days of the next period, going back one day
+			var t = 'T' + ( Math.floor(( hd.addDays(val,-1).getMonth() + 1 )/3));
+			return t;
 		} else {
-			return moment(new Date(cur_step)).format("DD/MM/YY");
+			return moment(val).format("DD/MM/YY");
 		}
 	}
 };
@@ -124,8 +130,13 @@ var default_step = function(type){
 					var ic = 0;
 					while(steps[ic] < step_days){
 						ic++;
-						if(ic === steps.length - 1){
-							break;
+						if(ic === steps.length - 1){ // we add a year
+							var ny = step_as[ic].n + 1;
+							step_as.push({
+								n:ny,
+								t:'year'
+							});
+							steps.push( moment.duration({year:ny}).asDays() );
 						}
 					}
 					// we imposed the step, whatever happens
@@ -148,6 +159,60 @@ var default_step = function(type){
 			throw 'type is "number" or "date"';
 	}
 };
+
+
+// the floor for date, we don't care below the day
+var floorDate = function(ds,ori,step){
+	if(step.step.asDays() < 7){
+		return ori;
+	}
+	var out;
+	var newori = new Date(ori);
+	var ndays;
+	// weekly, we want to start mondays
+	if(step.step.asDays() < 14){
+		ndays = 1 - newori.getDay();
+		if(ndays < 0){
+			ndays += 8;
+		}
+			out = hd.addDays(newori,ndays);
+		// months, we want to start the 01/cur month
+		}else if(step.step.asMonths() <= 3){
+			ndays = 0;
+			while(newori.getDate() !== 1){
+				newori = hd.addDays(newori,1);
+				ndays++;
+			}
+			out = newori;
+		// years, we want the 01/01/cur year
+		}else{
+			ndays = 0;
+			while(newori.getDate() !== 1 || newori.getMonth() !== 0){
+				newori = hd.addDays(newori,1);
+				ndays++;
+			}
+			out = newori;
+		}
+		return out.getTime();
+};
+
+
+var findTick = function(start,d_step,i){
+	if(d_step.step === d_step.toNum){ // number
+		return start + i * d_step.toNum;
+	}else{ // date, d_step.step is a duration
+
+		var where = new Date(start);
+		var duree = [{d: 'days', D:'Days'},{d:'months', D:'Months'},{d: 'years', D:'Years'}];
+		for (var m = 0; m < duree.length; m++){
+			var j = d_step.step[duree[m].d]() * i;
+			where = hd['add' + duree[m].D](where,j);
+		}
+
+		return where.getTime();
+	}
+};
+
 
 var m = {};
 
@@ -217,49 +282,176 @@ m.ticks = function(origin,ds,dir,props){
 	var tickdir = parseFloat(dir) + 90; // forcing float addition
 	if(props.placement === 'left' || props.placement === 'top'){tickdir += 180;}
 	if(tickdir > 180){tickdir -= 360;}
-	var sdir = tickdir * Math.PI / 180.0; // perpendicular direction, direction where text do not have the info
 
 	// in data space, d_step = {step: Date || double, toNum: double}
 	var d_step = m.stepper(ds,props.type);
+	var start = ds.d.min;
+
+	// we want the date to behave
+	if(props.type === 'date'){
+		start = floorDate(ds,start,d_step);
+	}
+
+	// to coord space in direction dir
+	// origin of axis
+	var dirr = parseFloat(dir) * Math.PI / 180;
+	var xdir = Math.cos(dirr);
+	var ydir = Math.sin(dirr);
+
+	var out = [];
+	var nTick = (text)?props.labels.length:Math.floor((ds.d.max - ds.d.min) / d_step.toNum) + 1;
+	for(var i = 0; i < nTick; i++){
+
+		// 1D coor
+		var d_val = (text)?props.labels[i].coord:findTick(start,d_step,i); 
+		if(hmisc.greaterEqualThan(d_val,ds.d.max)){
+			break;
+		}
+
+		var loc_coord = space.toC(ds,d_val);
+
+		var xpos = origin.x + xdir * (loc_coord - origin.x);
+		var ypos = origin.y + ydir * (loc_coord - origin.y);
+
+		var here = {
+			x: xpos,
+			y: ypos
+		};
+
+		var me = (text)?props.labels[i].label:labelize(d_val,d_step);
+
+		var toOut = {
+			dir:tickdir, 
+			here:here, 
+			me:me
+		};
+		if(props.type === 'date' && d_step.step.asYears() === 1){
+			toOut.offset = {
+				x: space.toCwidth(ds,d_step.toNum)/2,
+				y: 0
+			};
+		}
+
+		out.push(toOut);
+	}
+	return out;
+};
+
+// origin = {x, y}
+// ds = {c:{min, max}, d: {min, max}, d2c, c2d}
+// props.type = 'text' || 'number' || 'date'
+// props.labels = [{coord: , label:'tick labels'}] // if props.type === 'text'
+// props.placement = 'top' || 'bottom' || 'left' || 'right'
+// props.empty = true || false // if there's no data
+m.subticks = function(origin,ds,dir,props){
+
+	// boolean to simplify writings
+	if(props.type === 'text'){
+		throw 'no subtick can be a text';
+	}
+
+	// tick direction in degrees
+	var tickdir = parseFloat(dir) + 90; // forcing float addition
+	if(props.placement === 'left' || props.placement === 'top'){tickdir += 180;}
+	if(tickdir > 180){tickdir -= 360;}
+
+	// small helper function to deal with dates
+	// steps are duration (moment.duration())
+	var toNum = function(thing,type){
+		return (type === 'date')?thing.asMilliseconds():thing;
+	};
+	// in data space, d_step = {step: Date || double, toNum: double}
+	var d_step = m.stepper(ds,props.type);
+	var def_step = default_step(props.type); // step defs
+	var substep = {
+			step: def_step.next_step(d_step.step,'-'),
+			toNum: toNum(def_step.next_step(d_step.step,'-'),props.type)
+	};
+
+	var offsetLabel = (!props.empty) || ( (props.type === 'date') && (d_step.step.years() === 1) );
 
 	// to coord space in direction dir
 		// origin of axis
 	var dirr = parseFloat(dir) * Math.PI / 180;
 	var xdir = Math.cos(dirr);
 	var ydir = Math.sin(dirr);
-	var xstart = origin.x;
-	var ystart = origin.y;
-		// steps
-	var c_stepx = space.toCwidth(ds, xdir * d_step.toNum);
-	var c_stepy = space.toCwidth(ds, ydir * d_step.toNum);
-		// in case of text, we have half the information
-	var xsstart = xstart * Math.cos(sdir);
-	var ysstart = ystart * Math.sin(sdir);
+	var start = ds.d.min;
 
-	var out = [];
-	var nTick = (text)?props.labels.length:Math.floor((ds.d.max - ds.d.min) / d_step.toNum) + 1;
-	var full_length = Math.abs(ds.c.max - ds.c.min);
-	var dist = function(x,y){
-		return Math.sqrt( (x - xstart) * (x - xstart) + (y - ystart) * (y - ystart) );
+	// we want the date to behave
+	if(props.type === 'date'){
+		start = floorDate(ds,start,d_step);
+	}
+
+	var subtickme = function(boolFunc,ds,main,substep,orix,oriy,dirx,diry,tickdir,j,offset){
+
+		var sub_val = findTick(main,substep,j);
+		var out = [];
+
+		while(boolFunc(sub_val)){
+
+			var me = labelize(sub_val,substep); 
+
+			var loc_coord = space.toC(ds,sub_val);
+
+			var here = {
+				x: orix + dirx * (loc_coord - orix),
+				y: oriy + diry * (loc_coord - oriy)
+			};
+			var toOut = {
+				dir:tickdir, 
+				here:here, 
+				me:me
+			};
+			if(offset){
+				toOut.offset = {
+					x: - space.toCwidth(ds,substep.toNum)/2,
+					y: - 23 // hard-coded for the moment
+				};
+			}
+			out.push(toOut);
+
+			if(j > 0){
+				j++;
+			}else{
+				j--;
+			}
+			sub_val = findTick(main,substep,j);
+		}
+
+		return out;
 	};
+
+
+	// boundaries to treat dist v/s values
+	// beware of double precision
+	var difTime = function(val,next){
+		if(substep.step !== substep.toNum){
+			return (substep.step.asYears() >= 1)?hmisc.lowerThan(val,next): hmisc.lowerEqualThan(val,next);
+		}else{
+			return hmisc.lowerThan(val,next);
+		}
+	};
+	// 1 - subticks between ds.d.min and start
+	var out = subtickme(function(curval){
+			return hmisc.greaterThan(curval,ds.d.min) && difTime(curval,start);
+		},
+		ds, start, substep, origin.x, origin.y, xdir, ydir, tickdir, 0, offsetLabel);
+
+	// 2 - subticks from start to end
+	var nTick = Math.floor((ds.d.max - ds.d.min) / d_step.toNum) + 1;
 	for(var i = 0; i < nTick; i++){
 
-		var xpos = (text)?xsstart + space.toC(ds,props.labels[i].coord) * xdir:xstart + i * c_stepx;
-		var ypos = (text)?ysstart - space.toC(ds,props.labels[i].coord) * ydir:ystart - i * c_stepy; // width do not have the sign info
+		// 1D coor
+		var d_val = findTick(start,d_step,i); 
+		var d_nval = findTick(start,d_step,i + 1); 
 
-		var here = {
-			x: xpos,
-			y: ypos
-		};
-		if(dist(here.x,here.y) > full_length){break;}
-
-		var me = (text)?props.labels[i].label:labelize(ds,d_step,i);
-
-		out.push({dir:tickdir, here:here, me:me});
+		out = out.concat(subtickme(function(cur_val){
+				return hmisc.lowerThan(cur_val,ds.d.max) && difTime(cur_val,d_nval);
+			},
+			ds, d_val, substep, origin.x, origin.y, xdir, ydir, tickdir, 1, offsetLabel));
 	}
 	return out;
 };
-
 
 
 module.exports = m;
