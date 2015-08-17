@@ -7,6 +7,7 @@
 var _ = require('underscore');
 var space = require('./space-transf.cs.js');
 var stepMgr = require('../base/ticker.cs.js');
+var dm = require('./date-mgr.cs.js');
 
 var m = {};
 
@@ -18,18 +19,18 @@ var m = {};
  *				width
  * <------------------------>
  *  ________________________
- * |								 | ^
- * |	title/top axis			 | |
- * |	  ________________	 | |
- * |	 |						|	 | |
- * |	 |						|	 | |
- * | 1 |						| 2 | |
- * |	 |		  WORLD		|	 | | height
- * |	 |						|	 | |
- * |	 |						|	 | |
- * |	 |________________|	 | |
- * |								 | |
- * |	bottom axis				 | |
+ * |                        | ^
+ * |   title/top axis       | |
+ * |    ________________    | |
+ * |   |                |   | |
+ * |   |                |   | |
+ * | 1 |                | 2 | |
+ * |   |     WORLD      |   | | height
+ * |   |                |   | |
+ * |   |                |   | |
+ * |   |________________|   | |
+ * |                        | |
+ * |   bottom axis          | |
  * |________________________| |
  *										^
  * 1 - left axis
@@ -309,9 +310,9 @@ m.space = function(datas,universe,axis,title){
 			};
 			var stepper = stepMgr.stepper(ds,type);
 			if(type === 'date'){
-				ds.d.min -= Math.min(stepper.step.asMilliseconds(), 1000 * 3600 * 24 * 30 * 6); // max is 6 month, using moment's convention
+				ds.d.min = dm.dateBefore( dm.before(ds.d.min,0,Math.min(stepper.step.asMonths(), 6),0),0,0,1); // max is 6 month
 				if(ds.d.min < 0){ds.d.min = 0.0;}
-				ds.d.max += Math.min(stepper.step.asMilliseconds(), 1000 * 3600 * 24 * 30 * 6);
+				ds.d.max = dm.dateAfter(dm.after(ds.d.max, 0,Math.min(stepper.step.asMonths(), 6),0 ),0,0,1);
 			}else{
 				// stepper
 				var som = Math.pow(10, Math.floor(Math.log(stepper.toNum) / Math.log(10)) );
