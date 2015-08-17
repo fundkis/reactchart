@@ -14,18 +14,21 @@ module.exports = React.createClass({
 	getDefaultProps: function(){
 		return {
 			// per axis
-			majorGrid: {x:false, y: false},
-			minorGrid: {x:false, y: false},
-			stroke:    {x:'black', y:'black'},
-			strokeWidth: {x: 1, y: 1},
-			label: {x:'', y:''},
-			labelDist: {x: 20, y: 20},
-			labelFSize: {x: 20, y: 20},
+			majorGrid:     {x: false, y: false},
+			minorGrid:     {x: false, y: false},
+			minorTicks:    {x: false, y: false},
+			stroke:        {x: 'black', y:'black'},
+			strokeWidth:   {x: 1, y: 1},
+			label:         {x: '', y: ''},
+			labelDist:     {x: 20, y: 20},
+			labelFSize:    {x: 20, y: 20},
 			barTicksLabel: {x: [], y: []},
-			tickProps: {x:{}, y:{}},
-			placement: {x:'bottom', y:'left'},
-			ds: {x:{}, y:{}}, // see space-mgr for details
-			type: {}
+			tickProps:     {x: {}, y: {}},
+			subTickProps:  {x: {}, y: {}},
+			placement:     {x: 'bottom', y:'left'},
+			ds:            {x: {}, y: {}}, // see space-mgr for details
+			type:          {},
+			empty:         true
 		};
 	},
 	render: function(){
@@ -55,18 +58,41 @@ module.exports = React.createClass({
 
 		var gridXlength = ds.y.c.max - ds.y.c.min;
 		var gridYlength = ds.x.c.max - ds.x.c.min;
+		var xAxeProps = Axe.getDefaultProps(); // we always start fresh
+		var yAxeProps = Axe.getDefaultProps(); // we always start fresh
+		var prop;
+		for (prop in this.props){
+			switch(prop){
+			case 'empty':
+				continue;
+			case 'barTicksLabel':
+				xAxeProps.ticksLabel = this.props[prop].x; 
+				yAxeProps.ticksLabel = this.props[prop].y;
+				break;
+			default:
+				xAxeProps[prop] = this.props[prop].x; 
+				yAxeProps[prop] = (prop === 'type')?this.props[prop].y[0]:this.props[prop].y;
+				break;
+			}
+		}
+		xAxeProps.origin = origin.x;
+		yAxeProps.origin = origin.y;
+		xAxeProps.gridLength = gridXlength;
+		yAxeProps.gridLength = gridYlength;
+		xAxeProps.empty = this.props.empty;
+		yAxeProps.empty = this.props.empty;
 
-		return <g>
-				<Axe key='axe x' dir='0' placement={this.props.placement.x} origin={origin.x} {...this.props.tickProps.x}
-					majorGrid={this.props.majorGrid.x} minorGrid={this.props.minorGrid.x}
-					stroke={this.props.stroke.x} strokeWidth={this.props.strokeWidth.x} label={this.props.label.x} 
-					ticksLabel={this.props.barTicksLabel.x} labelDist={this.props.labelDist.x}
-					labelFSize={this.props.labelFSize.x} ds={this.props.ds.x} type={this.props.type.x} gridLength={gridXlength}/>
-				<Axe key='axe y' dir='90' placement={this.props.placement.y} origin={origin.y} {...this.props.tickProps.y}
-					majorGrid={this.props.majorGrid.y} minorGrid={this.props.minorGrid.y}
-					stroke={this.props.stroke.y} strokeWidth={this.props.strokeWidth.y} label={this.props.label.y}
-					ticksLabel={this.props.barTicksLabel.y} labelDist={this.props.labelDist.y}
-					labelFSize={this.props.labelFSize.y} ds={this.props.ds.y} type={this.props.type.y[0]} gridLength={gridYlength}/>
+		xAxeProps.name = this.props.name + "x";
+		yAxeProps.name = this.props.name + "y";
+		xAxeProps.dir = 0;
+		yAxeProps.dir = 90;
+
+		var keyg = this.props.name + 'g';
+
+		return <g key={keyg}>
+				<Axe {...xAxeProps} />
+				<Axe {...yAxeProps} />
 			</g>;
-}
+	}
+
 });

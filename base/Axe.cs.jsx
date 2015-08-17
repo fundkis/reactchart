@@ -22,11 +22,13 @@ module.exports = React.createClass({
 			labelFSize: 20 ,
 			majorGrid: false,
 			minorGrid: false,
+			minorTick: false,
 			gridLength: 0,
 			stroke: 'black',
 			strokeWidth: 1,
+			empty: true,
 			// ticks
-			tickProps: {}
+			tickProps: {},
 		};
 	},
 	render: function(){
@@ -46,20 +48,41 @@ module.exports = React.createClass({
 		// props.type = 'text' || 'number' || 'date'
 		// props.labels = ['tick labels'] // if props.type === 'text'
 		// props.placement = 'top' || 'bottom' || 'left' || 'right'
+		// props.empty = true || false // if there's data
 		var props = {};
 		props.type = this.props.type;
 		props.labels = this.props.ticksLabel;
 		props.placement = this.props.placement;
-		var tickProps = this.props.tickProps;
-		tickProps.majorGrid = this.props.majorGrid;
+		props.empty = this.props.empty;
+		var tickProps = Tick.getDefaultProps(); //always start fresh
+		_.each(this.props.tickProps,function(value,key){
+			tickProps[key] = value;
+		});
+		tickProps.grid = this.props.majorGrid;
 		tickProps.gridLength = this.props.gridLength;
-		var ticks = _.map(ticker.ticks(this.props.origin,this.props.ds,this.props.dir,props),function(tick){
+		var key = this.props.name;
+		var ticks = _.map(ticker.ticks(this.props.origin,this.props.ds,this.props.dir,props),function(tick,index){
+			if(!!tick.offset){tickProps.major.offset = tick.offset;}
+		   tickProps.name = key + 't' + index;
 			return <Tick {...tickProps} where={tick.here} label={tick.me} dir={tick.dir} />;
 		});
+		var subTickProps = Tick.getDefaultProps(); //always start fresh
+		subTickProps.isMajor = false;
+		_.each(this.props.subTickProps,function(value,key){
+			subTickProps[key] = value;
+		});
+		if(this.props.minorTicks){
+			ticks = ticks.concat(_.map(ticker.subticks(this.props.origin,this.props.ds,this.props.dir,props),function(subtick,index){
+					if(!!subtick.offset){subTickProps.minor.offset = subtick.offset;}
+		   		subTickProps.name = key + 'st' + index;
+					return <Tick {...subTickProps} where={subtick.here} label={subtick.me} dir={subtick.dir}/>;
+				})
+			);
+		}
 
 // label
 		// on axis
-		var fs = parseFloat(this.props.labelFSize); // such an annoyance...
+		var fs = this.props.labelFSize;
 		var xL = (xend + xstart)/2;
 		var yL = (yend + ystart)/2;
 		var textAnchor = 'middle';
@@ -86,12 +109,16 @@ module.exports = React.createClass({
 		var dird = (this.props.dir > 0)?-this.props.dir:this.props.dir;
 		var rotate = 'rotate(' + dird + ' ' + xL + ' ' + yL + ')'; // in degrees
 
-		return <g>
-			<line x1={xstart} x2={xend} y1={ystart} y2={yend} 
+		var keyL = this.props.name + 'L';
+		var keyT = this.props.name + 'T';
+		var keyg = this.props.name + 'g';
+
+		return <g key={keyg}>
+			<line key={keyL} x1={xstart} x2={xend} y1={ystart} y2={yend} 
 				stroke={this.props.stroke}
 				strokeWidth={this.props.strokeWidth} />
-			<text x={xL} y={yL} transform={rotate} textAnchor={textAnchor} fontSize={fs}>{this.props.label}</text>
-			<g>{ticks}</g>
+			{ticks}
+			<text key={keyT} x={xL} y={yL} transform={rotate} textAnchor={textAnchor} fontSize={fs}>{this.props.label}</text>
 			</g>;
 }
 });

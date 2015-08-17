@@ -8,29 +8,49 @@ module.exports = React.createClass({
 	},
 	getDefaultProps: function(){
 		return {
-			// tick
-			draw: 'true',
-			width: 0.5,
-			color: 'black',
+			// common whatever tick
+			draw: true,
 			where: {x: 0, y: 0}, // where the tick is
 			dir: 0,						// direction of tick
-			length: 15,					// length of tick
-			out: 0.25,					// proportion that is outside (-dir)
+		// grid
+			grid: false,
+			gridLength: 0,
 		// label
 			label: '',
 			labelFSize: 10,
 			labelColor: 'black',
-		// grid
-			majorGrid: false,
-			gridLength: 0
+		// default for major tick
+			major: {
+				width: 0.5,
+				color: 'black',
+				length: 15,					// length of tick
+				out: 0.25,					// proportion that is outside (-dir)
+		// label
+				offset: {x:0, y:0}
+			},
+		// default for minor tick
+			minor: {
+				width: 0.3,
+				color: 'gray',
+				length: 7,					// length of tick
+				out: 0,						// proportion that is outside (-dir)
+		// label
+				offset: {x:0, y:3.75}
+			},
+		// major/minor
+			isMajor: true
 		};
 	},
 	render: function(){
+		// choice major/minor
+		var details = (this.props.isMajor)?this.props.major:this.props.minor;
+
+
 		var theta =  this.props.dir * Math.PI / 180;
-		var x1 = this.props.where.x - Math.cos(theta) * this.props.length * this.props.out;
-		var y1 = this.props.where.y + Math.sin(theta) * this.props.length * this.props.out; // beware about y sign!!
-		var x2 = x1 + Math.cos(theta) * this.props.length;
-		var y2 = y1 - Math.sin(theta) * this.props.length; // beware about y sign!!
+		var x1 = this.props.where.x - Math.cos(theta) * details.length * details.out;
+		var y1 = this.props.where.y + Math.sin(theta) * details.length * details.out; // beware about y sign!!
+		var x2 = x1 + Math.cos(theta) * details.length;
+		var y2 = y1 - Math.sin(theta) * details.length; // beware about y sign!!
 
 		var fs = this.props.labelFSize;
 		// label is out, further away by fontsize in y dir
@@ -39,7 +59,7 @@ module.exports = React.createClass({
 		var textAnchor;
 		// adding a little margin
 		// anchoring the text
-		var testdir = parseFloat(this.props.dir); // type is such an annoyance...
+		var testdir = this.props.dir; // type is such an annoyance...
 		switch(testdir){
 			// --|-->
 			// label
@@ -67,21 +87,34 @@ module.exports = React.createClass({
 			break;
 		}
 
+		// offset
+		var xoff = details.offset.x || 0;
+		var yoff = details.offset.y || 0;
+		xt += ( (testdir === 0)?-1:1 ) * xoff;
+		yt += ( (testdir === -90)?-1:1 ) * yoff;
+
 	// grid
 		var gridColor = 'white';
-		var gridWidth = 2 / 3 * this.props.width;
+		var gridWidth = 2 / 3 * details.width;
 		var xG2 = x1;
 		var yG2 = y1;
-		if(this.props.majorGrid){
+		if(this.props.grid){
 			gridColor = 'gray';
 			xG2 = x1 + this.props.gridLength * Math.cos(theta);
 			yG2 = y1 + this.props.gridLength * Math.sin(theta);
 		}
 
-		return <g>
-				<line x1={x1} x2={xG2} y1={y1} y2={yG2} stroke={gridColor} strokeWidth={gridWidth}/>
-				<line x1={x1} x2={x2} y1={y1} y2={y2} stroke={this.props.color} strokeWidth={this.props.width}/>
-				<text x={xt} y={yt} textAnchor={textAnchor} fontSize={fs} fill={this.props.labelColor}>{this.props.label}</text>
+		var width = (this.props.draw)?this.props.width:0;
+
+		var key1 = this.props.name + '1';
+		var key2 = this.props.name + '2';
+		var key3 = this.props.name + '3';
+		var keyg = this.props.name + 'g';
+
+		return <g key={keyg}>
+				<line key={key1} x1={x1} x2={xG2} y1={y1} y2={yG2} stroke={gridColor} strokeWidth={gridWidth}/>
+				<line key={key2} x1={x1} x2={x2} y1={y1} y2={y2} stroke={details.color} strokeWidth={width}/>
+				<text key={key3} x={xt} y={yt} textAnchor={textAnchor} fontSize={fs} fill={this.props.labelColor}>{this.props.label}</text>
 		</g>;
 	}
 });
