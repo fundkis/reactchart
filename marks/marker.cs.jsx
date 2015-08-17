@@ -22,8 +22,8 @@ m.marks_map.dot = function(data,props){
 	}
 
 	return _.map(data, function(point){
-		var key = 'd' + point.x + ':' + point.y;
-		return <Dot key={key} x={point.x} y={point.y} fill={fill} radius={radius} size={size}/>;
+		var key = props.name + 'd' + point.x + ':' + point.y;
+		return <Dot name={key} x={point.x} y={point.y} fill={fill} radius={radius} size={size}/>;
 	});
 };
 

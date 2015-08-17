@@ -7,17 +7,17 @@ var m = {};
 
 m.Plain = function(points,props,keyid){
 		var key = 'courbe' + keyid;
-		return <Plain key={key} {...props} points={points} />;
+		return <Plain name={key} {...props} points={points} />;
 };
 
 m.Stairs = function(points,props,keyid){
 	var key = 'stairs' + keyid;
-	return <Stairs key={key} {...props} points={points} />;
+	return <Stairs name={key} {...props} points={points} />;
 };
 
 m.Bars = function(points,props,keyid){
 	var key = 'bars' + keyid;
-	return <BarChart key={key} {...props} points={points} />;
+	return <BarChart name={key} {...props} points={points} />;
 };
 
 module.exports = m;

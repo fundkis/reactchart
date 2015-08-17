@@ -10,6 +10,7 @@ module.exports = React.createClass({
 			data: {series:[{ type : 'Bar', data : {series:[]}, axe : 'left', color: 'black'}], type: 'text'},
 			title: '',
 			titleFSize: 30,
+			name: 'bars',
 			// axis
 				// label of axis
 			xLabel: '',
@@ -33,6 +34,7 @@ module.exports = React.createClass({
 		props.graphProps = [];
 		props.data.type = 'text';
 		props.ymin = 0.0; // a density [of probability] is always > 0
+		props.name = this.props.name;
 		if(!props.axisProps.tickProps){
 			props.axisProps.tickProps = {};
 			props.axisProps.tickProps.x = {};

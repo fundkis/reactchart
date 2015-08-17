@@ -59,22 +59,26 @@ module.exports = React.createClass({
 
       // marks
 		var markprops = this.props.markProps;
-		if(!!markprops.fill){
+		if(!markprops.fill){
 			markprops.fill = this.props.markColor;
 		}
-		if(!!markprops.size){
+		if(!markprops.size){
 			markprops.size = this.props.markSize;
 		}
+		markprops.name = this.props.key + 'm';
       var marks = marker.marks(datas,markprops,this.props.mark,this.props.markType);
 
-		return (<g>
-			<path 
+		var keyP = this.props.name + 'P';
+		var keyg = this.props.name + 'g';
+		var keym = this.props.name + 'm';
+
+		return (<g key={keyg}>
+			<path key={keyP}
 				d={points} 
 				stroke={this.props.stroke} 
 				strokeWidth={this.props.strokeWidth}
 				fill={this.props.fill}/>
-			<g>{marks}</g>
-			</g>
-);
+			<g key={keym}>{marks}</g>
+			</g>);
 }
 });

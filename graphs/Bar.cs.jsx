@@ -32,8 +32,10 @@ module.exports = React.createClass({
 
 	var rotate = 'rotate(' + (this.props.dir - 90) + ' ' + xr + ' ' + yr + ')';
 	var xt = dataScale.toC(this.props.dsx, this.props.x + 0.5 * this.props.span); // all in dataSpace
+	var key = this.props.name + 'r';
+
 	 return (
-			<rect x={x} y={y} height={height} width={width} transform={rotate}
+			<rect key={key}  x={x} y={y} height={height} width={width} transform={rotate}
 			stroke={this.props.stroke} strokeWidth={this.props.strokeWidth} 
 			fill={this.props.color}/>
 	 );

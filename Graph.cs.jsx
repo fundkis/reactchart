@@ -57,7 +57,7 @@ module.exports = React.createClass({
 			yLabel: 'y label',
 			xLabelFSize: 15,
 			yLabelFSize: 15,
-				// axis
+			// axis
 			axis: undefined,	// left = (bottom,left), right = {top,right}, overrides x,y-axis
 			xaxis: 'bottom',	// bottom || top
 			yaxis: 'left',		// left || right
@@ -66,12 +66,13 @@ module.exports = React.createClass({
 			xmax: undefined,
 			ymin: undefined,
 			ymax: undefined,
-				// margins
+			// margins
 			axisMargin: {l: 10, b: 10, r: 10, t: 10}, // left, bottom, right, top
 			outerMargin: {}, // left, bottom, right, top
 			// lower level descriptions
 			axisProps: {},
-			graphProps: [{color: 'blue', mark: true, markSize: 3, markColor: 'red'}]
+			graphProps: [{color: 'blue', mark: true, markSize: 3, markColor: 'red'}],
+			name: 'noname'
 		};
 	},
 	render: function(){
@@ -215,6 +216,7 @@ module.exports = React.createClass({
 			graphProps.markProps = {};
 			graphProps.markProps.fill = this.props.data.series[m].color;
 			graphProps.drops = drops[m];
+			graphProps.key = this.props.name + 'G' + m;
 			prints.push(grapher[this.props.data.series[m].type](print,graphProps,m));
 		}
 
@@ -236,15 +238,25 @@ module.exports = React.createClass({
 
 		var xT = (ds.x.c.max + ds.x.c.min) / 2;
 		var yT = title.titleFSize;
-		var axisProps = this.props.axisProps;
+		// axis are rendered every time, thus we fall back to
+		// default every time
+		var axisProps = Axes.getDefaultProps();
+		_.each(this.props.axisProps,function(value,key){
+				axisProps[key] = value;
+		});
 		axisProps.label = {x: this.props.xLabel, y: this.props.yLabel};
 
-		return <svg width={this.props.width} height={this.props.height}>
-				<g>
-					<text textAnchor='middle' fontSize={title.titleFSize} x={xT} y={yT}>{title.title}</text>
-					<g>{prints}</g>
-					<Axes key='axes' {...axisProps} type={types} placement={placement} barTicksLabel={btl} ds={ds} />
-				</g>
+		var empty = false;
+		_.reduce(this.props.data.series,function(empty,serie){return empty || (serie.data.serie.length !== 0);});
+		empty = !empty;
+
+		var keyA = this.props.name + 'A';
+		var keyT = this.props.name + 'T';
+
+		return <svg key={this.props.name} width={this.props.width} height={this.props.height}>
+					<text key={keyT} textAnchor='middle' fontSize={title.titleFSize} x={xT} y={yT}>{title.title}</text>
+					{prints}
+					<Axes name={keyA} empty={empty} {...axisProps} type={types} placement={placement} barTicksLabel={btl} ds={ds} />
 			</svg>;
 	}
 });

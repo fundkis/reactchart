@@ -41,22 +41,25 @@ module.exports = React.createClass({
 	var dropsy = (this.props.drops.y.length === 0)?_.map(this.props.points,function(/*point*/){return 0.0;}):this.props.drops.y;
 	var drops = _.map(dropsx,function(xd,index){return {x:xd, y:dropsy[index]};});
 	for(var i = 0; i < this.props.points.length; i++){
-		var key = this.props.key + '.b' + i;
-		bars.push(<Bar key={key} x={this.props.points[i].x} y={this.props.points[i].y} drop={drops[i]} {...props}/>);
+		var key = this.props.name + '.b' + i;
+		bars.push(<Bar name={key} x={this.props.points[i].x} y={this.props.points[i].y} drop={drops[i]} {...props}/>);
 	}
 
     // marks
 	var markprops = this.props.markProps;
-	if(!!markprops.fill){
+	if(!markprops.fill){
 		markprops.fill = this.props.markColor;
 	}
-	if(!!markprops.size){
+	if(!markprops.size){
 		markprops.size = this.props.markSize;
 	}
 
-	var marks = marker.marks(this.props.points,markprops,this.props.mark,this.props.markType);
+	markprops.name = this.props.name + 'm';
 
-	 return <g>{bars}
+	var marks = marker.marks(this.props.points,markprops,this.props.mark,this.props.markType);
+	var keyg = this.props.name + 'g';
+
+	 return <g key={keyg}>{bars}
 				{marks}
 			</g>;
   }

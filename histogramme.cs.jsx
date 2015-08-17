@@ -10,6 +10,7 @@ module.exports = React.createClass({
 			data: {series:[{ type : 'Stairs', data : {series:[]}, axe : 'left', color: 'black', opacity:1}], type: 'number'},
 			title: '',
 			titleFSize: 30,
+			name: 'histogram',
 			// axis
 				// label of axis
 			xLabel: '',
@@ -24,7 +25,7 @@ module.exports = React.createClass({
 			axisMargin: {l: 10, b: 10, r: 10, t: 10}, // left, bottom, right, top
 			outerMargin: {},        // left, bottom, right, top
 			// lower level descriptions
-			axisProps: {},
+			axisProps: {}
 		};
 	},
 	render: function(){
@@ -33,13 +34,14 @@ module.exports = React.createClass({
 		props.graphProps = [];
 		props.data.type = 'number';
 		props.ymin = 0.0; // a density [of probability] is always > 0
+		props.name = this.props.name;
 		// we provide some defaults
 		for(var i = 0; i < this.props.data.series.length; i++){
 			props.graphProps.push({
 				color:     this.props.data.series[i].color     || 'black', 
 				stairs:    'right',
 				fill:      this.props.data.series[i].color     || 'black', 
-				opacity:   this.props.data.series[i].opacity   || (0.2 + (0.6 * i /(props.data.series.length - 1))),  // from 1 to 0.2
+				opacity:   this.props.data.series[i].opacity   || (0.8 - (0.6 * i /(props.data.series.length - 1))),  // from 1 to 0.2
 				mark:      this.props.data.series[i].mark      || false, 
 				markSize:  this.props.data.series[i].markSize  || 3, 
 				markColor: this.props.data.series[i].markColor || this.props.data.series[i].color || 'black'

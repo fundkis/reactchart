@@ -12,6 +12,7 @@ module.exports = React.createClass({
 			data: {series:[{ type : 'Plain', data : {series:[]}, axe : 'left', color: 'black'}], type: 'date'},
 			title: '',
 			titleFSize: 30,
+			name: 'time',
 			// axis
 				// label of axis
 			xLabel: 'Temps',
@@ -37,6 +38,7 @@ module.exports = React.createClass({
 		props.axisProps = this.props.axisProps;
 		props.axisProps.majorGrid = {x:true, y:false};
 		props.axisProps.label = {};
+		props.name = this.props.name;
 		for(var i = 0; i < this.props.data.series.length; i++){
 			props.graphProps.push({
 				color:     this.props.data.series[i].color     || 'black', 
