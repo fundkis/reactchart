@@ -71,7 +71,7 @@ module.exports = React.createClass({
 			outerMargin: {}, // left, bottom, right, top
 			// lower level descriptions
 			axisProps: {},
-			graphProps: [{color: 'blue', mark: true, markSize: 3, markColor: 'red'}],
+			graphProps: [{color: 'blue', mark: true, markSize: 3, markColor: 'red', onlyMarks: false}],
 			name: 'noname'
 		};
 	},

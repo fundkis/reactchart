@@ -18,6 +18,7 @@ module.exports = React.createClass({
 			markColor: 'black',
 			markSize: 3,
 			markType: 'dot',
+			onlyMarks: false,
 			// contains low-level description,
 			// i.e. specific things like radius
 			// for a dot, or anything.
@@ -47,9 +48,10 @@ module.exports = React.createClass({
 			});
 		}
 
+		var line = (this.props.onlyMarks)?' M ':' L ';
 		var points = 'M '+ datas[0].x + ' ' + datas[0].y; // init
 		for(var i = 1; i < this.props.points.length; i++){
-			points += ' L ' + datas[i].x + ' ' + datas[i].y;
+			points += line + datas[i].x + ' ' + datas[i].y;
 		}
 
 		// we close the curve, nothing is printed
