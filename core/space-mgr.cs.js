@@ -293,7 +293,7 @@ m.space = function(datas,universe,axis,title){
 		// now they're rescaled, we might want to
 		// round them (specially in case of Date)
 		// to beautify the graph
-		var round_borders = function(ds,type){
+		var round_borders = function(ds,type,domin,domax){
 			// simple search
 			var search_closest = function(target,step){
 				var x = 0.0;
@@ -310,55 +310,72 @@ m.space = function(datas,universe,axis,title){
 			};
 			var stepper = stepMgr.stepper(ds,type);
 			if(type === 'date'){
-				ds.d.min = dm.dateBefore( dm.before(ds.d.min,0,Math.min(stepper.step.asMonths(), 6),0),0,0,1); // max is 6 month
-				if(ds.d.min < 0){ds.d.min = 0.0;}
-				ds.d.max = dm.dateAfter(dm.after(ds.d.max, 0,Math.min(stepper.step.asMonths(), 6),0 ),0,0,1);
+
+				if(domin){
+					ds.d.min = dm.dateBefore( dm.before(ds.d.min,0,Math.min(stepper.step.asMonths(), 6),0),0,0,1); // max is 6 month
+					if(ds.d.min < 0){ds.d.min = 0.0;}
+				}
+
+				if(domax){
+					ds.d.max = dm.dateAfter(dm.after(ds.d.max, 0,Math.min(stepper.step.asMonths(), 6),0 ),0,0,1);
+				}
+
 			}else{
 				// stepper
 				var som = Math.pow(10, Math.floor(Math.log(stepper.toNum) / Math.log(10)) );
-				// get order of magnitude, min
-				var om = 0.0;
-				if(ds.d.min !== 0.0){
-					om = (ds.d.min > 0)?Math.pow(10, Math.floor(Math.log(ds.d.min) / Math.log(10)) ):
-						- Math.pow(10, Math.floor(Math.log(Math.abs(ds.d.min)) / Math.log(10)) + 1 );
-					// order of magnitude of step, if higher, then we need to start
-					// at this order of magniture, closest to min
-					if(Math.abs(som) > Math.abs(om)){
-						om = search_closest(ds.d.min,stepper.toNum);
-					}
-				}
-				while(om <= ds.d.min){
-					om += stepper.toNum;
-				}
-				om -= 0.75 * stepper.toNum;
-				if(om >= ds.d.min){om -= 0.25 * stepper.toNum;}
-				ds.d.min = om;
+				if(domin){
 
-				// get order of magnitude, max
-				om = 0.0;
-				if(ds.d.max !== 0.0){
-					om = (ds.d.max > 0)?Math.pow(10, Math.floor(Math.log(ds.d.max) / Math.log(10)) +1 ):
-						- Math.pow(10, Math.floor(Math.log(Math.abs(ds.d.max)) / Math.log(10)) );
-					// order of magnitude of step, if higher, then we need to start
-					// at this order of magniture, closest to max
-					// is that possible ??
-					if(Math.abs(som) > Math.abs(om)){
-						om = search_closest(ds.d.max,stepper.toNum);
+					// get order of magnitude, min
+					var om = 0.0;
+					if(ds.d.min !== 0.0){
+						om = (ds.d.min > 0)?Math.pow(10, Math.floor(Math.log(ds.d.min) / Math.log(10)) ):
+							- Math.pow(10, Math.floor(Math.log(Math.abs(ds.d.min)) / Math.log(10)) + 1 );
+						// order of magnitude of step, if higher, then we need to start
+						// at this order of magniture, closest to min
+						if(Math.abs(som) > Math.abs(om)){
+							om = search_closest(ds.d.min,stepper.toNum);
+						}
 					}
+					while(om <= ds.d.min){
+						om += stepper.toNum;
+					}
+					om -= 0.75 * stepper.toNum;
+					if(om >= ds.d.min){om -= 0.25 * stepper.toNum;}
+					ds.d.min = om;
 				}
-				while(om >= ds.d.max){
-					om -= stepper.toNum;
+
+				if(domax){
+					// get order of magnitude, max
+					var oma = 0.0;
+					if(ds.d.max !== 0.0){
+						oma = (ds.d.max > 0)?Math.pow(10, Math.floor(Math.log(ds.d.max) / Math.log(10)) +1 ):
+							- Math.pow(10, Math.floor(Math.log(Math.abs(ds.d.max)) / Math.log(10)) );
+						// order of magnitude of step, if higher, then we need to start
+						// at this order of magniture, closest to max
+						// is that possible ??
+						if(Math.abs(som) > Math.abs(oma)){
+							oma = search_closest(ds.d.max,stepper.toNum);
+						}
+					}
+					while(oma >= ds.d.max){
+						oma -= stepper.toNum;
+					}
+					oma += 0.75 * stepper.toNum;
+					if(oma <= ds.d.min){oma += 0.25 * stepper.toNum;}
+					ds.d.max = oma;
 				}
-				om += 0.75 * stepper.toNum;
-				if(om <= ds.d.min){om += 0.25 * stepper.toNum;}
-				ds.d.max = om;
 			}
+
 			ds.c2d = (ds.d.max - ds.d.min) / (ds.c.max - ds.c.min);
 			ds.d2c = (ds.c.max - ds.c.min) / (ds.d.max - ds.d.min);
+			 // when no data, or all have the same values
+			if(!isFinite(ds.d2c)){
+				ds.d2c = 0;
+			}
 		};
 
-		round_borders(ds.x,datas.type);
-		round_borders(ds.y,'number');
+		round_borders(ds.x,datas.type,(datas.xmin === undefined),(datas.xmax === undefined));
+		round_borders(ds.y,'number',  (datas.ymin === undefined),(datas.ymax === undefined));
 
 		return ds;
 
