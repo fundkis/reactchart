@@ -28,14 +28,11 @@ module.exports = React.createClass({
 		var dsx = this.props.dsx;
 		var dsy = this.props.dsy;
 
-		if(Nd < 2){
-			throw 'stairs defined with less than 2 points!!';
-		}
 		var props = this.props;
 		var dropsx = (this.props.drops.x.length === 0)?_.map(this.props.points,function(/*point*/){return 0.0;}):this.props.drops.x;
 		var dropsy = (this.props.drops.y.length === 0)?_.map(this.props.points,function(/*point*/){return 0.0;}):this.props.drops.y;
 
-		var datas = [{x:0,y:0}]; // dealing with empty values
+		var datas = [{x:0,y:0},{x:0,y:0}]; // dealing with empty values
 		if(this.props.points.length > 0){
 			datas = _.map(this.props.points, function(point,index){
 				return {
@@ -43,6 +40,14 @@ module.exports = React.createClass({
 					y: space.toC(dsy,point.y + dropsy[index])
 				};}
 			);
+		}
+
+		// in case of Dirac
+		if(datas.length === 1){
+			datas.push({
+				x: datas[0].x,
+				y: datas[0].y
+			});
 		}
 
 		var dx = datas[1].x - datas[0].x;
