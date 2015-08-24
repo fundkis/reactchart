@@ -20,6 +20,7 @@ module.exports = React.createClass({
 			label:'',
 			labelDist: 20,
 			labelFSize: 20 ,
+			labelize: {major: null, minor: null},
 			majorGrid: false,
 			minorGrid: false,
 			minorTick: false,
@@ -49,11 +50,13 @@ module.exports = React.createClass({
 		// props.labels = ['tick labels'] // if props.type === 'text'
 		// props.placement = 'top' || 'bottom' || 'left' || 'right'
 		// props.empty = true || false // if there's data
+		// props.labelize = function(val){return ...}
 		var props = {};
 		props.type = this.props.type;
 		props.labels = this.props.ticksLabel;
 		props.placement = this.props.placement;
 		props.empty = this.props.empty;
+		props.labelize = this.props.labelize.major;
 		var tickProps = Tick.getDefaultProps(); //always start fresh
 		_.each(this.props.tickProps,function(value,key){
 			tickProps[key] = value;
@@ -67,6 +70,7 @@ module.exports = React.createClass({
 			return <Tick {...tickProps} where={tick.here} label={tick.me} dir={tick.dir} />;
 		});
 		var subTickProps = Tick.getDefaultProps(); //always start fresh
+		props.labelize = this.props.labelize.minor;
 		subTickProps.isMajor = false;
 		_.each(this.props.subTickProps,function(value,key){
 			subTickProps[key] = value;

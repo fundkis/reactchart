@@ -25,11 +25,15 @@ var hmisc = require('../../tech/helpers/misc.cs.js');
  * responsible for printing the label
  * step is {step: , toNum:}
  */
-var labelize = function(val_d,step){
+var labelize = function(val_d,step,func){
+
+	func = func || function(val){
+		return (Math.round(val.toFixed(5) * 1e5) / 1e5).toString(); // ce qu'il faut faire pour arrondir...
+	};
 
 // label from date or number?
 	if(step.step === step.toNum){ // number
-		return (Math.round(val_d.toFixed(5) * 1e5) / 1e5).toString(); // ce qu'il faut faire pour arrondir...
+		return func(val_d);
 	}else{// date
 		var val = new Date(val_d);
 			// step = 1 year
@@ -274,6 +278,7 @@ m.stepper = function(ds,type){
 // props.type = 'text' || 'number' || 'date'
 // props.labels = [{coord: , label:'tick labels'}] // if props.type === 'text'
 // props.placement = 'top' || 'bottom' || 'left' || 'right'
+// props.labelize = function(val){return ...}
 m.ticks = function(origin,ds,dir,props){
 	// boolean to simplify writings
 	var text = (props.type === 'text');
@@ -318,7 +323,7 @@ m.ticks = function(origin,ds,dir,props){
 			y: ypos
 		};
 
-		var me = (text)?props.labels[i].label:labelize(d_val,d_step);
+		var me = (text)?props.labels[i].label:labelize(d_val,d_step,props.labelize);
 
 		var toOut = {
 			dir:tickdir, 
@@ -343,6 +348,7 @@ m.ticks = function(origin,ds,dir,props){
 // props.labels = [{coord: , label:'tick labels'}] // if props.type === 'text'
 // props.placement = 'top' || 'bottom' || 'left' || 'right'
 // props.empty = true || false // if there's no data
+// props.labelize = function(val){return ...}
 m.subticks = function(origin,ds,dir,props){
 
 	// boolean to simplify writings
@@ -433,7 +439,9 @@ m.subticks = function(origin,ds,dir,props){
 	};
 	// 1 - subticks between ds.d.min and start
 	var out = subtickme(function(curval){
-			return hmisc.greaterThan(curval,ds.d.min) && difTime(curval,start);
+			var minval = (hd.isDate(ds.d.min))?ds.d.min.getTime():ds.d.min;
+			minval += substep.toNum / 2;
+			return hmisc.greaterEqualThan(curval,minval) && difTime(curval,start);
 		},
 		ds, start, substep, origin.x, origin.y, xdir, ydir, tickdir, 0, offsetLabel);
 

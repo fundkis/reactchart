@@ -22,6 +22,7 @@ module.exports = React.createClass({
 			label:         {x: '', y: ''},
 			labelDist:     {x: 20, y: 20},
 			labelFSize:    {x: 20, y: 20},
+			labelize:      {x: {major: null, minor: null}, y:{major: null, minor: null}},
 			barTicksLabel: {x: [], y: []},
 			tickProps:     {x: {}, y: {}},
 			subTickProps:  {x: {}, y: {}},
