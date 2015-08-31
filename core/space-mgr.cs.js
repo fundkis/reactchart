@@ -361,7 +361,7 @@ m.space = function(datas,universe,axis,title){
 						oma -= stepper.toNum;
 					}
 					oma += 0.75 * stepper.toNum;
-					if(oma <= ds.d.min){oma += 0.25 * stepper.toNum;}
+					if(oma <= ds.d.max){oma += 0.25 * stepper.toNum;}
 					ds.d.max = oma;
 				}
 			}
