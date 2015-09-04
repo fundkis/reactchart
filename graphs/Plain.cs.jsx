@@ -25,7 +25,6 @@ module.exports = React.createClass({
 			// overrides high-level if conflicts
 			markProps: {},
 			points: [],
-			drops: {x:[], y:[]},
 			dsx: {}, // see space-mgr for details
 			dsy: {}  // see space-mgr for details
 			};
@@ -34,16 +33,26 @@ module.exports = React.createClass({
 		// getting values, easier
 		var dsx = this.props.dsx;
 		var dsy = this.props.dsy;
-		var props = this.props;
-		var dropsx = (this.props.drops.x.length === 0)?_.map(this.props.points,function(/*point*/){return 0.0;}):this.props.drops.x;
-		var dropsy = (this.props.drops.y.length === 0)?_.map(this.props.points,function(/*point*/){return 0.0;}):this.props.drops.y;
+		var dropsy = _.map(this.props.points,function(point){return point.dropy || dsy.d.min;});
 
 		var datas = [{x:0,y:0}]; // dealing with empty values
+		var Dpoints = [{x:0,y:0}]; // dealing with empty values
 		if(this.props.points.length > 0){
-			datas = _.map(this.props.points, function(point,index){
+			datas = _.map(this.props.points, function(point){
 				return {
-					x: space.toC(dsx,point.x + dropsx[index]), 
-					y: space.toC(dsy,point.y + dropsy[index])
+					x: space.toC(dsx,point.x), 
+					y: space.toC(dsy,point.y)
+				};
+			});
+			Dpoints = _.map(this.props.points, function(point){
+				return {
+					x: point.x,
+					y: point.y,
+               shade: point.shade,
+               drop: {
+                  x: point.dropx,
+                  y: point.dropy
+               }
 				};
 			});
 		}
@@ -56,7 +65,7 @@ module.exports = React.createClass({
 
 		// we close the curve, nothing is printed
 		for(i = dropsy.length - 1; i >= 0; i--){
-			points += ' M ' + datas[i].x + ' ' + space.toC(dsy,dsy.d.min + dropsy[i]);
+			points += ' M ' + datas[i].x + ' ' + space.toC(dsy,dropsy[i]);
 		}
 
       // marks
@@ -67,12 +76,20 @@ module.exports = React.createClass({
 		if(!markprops.size){
 			markprops.size = this.props.markSize;
 		}
-		markprops.name = this.props.key + 'm';
-      var marks = marker.marks(datas,markprops,this.props.mark,this.props.markType);
+		markprops.name = this.props.name + 'm';
+		markprops.dsx = dsx;
+		markprops.dsy = dsy;
+      if(!!this.props.span){
+		   markprops.span = this.props.span;
+      }
+      if(!!this.props.xoffset){
+		   markprops.xoffset = this.props.xoffset;
+      }
+		var marks = marker.marks(Dpoints,markprops,this.props.mark,this.props.markType);
 
 		var keyP = this.props.name + 'P';
 		var keyg = this.props.name + 'g';
-		var keym = this.props.name + 'm';
+		var keym = this.props.name + 'M';
 
 		return (<g key={keyg}>
 			<path key={keyP}

@@ -16,7 +16,6 @@ module.exports = React.createClass({
 			markType: 'dot',
 			markProps: {},
 			points: [],
-			drops: {x:[], y:[]},
          stairs: 'right',
 			dsx: {}, // see space-mgr for details
 			dsy: {}  // see space-mgr for details
@@ -29,15 +28,15 @@ module.exports = React.createClass({
 		var dsy = this.props.dsy;
 
 		var props = this.props;
-		var dropsx = (this.props.drops.x.length === 0)?_.map(this.props.points,function(/*point*/){return 0.0;}):this.props.drops.x;
-		var dropsy = (this.props.drops.y.length === 0)?_.map(this.props.points,function(/*point*/){return 0.0;}):this.props.drops.y;
+		var dropsx = _.map(this.props.points,function(point){return point.dropx || dsx.d.min;});
+		var dropsy = _.map(this.props.points,function(point){return point.dropy || dsy.d.min;});
 
 		var datas = [{x:0,y:0},{x:0,y:0}]; // dealing with empty values
 		if(this.props.points.length > 0){
 			datas = _.map(this.props.points, function(point,index){
 				return {
-					x: space.toC(dsx,point.x + dropsx[index]), 
-					y: space.toC(dsy,point.y + dropsy[index])
+					x: space.toC(dsx,point.x), 
+					y: space.toC(dsy,point.y)
 				};}
 			);
 		}
@@ -56,12 +55,12 @@ module.exports = React.createClass({
 		switch(this.props.stairs){
 			case 'right':
 	// right stairs
-				data = + datas[0].x + ',' + space.toC(dsy,dsy.d.min + dropsy[0]) + ' ';
+				data = + datas[0].x + ',' + space.toC(dsy,dropsy[0]) + ' ';
 				for(var i = 0; i < Nd - 1; i++){
 					data += datas[i].x + ',' + datas[i].y + ' ' + datas[i+1].x + ',' + datas[i].y + ' ';
 				}
 				data += datas[Nd - 1].x + ',' + datas[Nd - 1].y + ' ' + (datas[Nd - 1].x + dx) + ',' + datas[Nd - 1].y; // last bin
-				data += ' ' + (datas[Nd - 1].x + dx) + ',' + space.toC(dsy, dsy.d.min + dropsy[Nd-1]); // closing
+				data += ' ' + (datas[Nd - 1].x + dx) + ',' + space.toC(dsy, dropsy[Nd-1]); // closing
 				break;
 			case 'left':
    // left stairs
@@ -69,7 +68,7 @@ module.exports = React.createClass({
 				for(i = 0; i < Nd; i++){
 					data +=  datas[i].x + ',' + datas[i+1].y + ' ' + ' ' + datas[i+1].x + ',' + datas[i+1].y + ' ';
 				}
-				data += data[Nd - 1].x  + ',' +  space.toC(dsy, dsy.d.min + dropsy[Nd - 1]); // closing
+				data += data[Nd - 1].x  + ',' +  space.toC(dsy,dropsy[Nd - 1]); // closing
 				break;
 			default:
 				throw 'Stairs are either right or left';
@@ -85,7 +84,9 @@ module.exports = React.createClass({
 		}
 
 		markprops.name = this.props.name + 'm';
-      var marks = marker.marks(datas,markprops,this.props.mark,this.props.markType);
+		markprops.dsx = this.props.dsx;
+		markprops.dsy = this.props.dsy;
+      var marks = marker.marks(this.props.points,markprops,this.props.mark,this.props.markType);
 
 		var key = this.props.name + 'p';
 		var keyg = this.props.name + 'g';
