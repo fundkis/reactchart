@@ -1,6 +1,5 @@
 var React = require('react');
 var marker = require('../marks/marker.cs.jsx');
-var Bar = require('./Bar.cs.jsx');
 var _ = require('underscore');
 
 module.exports = React.createClass({
@@ -14,11 +13,9 @@ module.exports = React.createClass({
 		span: 0.5, // in dataSpace
 		dir: 90,
 		points: [],
-		drops: [],
 		mark: true,
 		markColor: 'black',
-		markSize: 3,
-		markType: 'dot',
+		markType: 'bar',
 		markProps: {},
 		xoffset: 0
 	 };
@@ -36,31 +33,24 @@ module.exports = React.createClass({
 		xoffset: this.props.xoffset
 	};
 
-	var bars = [];
-	var dropsx = (this.props.drops.x.length === 0)?_.map(this.props.points,function(/*point*/){return 0.0;}):this.props.drops.x;
-	var dropsy = (this.props.drops.y.length === 0)?_.map(this.props.points,function(/*point*/){return 0.0;}):this.props.drops.y;
-	var drops = _.map(dropsx,function(xd,index){return {x:xd, y:dropsy[index]};});
-	for(var i = 0; i < this.props.points.length; i++){
-		var key = this.props.name + '.b' + i;
-		bars.push(<Bar name={key} x={this.props.points[i].x} y={this.props.points[i].y} drop={drops[i]} {...props}/>);
-	}
+	var datas = _.map(this.props.points,function(point){
+		return {
+			x: point.x, 
+			y: point.y, 
+			drop:{
+				x: point.dropx, 
+				y: point.dropy
+			}
+		};
+	});
+	// marks
+	props.markprops = this.props.markProps;
+	
+	props.name = this.props.key + '.b';
+   var bars = marker.marks(datas,props,this.props.mark,this.props.markType);
 
-    // marks
-	var markprops = this.props.markProps;
-	if(!markprops.fill){
-		markprops.fill = this.props.markColor;
-	}
-	if(!markprops.size){
-		markprops.size = this.props.markSize;
-	}
-
-	markprops.name = this.props.name + 'm';
-
-	var marks = marker.marks(this.props.points,markprops,this.props.mark,this.props.markType);
 	var keyg = this.props.name + 'g';
 
-	 return <g key={keyg}>{bars}
-				{marks}
-			</g>;
+	 return <g key={keyg}>{bars}</g>;
   }
 });
