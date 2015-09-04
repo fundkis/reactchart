@@ -3,6 +3,7 @@ var _ = require('underscore');
 var Axes = require('./base/Axes.cs.jsx');
 var spaceMgr = require('./core/space-mgr.cs.js');
 var grapher = require('./graphs/grapher.cs.jsx');
+var Khist = require('../tech/helpers/Knuth-histogram.cs.js');
 
 ///////////////////////////////////////////
 /* high-level API
@@ -75,35 +76,77 @@ module.exports = React.createClass({
 			name: 'noname'
 		};
 	},
-	render: function(){
+	pseries: [],
+	preprocess: function(nb){
+		var datas = this.props;
+		nb.n = 0;
+		// right now the evil way: we change the props!!
+		for(var g = 0; g < this.props.graphProps.length; g++)
+		{
+			if(this.props.graphProps[g].shader &&	// there's a shader
+				this.props.graphProps[g].shader.type === 'histogram'){ // this one needs preprocessing
+				nb.n++;
+				var dir = this.props.graphProps[g].shader.dir;
+				var otherdir = (dir === 'x')?'y':'x';
+				var series = [];
+				var ind = 0;
+				var curref = this.props.data.series[g].data.series[0][otherdir];
+				var notcomplete = true;
+				var u = 0;
+				while(notcomplete){
+					var data = _.map(	_.filter(this.props.data.series[g].data.series, function(point){
+							return point[otherdir] === curref;
+						}),
+						function(point){return point[dir];});
+					var hist = Khist.opt_histo(data);
+					var dataseries = this.props.data.series[g];
+					dataseries.stacked = false; // to be on the safe side
+// drop	-> bin
+// value -> bin + db ( = next bin)
+// shade -> prob
+					var len = hist.length * hist[0].db;
+					for(var d = 0; d < hist.length; d++){
+						series[ind] = {};
+						series[ind]['drop' + dir] = hist[d].bin;
+						series[ind][dir] = hist[d].bin + hist[d].db;
+						series[ind].shade = hist[d].prob / len;
+						series[ind][otherdir] = curref;
+						if(!!this.props.graphProps[g].shader.labels){
+							series[ind][otherdir + 'label'] = this.props.graphProps[g].shader.labels(curref);
+						}
+						ind++;
+					}
+					while( u < this.props.data.series[g].data.series.length && 
+							this.props.data.series[g].data.series[u][otherdir] === curref){u++;}
+					if(u >= this.props.data.series[g].data.series.length){
+						notcomplete = false;
+					}else{
+						curref = this.props.data.series[g].data.series[u][otherdir];
+					}
+				}
+				
+				this.pseries[g] = series;
+			}
+		}
 
-		// getting dsx and dsy
-		var universe = {width: this.props.width, height: this.props.height};
-		var datas  = this.props.data;
-		datas.xmin = this.props.xmin;
-		datas.xmax = this.props.xmax;
-		datas.ymin = this.props.ymin;
-		datas.ymax = this.props.ymax;
 
-		// dealing with stacked data here => good idea ???
-		// we just offset the data values and drops of the concerned graphs
+		return datas;
+	},
+	droper: function(){
 		var xoffset = [];
 		var yoffset = [];
-		var drops = [];
 		var nBar = 0;
 		for(var i = 0 ; i < this.props.data.series.length; i++){
 			if(this.props.data.series[i].type === 'Bars'){
 				nBar++;
 			}
-			drops[i] = {x:[], y:[]};
 			if(this.props.data.series[i].stacked){ // stacked in direction 'stacked', 'x' and 'y' are accepted
+				this.pseries[i] = [];
 				switch(this.props.data.series[i].stacked){
 					case 'x': // not asynchronous
-							// init drops
-						drops[i].x = _.map(this.props.data.series[i].data.series,function(/*point*/){return 0.0;});
 						// init xoffset
 						if(xoffset.length === 0){
-							xoffset = _.map(this.props.data.series[i].data.series,function(/*point*/){return 0.0;});
+							xoffset = _.map(this.props.data.series[i].data.series,function(/*point*/){return undefined;});
 						}else{
 							if(xoffset.length !== this.props.data.series[i].data.series.length){
 								throw 'Stacked data needs to be of same size (x dir)!!';
@@ -111,18 +154,20 @@ module.exports = React.createClass({
 						}
 						// add, compute and update
 						for(var j = 0; j < xoffset.length; j++){
+							this.pseries[i][j] = {};
 							var c = this.props.data.series[i].data.series[j].x;
-							//this.props.data.series[i].data.series[j].x += xoffset[j];
-							drops[i].x[j] = xoffset[j];
+							// new point
+							this.pseries[i][j] = {};
+							this.pseries[i][j].x = c + xoffset[j];
+							this.pseries[i][j].y = this.props.data.series[i].data.series[j].y;
+							this.pseries[i][j].dropx = xoffset[j];
 							xoffset[j] += c;
 						}
 						break;
 					case 'y': // not asynchronous
-							// init drops
-						drops[i].y = _.map(this.props.data.series[i].data.series,function(/*point*/){return 0.0;});
 							// init yoffset
 						if(yoffset.length === 0){
-							yoffset = _.map(this.props.data.series[i].data.series,function(/*point*/){return 0.0;});
+							yoffset = _.map(this.props.data.series[i].data.series,function(/*point*/){return 0;});
 						}else{
 							if(yoffset.length !== this.props.data.series[i].data.series.length){
 								throw 'Stacked data needs to be of same size (y dir)!!';
@@ -131,8 +176,11 @@ module.exports = React.createClass({
 						// add, compute and update
 						for(var k = 0; k < yoffset.length; k++){
 							var o = this.props.data.series[i].data.series[k].y;
-							//this.props.data.series[i].data.series[k].y += yoffset[k];
-							drops[i].y[k] = yoffset[k];
+							// new point
+							this.pseries[i][k] = {};
+							this.pseries[i][k].y = o + yoffset[k];
+							this.pseries[i][k].x = this.props.data.series[i].data.series[k].x;
+							this.pseries[i][k].dropy = yoffset[k];
 							yoffset[k] += o;
 						}
 						break;
@@ -141,13 +189,24 @@ module.exports = React.createClass({
 				}
 			}
 		}
-		// now adding the drops to the datas for space manager
-		for(var s = 0; s < datas.series.length; s++){
-			for(var p = 0; p < datas.series[s].data.series.length; p++){
-				datas.series[s].data.series[p].dropx = drops[s].x[p] || 0.0;
-				datas.series[s].data.series[p].dropy = drops[s].y[p] || 0.0;
-			}
-		}
+		return nBar;
+	},
+	render: function(){
+
+		// clear
+		this.pseries = [];
+
+		// getting dsx and dsy
+		var universe = {width: this.props.width, height: this.props.height};
+
+		var nb = {};
+		var datas  = this.preprocess(nb).data;
+		var nBar = nb.n;
+
+		// dealing with stacked data here => good idea ???
+		// we just offset the data values and drops of the concerned graphs
+		nBar += this.droper();
+
 		var xaxis = this.props.xaxis;
 		var yaxis = this.props.yaxis;
 		if(!!this.props.axis){ //overrides xaxis and yaxis
@@ -185,17 +244,45 @@ module.exports = React.createClass({
 		};
 		var title = {title: this.props.title, titleFSize: this.props.titleFSize};
 
+		// we select the correct datas, series or pseries
+		var tmps = this.pseries;
+		var series = {};
+		series.series = _.map(datas.series,function(serie,index){
+			return {
+				series: (!!tmps[index])?tmps[index]:serie.data.series,
+				stacked: serie.stacked
+			};
+		});
+
+		series.type = datas.type;
+		series.xmin = this.props.xmin;
+		series.xmax = this.props.xmax;
+		series.ymin = this.props.ymin;
+		series.ymax = this.props.ymax;
 		// here is the data space, the world is fully defined inside
-		var ds = spaceMgr.space(datas,universe,axis,title);
+		var ds = spaceMgr.space(series,universe,axis,title);
+
 		var toAbs = function(point){
 			return (datas.type === 'date')?point.x.getTime():point.x;
+		};
+		var cloneToAbs = function(point){
+			var out = {};
+			for(var v in point){
+				if(v === 'x'){
+					out.x = toAbs(point);
+				}else{
+					out[v] = point[v];
+				}
+			}
+			return out;
 		};
 
 		// printing the graph
 		var prints = [];
 		for(var m = 0; m < this.props.data.series.length; m++){
-			var print = _.map(this.props.data.series[m].data.series,function(point){
-				return {x: toAbs(point), y: point.y};
+			var serie = (!!this.pseries[m])?this.pseries[m]:this.props.data.series[m].data.series;
+			var print = _.map(serie,function(point){
+				return cloneToAbs(point);
 			});
 			// the actual graph
 			var graphProps = {};
@@ -203,7 +290,9 @@ module.exports = React.createClass({
 				graphProps = this.props.graphProps[m];
 			}
 			// if bars
-			if(this.props.data.series[m].type === 'Bars' && !this.props.data.series[m].stacked){
+			var spanNeed = (this.props.data.series[m].type === 'Bars' && !this.props.data.series[m].stacked) ||
+				(this.props.graphProps[m].shader && this.props.graphProps[m].shader.type === 'histogram');
+			if(spanNeed){
 				// necessary in x dir (for the moment)
 				graphProps.span = 0.8/nBar;
 				graphProps.xoffset = - 0.4 + (0.8 * m + 0.1)/nBar + 0.5 * graphProps.span;
@@ -215,18 +304,27 @@ module.exports = React.createClass({
 			graphProps.stroke = this.props.data.series[m].color;
 			graphProps.markProps = {};
 			graphProps.markProps.fill = this.props.data.series[m].color;
-			graphProps.drops = drops[m];
 			graphProps.key = this.props.name + 'G' + m;
 			prints.push(grapher[this.props.data.series[m].type](print,graphProps,m));
 		}
 
 		// the ticks are labelled? gotta pass that down
 		// it is assumed that we need them only once (same for everyone)
-		// and placed in the first graph
+		// and placed in the first graph, pseries or data.series
 		var btl = {x: undefined, y: undefined};
 		if(this.props.data.type === 'text' && this.props.data.series.length !== 0){
-			btl.x = _.map(this.props.data.series[0].data.series, function(point){return {label: point.xlabel, coord: point.x};});
-			btl.y = _.map(this.props.data.series[0].data.series, function(point){return {label: point.ylabel, coord: point.y};});
+			var labelsw = (!!this.pseries[0])?this.pseries[0]:this.props.data.series[0].data.series;
+			// supress doublons
+			btl.x = [];
+			btl.y = [];
+			for(var l = 0; l < labelsw.length; l++){
+				if(_.find(btl.x,function(lab){return lab.coord === labelsw[l].x;}) === undefined){
+					btl.x.push({label: labelsw[l].xlabel, coord: labelsw[l].x});
+				}
+				if(_.find(btl.y,function(lab){return lab.coord === labelsw[l].y;}) === undefined){
+					btl.y.push({label: labelsw[l].ylabel, coord: labelsw[l].y});
+				}
+			}
 			// if undefined, no need to keep an array of undefined
 			if(!btl.x[0].label){btl.x = undefined;}
 			if(!btl.y[0].label){btl.y = undefined;}
