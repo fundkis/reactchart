@@ -79,7 +79,7 @@ var m = {};
  * then the data space can be even more extended to reach round values.
  *
  *
- *	datas: {serie:[{ type : 'curve', data : {serie:[{x:0, y:0}], type:'number'}, axe : 'left', color: 'black'}]}, //
+ *	datas: {series:[ { serie: [{x:0, y:0}], stacked:'y' }], type:'number'}, //
  */
 m.space = function(datas,universe,axis,title){
 	// 1 - the coordinate space
@@ -176,24 +176,30 @@ m.space = function(datas,universe,axis,title){
 	// 2 - the data space
 	// either data defined or explicitely defined
 
-		var data_min_max = function(series,what,defmin,defmax,pmin,pmax,cmin,cmax){
+		var data_min_max = function(what,defmin,defmax,pmin,pmax,cmin,cmax){
 			// locally defined
 			var toAbs = function(point){
 				return (datas.type === 'date')?point.x.getTime():point.x;
 			};
 			// min of all the abscissa: from inner to outer:
 			// for a (abs,y) point, get the abscissa, -> {abs}
-			var points = _.map(series, function(dataP) {
-				return _.map(dataP.data.series,function(point){return {x: toAbs(point) + point.dropx, y: point.y + point.dropy};}
-				);});
+			var points = _.map(datas.series, function(dataP) {
+				return _.map(dataP.series,function(point){
+					return [{
+							x: toAbs(point),
+							y: point.y
+						},{
+							x: (!!point.dropx)?point.dropx:toAbs(point),
+							y: (!!point.dropy)?point.dropy:point.y
+						}];
+				});
+			});
 			// do that for all points in the graph -> [abs, abs, ...]
 			// do that for all graph -> [[abs],[abs],...]
 			// flatten this array of arrays -> [abs, abs, ...]
-			var allValues = _.flatten(_.map(points,function(graph){
-				return _.map(graph,function(point){
+			var allValues = _.map(_.flatten(points),function(point){
 					return point[what];
 				});
-			}));
 			// get the min
 			var min = (allValues.length !== 0)?_.min(allValues):defmin;
 			// get the max
@@ -224,7 +230,7 @@ m.space = function(datas,universe,axis,title){
 
 
 	// first, treating data to have points = [ [ {x, y} || {Date, y} ] ]
-	//	datas: {serie:[{ type : 'curve', data : {serie:[{x:0, y:0}]}, axe : 'left', color: 'black'}], type:'number'}
+	//	datas: {series:[{series: [{x:0, y:0}], stacked:'y' ], type:'number'}
 
 	// if we have empty points, we define default so the graph can still
 	// be alive with axis and empty curves
@@ -239,11 +245,11 @@ m.space = function(datas,universe,axis,title){
 		var ydmax = 0.0;
 
 		
-		var xbounds = data_min_max(datas.series,'x',dxmindef,dxmaxdef,xpmin,xpmax,xcmin,xcmax);
+		var xbounds = data_min_max('x',dxmindef,dxmaxdef,xpmin,xpmax,xcmin,xcmax);
 		xdmin = xbounds.min;
 		xdmax = xbounds.max;
 
-		var ybounds = data_min_max(datas.series,'y',dymindef,dymaxdef,ypmin,ypmax,ycmin,ycmax);
+		var ybounds = data_min_max('y',dymindef,dymaxdef,ypmin,ypmax,ycmin,ycmax);
 		ydmin = ybounds.min;
 		ydmax = ybounds.max;
 
@@ -312,12 +318,12 @@ m.space = function(datas,universe,axis,title){
 			if(type === 'date'){
 
 				if(domin){
-					ds.d.min = dm.dateBefore( dm.before(ds.d.min,0,Math.min(stepper.step.asMonths(), 6),0),0,0,1); // max is 6 month
+					ds.d.min = dm.dateBefore( dm.before(ds.d.min,0,Math.min(stepper.step.asMonths(), 6),0),0,0,1).getTime(); // max is 6 month
 					if(ds.d.min < 0){ds.d.min = 0.0;}
 				}
 
 				if(domax){
-					ds.d.max = dm.dateAfter(dm.after(ds.d.max, 0,Math.min(stepper.step.asMonths(), 6),0 ),0,0,1);
+					ds.d.max = dm.dateAfter(dm.after(ds.d.max, 0,Math.min(stepper.step.asMonths(), 6),0 ),0,0,1).getTime();
 				}
 
 			}else{
@@ -326,8 +332,8 @@ m.space = function(datas,universe,axis,title){
 				if(domin){
 
 					// get order of magnitude, min
-					var om = 0.0;
-					if(ds.d.min !== 0.0){
+					var om = 0;
+					if(ds.d.min !== 0){
 						om = (ds.d.min > 0)?Math.pow(10, Math.floor(Math.log(ds.d.min) / Math.log(10)) ):
 							- Math.pow(10, Math.floor(Math.log(Math.abs(ds.d.min)) / Math.log(10)) + 1 );
 						// order of magnitude of step, if higher, then we need to start
@@ -340,14 +346,14 @@ m.space = function(datas,universe,axis,title){
 						om += stepper.toNum;
 					}
 					om -= 0.75 * stepper.toNum;
-					if(om >= ds.d.min){om -= 0.25 * stepper.toNum;}
+					if(om >= ds.d.min){om -= 0.5 * stepper.toNum;}
 					ds.d.min = om;
 				}
 
 				if(domax){
 					// get order of magnitude, max
-					var oma = 0.0;
-					if(ds.d.max !== 0.0){
+					var oma = 0;
+					if(ds.d.max !== 0){
 						oma = (ds.d.max > 0)?Math.pow(10, Math.floor(Math.log(ds.d.max) / Math.log(10)) +1 ):
 							- Math.pow(10, Math.floor(Math.log(Math.abs(ds.d.max)) / Math.log(10)) );
 						// order of magnitude of step, if higher, then we need to start
@@ -361,7 +367,7 @@ m.space = function(datas,universe,axis,title){
 						oma -= stepper.toNum;
 					}
 					oma += 0.75 * stepper.toNum;
-					if(oma <= ds.d.max){oma += 0.25 * stepper.toNum;}
+					if(oma <= ds.d.max){oma += 0.5 * stepper.toNum;}
 					ds.d.max = oma;
 				}
 			}
