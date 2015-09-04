@@ -1,5 +1,6 @@
 var React = require('react');
 var Dot = require('./Dot.cs.jsx');
+var Bar = require('./Bar.cs.jsx');
 var _ = require('underscore');
 
 var m = {};
@@ -7,23 +8,18 @@ var m = {};
 m.marks_map = {};
 
 m.marks_map.dot = function(data,props){
-	var radius = 3; //default
-	if(!!props.radius){
-		radius = props.radius;
-	}
-
-	var size = -1; // default
-	if(!!props.size){
-		size = props.size;
-	}
-	var fill = 'black'; // default
-	if(!!props.fill){
-		fill = props.fill;
-	}
 
 	return _.map(data, function(point){
-		var key = props.name + 'd' + point.x + ':' + point.y;
-		return <Dot name={key} x={point.x} y={point.y} fill={fill} radius={radius} size={size}/>;
+		var key = props.name + 'd' + point.x + ',' + point.y;
+		return <Dot name={key} x={point.x} y={point.y} {...props}/>;
+	});
+};
+
+m.marks_map.bar = function(data,props){
+	return _.map(data, function(point,index){
+		var key = props.name + '-' + index;
+		// props are passed first so they can be overwritten (like name)
+		return <Bar {...props} name={key} x={point.x} y={point.y} shade={point.shade} drop={point.drop}/>;
 	});
 };
 
