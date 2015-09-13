@@ -301,7 +301,7 @@ module.exports = React.createClass({
 			graphProps.dsx = ds.x;
 			graphProps.dsy = ds.y;
 			// the graph
-			graphProps.stroke = this.props.data.series[m].color;
+			graphProps.stroke = (!!graphProps.color)?graphProps.color:this.props.data.series[m].color;
 			graphProps.markProps = {};
 			graphProps.markProps.fill = this.props.data.series[m].color;
 			graphProps.key = this.props.name + 'G' + m;
