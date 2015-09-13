@@ -23,6 +23,7 @@ module.exports = React.createClass({
 			labelize: {major: null, minor: null},
 			majorGrid: false,
 			minorGrid: false,
+			majorTick: true,
 			minorTick: false,
 			gridLength: 0,
 			stroke: 'black',
@@ -64,11 +65,11 @@ module.exports = React.createClass({
 		tickProps.grid = this.props.majorGrid;
 		tickProps.gridLength = this.props.gridLength;
 		var key = this.props.name;
-		var ticks = _.map(ticker.ticks(this.props.origin,this.props.ds,this.props.dir,props),function(tick,index){
+		var ticks = (this.props.majorTicks)?_.map(ticker.ticks(this.props.origin,this.props.ds,this.props.dir,props),function(tick,index){
 			if(!!tick.offset){tickProps.major.offset = tick.offset;}
 		   tickProps.name = key + 't' + index;
 			return <Tick {...tickProps} where={tick.here} label={tick.me} dir={tick.dir} />;
-		});
+		}):[];
 		var subTickProps = Tick.getDefaultProps(); //always start fresh
 		props.labelize = this.props.labelize.minor;
 		subTickProps.isMajor = false;

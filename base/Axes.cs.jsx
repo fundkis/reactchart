@@ -16,6 +16,7 @@ module.exports = React.createClass({
 			// per axis
 			majorGrid:     {x: false, y: false},
 			minorGrid:     {x: false, y: false},
+			majorTicks:    {x: true,  y: true},
 			minorTicks:    {x: false, y: false},
 			stroke:        {x: 'black', y:'black'},
 			strokeWidth:   {x: 1, y: 1},
