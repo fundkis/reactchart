@@ -161,6 +161,12 @@ module.exports = React.createClass({
 							this.pseries[i][j].x = c + xoffset[j];
 							this.pseries[i][j].y = this.props.data.series[i].data.series[j].y;
 							this.pseries[i][j].dropx = xoffset[j];
+							if(!!this.props.data.series[i].data.series[j].xlabel){
+								this.pseries[i][j].xlabel = this.props.data.series[i].data.series[j].xlabel;
+							}
+							if(!!this.props.data.series[i].data.series[j].ylabel){
+								this.pseries[i][j].ylabel = this.props.data.series[i].data.series[j].ylabel;
+							}
 							xoffset[j] += c;
 						}
 						break;
@@ -181,6 +187,12 @@ module.exports = React.createClass({
 							this.pseries[i][k].y = o + yoffset[k];
 							this.pseries[i][k].x = this.props.data.series[i].data.series[k].x;
 							this.pseries[i][k].dropy = yoffset[k];
+							if(!!this.props.data.series[i].data.series[k].ylabel){
+								this.pseries[i][k].ylabel = this.props.data.series[i].data.series[k].ylabel;
+							}
+							if(!!this.props.data.series[i].data.series[k].xlabel){
+								this.pseries[i][k].xlabel = this.props.data.series[i].data.series[k].xlabel;
+							}
 							yoffset[k] += o;
 						}
 						break;
