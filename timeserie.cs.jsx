@@ -34,6 +34,7 @@ module.exports = React.createClass({
 		// we imposed some stuff, whatever the user says
 		var props = this.props;
 		props.data.type = 'date';
+		var graphP = this.props.graphProps;
 		props.graphProps = [];
 		props.axisProps = this.props.axisProps;
 		props.axisProps.majorGrid = {x:true, y:false};
@@ -41,10 +42,10 @@ module.exports = React.createClass({
 		props.name = this.props.name;
 		for(var i = 0; i < this.props.data.series.length; i++){
 			props.graphProps.push({
-				color:     this.props.data.series[i].color     || 'black', 
-				mark:      this.props.data.series[i].mark      || false, 
-				markSize:  this.props.data.series[i].markSize  || 3, 
-				markColor: this.props.data.series[i].markColor || this.props.data.series[i].color || 'black'
+				color:     this.props.data.series[i].color || graphP[i].color || 'black', 
+				mark:      graphP[i].mark                  || false, 
+				markSize:  graphP[i].markSize              || 3, 
+				markColor: graphP[i].markColor             || this.props.data.series[i].color || 'black'
 			});
 		}
 		return <Graph {...props}/>;
