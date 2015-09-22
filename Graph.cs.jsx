@@ -104,17 +104,25 @@ module.exports = React.createClass({
 // drop	-> bin
 // value -> bin + db ( = next bin)
 // shade -> prob
-					var len = hist.length * hist[0].db;
+					var maxProb = -1;
+					var start = ind;
 					for(var d = 0; d < hist.length; d++){
 						series[ind] = {};
 						series[ind]['drop' + dir] = hist[d].bin;
 						series[ind][dir] = hist[d].bin + hist[d].db;
-						series[ind].shade = hist[d].prob / len;
+						series[ind].shade = hist[d].prob;
 						series[ind][otherdir] = curref;
 						if(!!this.props.graphProps[g].shader.labels){
 							series[ind][otherdir + 'label'] = this.props.graphProps[g].shader.labels(curref);
 						}
+						if(hist[d].prob > maxProb){
+							maxProb = hist[d].prob;
+						}
 						ind++;
+					}
+					for(var i = start; i < ind; i++){
+						series[i].shade /= maxProb;
+						series[i].span = series[i].shade;
 					}
 					while( u < this.props.data.series[g].data.series.length && 
 							this.props.data.series[g].data.series[u][otherdir] === curref){u++;}
@@ -124,7 +132,6 @@ module.exports = React.createClass({
 						curref = this.props.data.series[g].data.series[u][otherdir];
 					}
 				}
-				
 				this.pseries[g] = series;
 			}
 		}

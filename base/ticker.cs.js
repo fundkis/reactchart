@@ -203,7 +203,7 @@ var floorDate = function(ds,ori,step){
 
 var findTick = function(start,d_step,i){
 	if(d_step.step === d_step.toNum){ // number
-		return start + i * d_step.toNum;
+		return start + i * d_step.toNum;;
 	}else{ // date, d_step.step is a duration
 
 		var where = new Date(start);
@@ -295,6 +295,36 @@ m.ticks = function(origin,ds,dir,props){
 	// we want the date to behave
 	if(props.type === 'date'){
 		start = floorDate(ds,start,d_step);
+	}else{
+
+		// order of magnitude
+		var om = (start > 0)?Math.pow(10, Math.floor(Math.log(start) / Math.log(10) + 1)):
+						- Math.pow(10, Math.floor(Math.log(Math.abs(start)) / Math.log(10)) );
+		// where on this order
+		var i = 1;
+		if(om > 0){
+			if(9 / 10 * om > start){
+				om /= 10;
+				while(om * i < start){
+					i++;
+				}
+			}
+		}else if(om < 0){
+			i++;
+			while(i * om > start){
+				i++;
+			}
+			i--;
+		}
+		if(i === 9){
+			i++;
+		}else if(i === 1 && om < 0 && ( d_step.toNum / Math.abs(om) < 1 )){
+			i = 0;
+		}
+		while(om * i < start){
+			(om < 0)?i--:i++;
+		}
+		start = om * i;
 	}
 
 	// to coord space in direction dir
@@ -386,6 +416,36 @@ m.subticks = function(origin,ds,dir,props){
 	// we want the date to behave
 	if(props.type === 'date'){
 		start = floorDate(ds,start,d_step);
+	}else{
+
+		// order of magnitude
+		var om = (start > 0)?Math.pow(10, Math.floor(Math.log(start) / Math.log(10) + 1)):
+						- Math.pow(10, Math.floor(Math.log(Math.abs(start)) / Math.log(10)) );
+		// where on this order
+		var i = 1;
+		if(om > 0){
+			if(9 / 10 * om > start){
+				om /= 10;
+				while(om * i < start){
+					i++;
+				}
+			}
+		}else if(om < 0){
+			i++;
+			while(i * om > start){
+				i++;
+			}
+			i--;
+		}
+		if(i === 9){
+			i++;
+		}else if(i === 1 && om < 0 && ( d_step.toNum / Math.abs(om) < 10 )){
+			i = 0;
+		}
+		while(om * i < start){
+			(om < 0)?i--:i++;
+		}
+		start = om * i;
 	}
 
 	var subtickme = function(boolFunc,ds,main,substep,orix,oriy,dirx,diry,tickdir,j,offset){

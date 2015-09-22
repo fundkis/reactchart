@@ -16,7 +16,7 @@ module.exports = React.createClass({
 			markType: 'dot',
 			markProps: {},
 			points: [],
-         stairs: 'right',
+			stairs: 'right',
 			dsx: {}, // see space-mgr for details
 			dsy: {}  // see space-mgr for details
 		};
@@ -63,18 +63,18 @@ module.exports = React.createClass({
 				data += ' ' + (datas[Nd - 1].x + dx) + ',' + space.toC(dsy, dropsy[Nd-1]); // closing
 				break;
 			case 'left':
-   // left stairs
+	 // left stairs
 				data =(datas[0].x - dx) + ',' + this.props.dsx.c.min + ' ' + (datas[0].x - dx) + ',' + datas[0].y + ' ' + datas[0].x + ',' + datas[0].y + ' ';
 				for(i = 0; i < Nd; i++){
 					data +=  datas[i].x + ',' + datas[i+1].y + ' ' + ' ' + datas[i+1].x + ',' + datas[i+1].y + ' ';
 				}
-				data += data[Nd - 1].x  + ',' +  space.toC(dsy,dropsy[Nd - 1]); // closing
+				data += data[Nd - 1].x	+ ',' +  space.toC(dsy,dropsy[Nd - 1]); // closing
 				break;
 			default:
 				throw 'Stairs are either right or left';
 		}
 
-      // marks
+			// marks
 		var markprops = this.props.markProps;
 		if(!markprops.fill){
 			markprops.fill = this.props.markColor;
@@ -86,7 +86,7 @@ module.exports = React.createClass({
 		markprops.name = this.props.name + 'm';
 		markprops.dsx = this.props.dsx;
 		markprops.dsy = this.props.dsy;
-      var marks = marker.marks(this.props.points,markprops,this.props.mark,this.props.markType);
+			var marks = marker.marks(this.props.points,markprops,this.props.mark,this.props.markType);
 
 		var key = this.props.name + 'p';
 		var keyg = this.props.name + 'g';

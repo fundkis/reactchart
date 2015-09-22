@@ -6,7 +6,7 @@ var BarChart = require('./BarChart.cs.jsx');
 var m = {};
 
 m.Plain = function(points,props,keyid){
-		var key = 'courbe' + keyid;
+		var key = 'plain' + keyid;
 		return <Plain name={key} {...props} points={points} />;
 };
 

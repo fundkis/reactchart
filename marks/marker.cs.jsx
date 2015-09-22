@@ -16,9 +16,11 @@ m.marks_map.dot = function(data,props){
 };
 
 m.marks_map.bar = function(data,props){
+	var fullSpan = props.span;
 	return _.map(data, function(point,index){
 		var key = props.name + '-' + index;
 		// props are passed first so they can be overwritten (like name)
+		props.span = fullSpan * ( (!!point.span)?point.span:1 );
 		return <Bar {...props} name={key} x={point.x} y={point.y} shade={point.shade} drop={point.drop}/>;
 	});
 };

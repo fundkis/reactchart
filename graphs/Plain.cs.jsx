@@ -48,11 +48,12 @@ module.exports = React.createClass({
 				return {
 					x: point.x,
 					y: point.y,
-               shade: point.shade,
-               drop: {
-                  x: point.dropx,
-                  y: point.dropy
-               }
+					shade: point.shade,
+				//	span: point.span,
+					drop: {
+						x: point.dropx,
+						y: point.dropy
+					}
 				};
 			});
 		}
@@ -68,7 +69,7 @@ module.exports = React.createClass({
 			points += ' M ' + datas[i].x + ' ' + space.toC(dsy,dropsy[i]);
 		}
 
-      // marks
+			// marks
 		var markprops = this.props.markProps;
 		if(!markprops.fill){
 			markprops.fill = this.props.markColor;
@@ -79,12 +80,12 @@ module.exports = React.createClass({
 		markprops.name = this.props.name + 'm';
 		markprops.dsx = dsx;
 		markprops.dsy = dsy;
-      if(!!this.props.span){
-		   markprops.span = this.props.span;
-      }
-      if(!!this.props.xoffset){
-		   markprops.xoffset = this.props.xoffset;
-      }
+			if(!!this.props.span){
+			 markprops.span = this.props.span;
+			}
+			if(!!this.props.xoffset){
+			 markprops.xoffset = this.props.xoffset;
+			}
 		var marks = marker.marks(Dpoints,markprops,this.props.mark,this.props.markType);
 
 		var keyP = this.props.name + 'P';
