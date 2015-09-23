@@ -203,7 +203,7 @@ var floorDate = function(ds,ori,step){
 
 var findTick = function(start,d_step,i){
 	if(d_step.step === d_step.toNum){ // number
-		return start + i * d_step.toNum;;
+		return start + i * d_step.toNum;
 	}else{ // date, d_step.step is a duration
 
 		var where = new Date(start);
@@ -215,6 +215,39 @@ var findTick = function(start,d_step,i){
 
 		return where.getTime();
 	}
+};
+
+var roundStart = function(start,d_step){
+	// order of magnitude
+	var om = (start > 0)?Math.pow(10, Math.floor(Math.log(start) / Math.log(10) + 1)):
+					- Math.pow(10, Math.floor(Math.log(Math.abs(start)) / Math.log(10)) );
+	// where on this order
+	var l = 1;
+	if(om > 0){
+		if(9 / 10 * om > start){
+			om /= 10;
+			while(om * l < start){
+				l++;
+			}
+		}
+	}else if(om < 0){
+		l++;
+		while(l * om > start){
+			l++;
+		}
+		l--;
+	}
+	if(l === 9){
+		l++;
+	}else if(l === 1 && om < 0 && ( d_step.toNum / Math.abs(om) <= 0.1 )){
+		l = 0;
+	}
+	while(om * l < start){
+		(om < 0)?l--:l++;
+	}
+
+	return om * l;
+
 };
 
 
@@ -296,35 +329,7 @@ m.ticks = function(origin,ds,dir,props){
 	if(props.type === 'date'){
 		start = floorDate(ds,start,d_step);
 	}else{
-
-		// order of magnitude
-		var om = (start > 0)?Math.pow(10, Math.floor(Math.log(start) / Math.log(10) + 1)):
-						- Math.pow(10, Math.floor(Math.log(Math.abs(start)) / Math.log(10)) );
-		// where on this order
-		var i = 1;
-		if(om > 0){
-			if(9 / 10 * om > start){
-				om /= 10;
-				while(om * i < start){
-					i++;
-				}
-			}
-		}else if(om < 0){
-			i++;
-			while(i * om > start){
-				i++;
-			}
-			i--;
-		}
-		if(i === 9){
-			i++;
-		}else if(i === 1 && om < 0 && ( d_step.toNum / Math.abs(om) < 1 )){
-			i = 0;
-		}
-		while(om * i < start){
-			(om < 0)?i--:i++;
-		}
-		start = om * i;
+		start = roundStart(start,d_step);
 	}
 
 	// to coord space in direction dir
@@ -417,35 +422,7 @@ m.subticks = function(origin,ds,dir,props){
 	if(props.type === 'date'){
 		start = floorDate(ds,start,d_step);
 	}else{
-
-		// order of magnitude
-		var om = (start > 0)?Math.pow(10, Math.floor(Math.log(start) / Math.log(10) + 1)):
-						- Math.pow(10, Math.floor(Math.log(Math.abs(start)) / Math.log(10)) );
-		// where on this order
-		var i = 1;
-		if(om > 0){
-			if(9 / 10 * om > start){
-				om /= 10;
-				while(om * i < start){
-					i++;
-				}
-			}
-		}else if(om < 0){
-			i++;
-			while(i * om > start){
-				i++;
-			}
-			i--;
-		}
-		if(i === 9){
-			i++;
-		}else if(i === 1 && om < 0 && ( d_step.toNum / Math.abs(om) < 10 )){
-			i = 0;
-		}
-		while(om * i < start){
-			(om < 0)?i--:i++;
-		}
-		start = om * i;
+		start = roundStart(start,d_step);
 	}
 
 	var subtickme = function(boolFunc,ds,main,substep,orix,oriy,dirx,diry,tickdir,j,offset){
@@ -507,15 +484,16 @@ m.subticks = function(origin,ds,dir,props){
 
 	// 2 - subticks from start to end
 	var nTick = Math.floor((ds.d.max - ds.d.min) / d_step.toNum) + 1;
+	var func = function(cur_val){
+		return hmisc.lowerThan(cur_val,ds.d.max) && difTime(cur_val,d_nval);
+	};
 	for(var i = 0; i < nTick; i++){
 
 		// 1D coor
 		var d_val = findTick(start,d_step,i); 
 		var d_nval = findTick(start,d_step,i + 1); 
 
-		out = out.concat(subtickme(function(cur_val){
-				return hmisc.lowerThan(cur_val,ds.d.max) && difTime(cur_val,d_nval);
-			},
+		out = out.concat(subtickme(func,
 			ds, d_val, substep, origin.x, origin.y, xdir, ydir, tickdir, 1, offsetLabel));
 	}
 	return out;
