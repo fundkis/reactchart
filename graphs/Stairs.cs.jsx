@@ -64,11 +64,11 @@ module.exports = React.createClass({
 				break;
 			case 'left':
 	 // left stairs
-				data =(datas[0].x - dx) + ',' + this.props.dsx.c.min + ' ' + (datas[0].x - dx) + ',' + datas[0].y + ' ' + datas[0].x + ',' + datas[0].y + ' ';
-				for(i = 0; i < Nd; i++){
+				data =(datas[0].x - dx) + ',' + space.toC(dsy,dropsy[0]) + ' ' + (datas[0].x - dx) + ',' + datas[0].y + ' ' + datas[0].x + ',' + datas[0].y + ' ';
+				for(i = 0; i < Nd - 1; i++){
 					data +=  datas[i].x + ',' + datas[i+1].y + ' ' + ' ' + datas[i+1].x + ',' + datas[i+1].y + ' ';
 				}
-				data += data[Nd - 1].x	+ ',' +  space.toC(dsy,dropsy[Nd - 1]); // closing
+				data += datas[Nd - 1].x	+ ',' +  space.toC(dsy,dropsy[Nd - 1]); // closing
 				break;
 			default:
 				throw 'Stairs are either right or left';
