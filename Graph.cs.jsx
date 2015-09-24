@@ -265,11 +265,13 @@ module.exports = React.createClass({
 
 		// we select the correct datas, series or pseries
 		var tmps = this.pseries;
+		var tmpp = this.props.graphProps;
 		var series = {};
 		series.series = _.map(datas.series,function(serie,index){
 			return {
 				series: (!!tmps[index])?tmps[index]:serie.data.series,
-				stacked: serie.stacked
+				stacked: serie.stacked,
+				offset: (serie.type !== 'Stairs')?0:(!tmpp[index].stairs || tmpp[index].stairs === 'right')?1:-1
 			};
 		});
 

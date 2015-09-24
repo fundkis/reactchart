@@ -184,6 +184,7 @@ m.space = function(datas,universe,axis,title){
 			// min of all the abscissa: from inner to outer:
 			// for a (abs,y) point, get the abscissa, -> {abs}
 			var points = _.map(datas.series, function(dataP) {
+				var dx = (dataP.series.length > 1)?(toAbs(dataP.series[1]) - toAbs(dataP.series[0])):0;
 				return _.map(dataP.series,function(point){
 					return [{
 							x: toAbs(point),
@@ -191,7 +192,11 @@ m.space = function(datas,universe,axis,title){
 						},{
 							x: (!!point.dropx)?point.dropx:toAbs(point),
 							y: (!!point.dropy)?point.dropy:point.y
-						}];
+						},{
+							x: toAbs(point) + dataP.offset * dx,
+							y: point.y
+						}
+						];
 				});
 			});
 			// do that for all points in the graph -> [abs, abs, ...]
