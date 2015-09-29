@@ -54,7 +54,7 @@ module.exports = React.createClass({
 			props.graphProps.push({
 				color:     this.props.data.series[i].color     || 'black', 
 				fill:      this.props.data.series[i].color     || 'black', 
-				opacity:   this.props.data.series[i].opacity   || (1 - (0.8 * i /(props.data.series.length - 1))),  // from 1 to 0.2
+				opacity:   this.props.data.series[i].opacity   || 1,  
 				mark:      this.props.data.series[i].mark      || true, 
 				markSize:  this.props.data.series[i].markSize  || 3, 
 				markColor: this.props.data.series[i].markColor || this.props.data.series[i].color || 'black'

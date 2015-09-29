@@ -31,29 +31,42 @@ var labelize = function(val_d,step,func){
 		return (Math.round(val.toFixed(5) * 1e5) / 1e5).toString(); // ce qu'il faut faire pour arrondir...
 	};
 
+	var out = {};
+
 // label from date or number?
 	if(step.step === step.toNum){ // number
-		return func(val_d);
+		out.val = func(val_d);
+		out.off = true;
 	}else{// date
 		var val = new Date(val_d);
 			// step = 1 year
 		if( (step.step.asYears() === 1) ){
-			return moment(val).format("YYYY");
+			out.val = moment(val).format("YYYY");
+			out.off = true;
 			// step > 1 year
 		}else if(step.step.asYears() >= 1){
-			return moment(val).format("YYYY");
+			out.val = moment(val).format("YYYY");
 			// step = 2 month
 		}else if(step.step.asMonths() === 1){
-			return moment(val).format("MMM");
+			out.val = moment(val).format("MMM");
 			// step = 3 month
 		} else if(step.step.asMonths() === 3){
 				//this is the first days of the next period, going back one day
 			var t = 'T' + ( Math.floor(( hd.addDays(val,-1).getMonth() + 1 )/3));
-			return t;
+			out.val = t;
+			out.off = true;
+		} else if(step.step.asMonths() === 6){
+				//this is the first days of the next period, going back one day
+			var s = 'S' + ( Math.floor(( hd.addDays(val,-1).getMonth() + 1 )/2));
+			out.val = s;
+			out.off = true;
 		} else {
-			return moment(val).format("DD/MM/YY");
+			out.val = moment(val).format("DD/MM/YY");
 		}
 	}
+
+	return out;
+
 };
 
 // helper function
@@ -120,6 +133,7 @@ var default_step = function(type){
 						moment.duration({month:1}).asDays(),
 						moment.duration({month:2}).asDays(),
 						moment.duration({month:3}).asDays(),
+//						moment.duration({month:6}).asDays(),
 						moment.duration({year:1}).asDays()
 					];
 					var step_as = [
@@ -129,6 +143,7 @@ var default_step = function(type){
 						{n: 1, t: 'month'},
 						{n: 2, t: 'month'},
 						{n: 3, t: 'month'},
+//						{n: 6, t: 'month'},
 						{n: 1, t: 'year'}
 					];
 					var ic = 0;
@@ -358,7 +373,7 @@ m.ticks = function(origin,ds,dir,props){
 			y: ypos
 		};
 
-		var me = (text)?props.labels[i].label:labelize(d_val,d_step,props.labelize);
+		var me = (text)?props.labels[i].label:labelize(d_val,d_step,props.labelize).val;
 
 		var toOut = {
 			dir:tickdir, 
@@ -430,9 +445,9 @@ m.subticks = function(origin,ds,dir,props){
 		var sub_val = findTick(main,substep,j);
 		var out = [];
 
-		while(boolFunc(sub_val)){
+		while(boolFunc(sub_val) && labelize(sub_val,substep).off){
 
-			var me = labelize(sub_val,substep); 
+			var lab = labelize(sub_val,substep); 
 
 			var loc_coord = space.toC(ds,sub_val);
 
@@ -443,7 +458,7 @@ m.subticks = function(origin,ds,dir,props){
 			var toOut = {
 				dir:tickdir, 
 				here:here, 
-				me:me
+				me:lab.val
 			};
 			if(offset){
 				toOut.offset = {
