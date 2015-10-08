@@ -22,16 +22,27 @@ module.exports = React.createClass({
   },
   render : function() {
 
-	var props = {
+	var props = this.props.markProps;
+	var toAdd = {
 		dsx: this.props.dsx,
 		dsy:  this.props.dsy,
-		color: this.props.color,
+		color: this.props.markColor,
 		stroke:  this.props.stroke,
 		strokeWidth:  this.props.strokeWidth,
 		span: this.props.span,
 		dir: this.props.dir,
 		xoffset: this.props.xoffset
 	};
+
+	var adder = function(toAdd){
+		for(var thing in toAdd){
+			if(!props[thing]){
+				props[thing] = toAdd[thing];
+			}
+		}
+	};
+
+	adder(toAdd);
 
 	var datas = _.map(this.props.points,function(point){
 		return {

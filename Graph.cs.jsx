@@ -313,7 +313,7 @@ module.exports = React.createClass({
 			// if bars
 			var spanNeed = (this.props.data.series[m].type === 'Bars' && !this.props.data.series[m].stacked) ||
 				(this.props.graphProps[m].shader && this.props.graphProps[m].shader.type === 'histogram');
-			if(spanNeed){
+			if(spanNeed && !graphProps.span){
 				// necessary in x dir (for the moment)
 				graphProps.span = 0.8/nBar;
 				graphProps.xoffset = - 0.4 + (0.8 * m + 0.1)/nBar + 0.5 * graphProps.span;

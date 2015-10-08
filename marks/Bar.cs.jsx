@@ -9,7 +9,7 @@ module.exports = React.createClass({
 		x:0,
 		y:0,
 		drop:{x:undefined, y:undefined},
-		color: undefined,
+		markColor: undefined,
 		stroke: 'none',
 		strokeWidth: 0,
 		span:0.5,
@@ -20,7 +20,10 @@ module.exports = React.createClass({
   },
   render : function() {
 
-	var drop = this.props.drop.y || this.props.dsy.d.min;
+	var drop = this.props.drop.y;
+	if(drop === undefined || drop === null){
+		drop = this.props.dsy.d.min;
+	}
 	// 
 	var x = dataScale.toC(this.props.dsx, this.props.x - 0.5 * this.props.span + this.props.xoffset); // all in dataSpace
 	var y = dataScale.toC(this.props.dsy, this.props.y);
@@ -28,13 +31,17 @@ module.exports = React.createClass({
 	var height = dataScale.toCwidth(this.props.dsy, this.props.y - drop);
 	var width  = dataScale.toCwidth(this.props.dsx, this.props.span);
 
+	if(this.props.y < drop){
+		y -= height;
+	}
+
 	// rotation
 	var xr = dataScale.toC(this.props.dsx, 0.5 * width  + this.props.x ); // all in dataSpace
 	var yr = dataScale.toC(this.props.dsy, 0.5 * height + this.props.y ); // all in dataSpace
 
 	var rotate = 'rotate(' + (this.props.dir - 90) + ' ' + xr + ' ' + yr + ')';
 	var key = this.props.name + 'r';
-	var color = this.props.color || this.props.fill || 'none';
+	var color = this.props.markColor || this.props.fill || 'none';
 
 	 return (
 			<rect key={key}  x={x} y={y} height={height} width={width} transform={rotate}

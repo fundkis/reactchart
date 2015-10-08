@@ -33,7 +33,26 @@ module.exports = React.createClass({
 			tickProps: {},
 		};
 	},
+	deepCopy: function(tgt,thing,print){
+		if(typeof thing === 'object'){
+			if(!tgt){
+				if(thing instanceof Array){
+					tgt = [];
+				}else{
+					tgt = {};
+				}
+			}
+			for(var t in thing){
+				tgt[t] = this.deepCopy(tgt[t],thing[t]);
+			}
+		}else{
+			tgt = thing;
+		}
+		return tgt;
+	},
 	render: function(){
+
+		var func = this.deepCopy;
 
 // theta in radian
 		var theta = this.props.dir * Math.PI / 180;
@@ -60,7 +79,7 @@ module.exports = React.createClass({
 		props.labelize = this.props.labelize.major;
 		var tickProps = Tick.getDefaultProps(); //always start fresh
 		_.each(this.props.tickProps,function(value,key){
-			tickProps[key] = value;
+			tickProps[key] = func(tickProps[key],value);
 		});
 		tickProps.grid = this.props.majorGrid;
 		tickProps.gridLength = this.props.gridLength;
@@ -74,7 +93,7 @@ module.exports = React.createClass({
 		props.labelize = this.props.labelize.minor;
 		subTickProps.isMajor = false;
 		_.each(this.props.subTickProps,function(value,key){
-			subTickProps[key] = value;
+			subTickProps[key] = func(subTickProps[key],value);
 		});
 		if(this.props.minorTicks){
 			ticks = ticks.concat(_.map(ticker.subticks(this.props.origin,this.props.ds,this.props.dir,props),function(subtick,index){
