@@ -49,6 +49,7 @@ var labelize = function(val_d,step,func){
 			// step = 2 month
 		}else if(step.step.asMonths() === 1){
 			out.val = moment(val).format("MMM");
+			out.off = true;
 			// step = 3 month
 		} else if(step.step.asMonths() === 3){
 				//this is the first days of the next period, going back one day
@@ -274,7 +275,7 @@ var m = {};
 //   - 2) no less than 25 px between ticks
 m.stepper = function(ds,type){
 
-	var step = 0.0;
+	var step = 0;
 
 	// small helper function to deal with dates
 	// steps are duration (moment.duration())
@@ -309,11 +310,14 @@ m.stepper = function(ds,type){
 
 		// now inforcing cond 2), still checking cond 1)
 		var dist = toNum(step,type);
-		var n = (ds.d.max - ds.d.min)/dist;
+		var n = Math.floor( (ds.d.max - ds.d.min)/dist );
 		while(dist < min_dist || n > max_ticks){
 			step = def_step.next_step(step,'+');
 			dist = toNum(step,type);
-			n = (ds.d.max - ds.d.min)/dist;
+			n = Math.floor( (ds.d.max - ds.d.min)/dist );
+			if(n * dist === (ds.d.max - ds.d.min)){
+				n -= 2;
+			}
 		}
 	}
 
@@ -380,7 +384,7 @@ m.ticks = function(origin,ds,dir,props){
 			here:here, 
 			me:me
 		};
-		if(props.type === 'date' && d_step.step.asYears() === 1){
+		if(props.type === 'date' && (d_step.step.asYears() === 1 || d_step.step.asMonths() === 1) ){
 			toOut.offset = {
 				x: space.toCwidth(ds,d_step.toNum)/2,
 				y: 0
