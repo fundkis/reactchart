@@ -47,6 +47,7 @@ module.exports = React.createClass({
 			// general
 			height: 500,		// defines the universe's height
 			width: 500,		// defines the universe's width
+			foreground: undefined,
 			// this is a template, the minimum structure that MUST be respected
 			// other things can be added at the data s levels
 			data: {series:[{ type : 'Plain', data : {series:[{x:0, y:0}], type: 'number'}, axe : 'left', color: 'black', stacked: undefined}], type: 'number'}, //
@@ -75,6 +76,13 @@ module.exports = React.createClass({
 			graphProps: [{color: 'blue', mark: true, markSize: 3, markColor: 'red', onlyMarks: false}],
 			name: 'noname'
 		};
+	},
+	buildFore: function(ds){
+		var wxc = (ds.x.c.max + ds.x.c.min - this.props.foreground.width) / 2;
+		var wyc = (ds.y.c.max + ds.y.c.min + this.props.foreground.height) / 2;
+		var trans = 'translate(' + wxc + ',' + wyc + ')';
+		var keyF = this.props.name + 'F';
+		return <g key={keyB} transform={trans} {...this.props.foreground}>{this.props.foreground.content}</g>;
 	},
 	pseries: [],
 	preprocess: function(nb){
@@ -371,11 +379,16 @@ module.exports = React.createClass({
 
 		var keyA = this.props.name + 'A';
 		var keyT = this.props.name + 'T';
+		var foreground;
+		if(this.props.foreground){
+			foreground = this.buildFore(ds);
+		}
 
 		return <svg key={this.props.name} width={this.props.width} height={this.props.height}>
 					<text key={keyT} textAnchor='middle' fontSize={title.titleFSize} x={xT} y={yT}>{title.title}</text>
 					{prints}
 					<Axes name={keyA} empty={empty} {...axisProps} type={types} placement={placement} barTicksLabel={btl} ds={ds} />
+					{foreground}
 			</svg>;
 	}
 });
