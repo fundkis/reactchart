@@ -82,7 +82,7 @@ module.exports = React.createClass({
 		var wyc = (ds.y.c.max + ds.y.c.min + this.props.foreground.height) / 2;
 		var trans = 'translate(' + wxc + ',' + wyc + ')';
 		var keyF = this.props.name + 'F';
-		return <g key={keyB} transform={trans} {...this.props.foreground}>{this.props.foreground.content}</g>;
+		return <g key={keyF} transform={trans} {...this.props.foreground}>{this.props.foreground.content}</g>;
 	},
 	pseries: [],
 	preprocess: function(nb){
