@@ -372,6 +372,7 @@ module.exports = React.createClass({
 				axisProps[key] = value;
 		});
 		axisProps.label = {x: this.props.xLabel, y: this.props.yLabel};
+		axisProps.labelFSize = {x: this.props.xLabelFSize, y: this.props.yLabelFSize};
 
 		var empty = false;
 		_.reduce(this.props.data.series,function(empty,serie){return empty || (serie.data.serie.length !== 0);});
