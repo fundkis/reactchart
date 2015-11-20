@@ -9,7 +9,11 @@
  */
 
 var homothe = function(src,tgt,fac,val){
-  return tgt + (val - src) * fac;
+		// hotfix!!
+	var fN = (inp) => {
+		return (typeof inp === 'string')?Number(inp):inp;
+	};
+  return fN(tgt) + (fN(val) - fN(src)) * fN(fac);
 };
 
 /**
@@ -23,7 +27,7 @@ m.toC = m.toCy = m.toCx = function(ds, data) {
 };
 
 m.toCwidth = function(ds, dist){
-	var d = (dist === undefined)?1.0:dist;
+	var d = (dist === undefined)?1:dist;
 	return Math.abs(ds.d2c * d);
 };
 
@@ -32,7 +36,7 @@ m.toD = m.toDy = m.toDx = function(ds, coord) {
 };
 
 m.toDwidth = function(ds, dist){
-	var d = (dist === undefined)?1.0:dist;
+	var d = (dist === undefined)?1:dist;
 	return Math.abs(ds.c2d * d);
 };
 
