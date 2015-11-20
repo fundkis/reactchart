@@ -9,11 +9,7 @@
  */
 
 var homothe = function(src,tgt,fac,val){
-		// hotfix!!
-	var fN = (inp) => {
-		return (typeof inp === 'string')?Number(inp):inp;
-	};
-  return fN(tgt) + (fN(val) - fN(src)) * fN(fac);
+  return tgt + (val - src) * fac;
 };
 
 /**
