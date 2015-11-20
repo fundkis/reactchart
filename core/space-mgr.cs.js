@@ -85,23 +85,23 @@ m.space = function(datas,universe,axis,title){
 	// 1 - the coordinate space
 		// compute the world
 			// universe-world margins
-		var xlm = 0.0;
-		var xrm = 0.0;
-		var ytm = 0.0;
-		var ybm = 0.0;
+		var xlm = 0;
+		var xrm = 0;
+		var ytm = 0;
+		var ybm = 0;
 
 		// min and max of coord space
-		var xcmin = 0.0;
-		var xcmax = 0.0;
-		var ycmin = 0.0;
-		var ycmax = 0.0;
+		var xcmin = 0;
+		var xcmax = 0;
+		var ycmin = 0;
+		var ycmax = 0;
 
 		// x labels
-		var xl = (axis.yLabel.length !== 0)?axis.yLabelFSize + 10.0:0.0; // we hardcode a 10px margin on labels
+		var xl = (axis.yLabel.length !== 0)?axis.yLabelFSize + 10:0; // we hardcode a 10px margin on labels
 
 		// default margin for ticks is 20px for the y dir,
         // 40px for the x dir
-		var defx = 40.0;
+		var defx = 40;
 
 		// y axis => x dir margins
 		switch (axis.yPlace){
@@ -116,14 +116,14 @@ m.space = function(datas,universe,axis,title){
 		}
 
 		// y label
-		var yl = (axis.xLabel.length !== 0)?axis.xLabelFSize + 10.0:0.0; // we hardcode a 10px margin on labels
+		var yl = (axis.xLabel.length !== 0)?axis.xLabelFSize + 10:0; // we hardcode a 10px margin on labels
 
 		// title is at the top
-		ytm += (title.length !== 0)?title.titleFSize + 10.0:0.0;
+		ytm += (title.length !== 0)?title.titleFSize + 10:0;
 
 		// default margin for ticks is 20px for the y dir,
 		// 40px for the x dir
-		var defy = 20.0;
+		var defy = 20;
 
 		// x axis => y dir margins
 		switch(axis.xPlace){
@@ -142,16 +142,19 @@ m.space = function(datas,universe,axis,title){
 		// efficiencies: automatic
 		// margins computed whatever
 		// happens
-		if(!!axis.marginsO.l){
+		var isNil = function(val){
+			return (val === undefined || val === null);
+		};
+		if(!isNil(axis.marginsO.l)){
 			xlm = axis.marginsO.l;
 		}
-		if(!!axis.marginsO.r){
+		if(!isNil(axis.marginsO.r)){
 			xrm = axis.marginsO.r;
 		}
-		if(!!axis.marginsO.t){
+		if(!isNil(axis.marginsO.t)){
 			ytm = axis.marginsO.t;
 		}
-		if(!!axis.marginsO.b){
+		if(!isNil(axis.marginsO.b)){
 			ybm = axis.marginsO.b;
 		}
 
@@ -240,14 +243,14 @@ m.space = function(datas,universe,axis,title){
 	// if we have empty points, we define default so the graph can still
 	// be alive with axis and empty curves
 
-		var dxmindef = (datas.type === 'date')?1000:1.0;
-		var dxmaxdef = (datas.type === 'date')?4000:4.0;
-		var dymindef = 1.0;
-		var dymaxdef = 4.0;
-		var xdmin = 0.0;
-		var xdmax = 0.0;
-		var ydmin = 0.0;
-		var ydmax = 0.0;
+		var dxmindef = (datas.type === 'date')?1000:1;
+		var dxmaxdef = (datas.type === 'date')?4000:4;
+		var dymindef = 1;
+		var dymaxdef = 4;
+		var xdmin = 0;
+		var xdmax = 0;
+		var ydmin = 0;
+		var ydmax = 0;
 
 		
 		var xbounds = data_min_max('x',dxmindef,dxmaxdef,xpmin,xpmax,xcmin,xcmax);
@@ -307,7 +310,7 @@ m.space = function(datas,universe,axis,title){
 		var round_borders = function(ds,type,domin,domax){
 			// simple search
 			var search_closest = function(target,step){
-				var x = 0.0;
+				var x = 0;
 				var olddist = target - x;
 				var prop = x + step * olddist / Math.abs(olddist);
 				var newdist = target - prop;
@@ -324,7 +327,7 @@ m.space = function(datas,universe,axis,title){
 
 				if(domin){
 					ds.d.min = dm.dateBefore( dm.before(ds.d.min,0,Math.min(stepper.step.asMonths(), 6),0),0,0,1).getTime(); // max is 6 month
-					if(ds.d.min < 0){ds.d.min = 0.0;}
+					if(ds.d.min < 0){ds.d.min = 0;}
 				}
 
 				if(domax){
