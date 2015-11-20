@@ -41,7 +41,7 @@ var Khist = require('../tech/helpers/Knuth-histogram.cs.js');
  */
 /////////////////////////////////////
 
-module.exports = React.createClass({
+var Graph = React.createClass({
 	getDefaultProps: function() {
 		return {
 			// general
@@ -88,6 +88,19 @@ module.exports = React.createClass({
 	preprocess: function(nb){
 		var datas = this.props;
 		nb.n = 0;
+		var equal = function(p1,p2){
+			if(p1 instanceof Date){
+				if(!(p2 instanceof Date) ){
+					throw 'Inconsistent abscissa in preprocess';
+				}
+				return p1.getTime() === p2.getTime();
+			}else{
+				if(p2 instanceof Date){
+					throw 'Inconsistent abscissa in preprocess';
+				}
+				return p1 === p2;
+			}
+		};
 		// right now the evil way: we change the props!!
 		for(var g = 0; g < this.props.graphProps.length; g++)
 		{
@@ -103,7 +116,7 @@ module.exports = React.createClass({
 				var u = 0;
 				while(notcomplete){
 					var data = _.map(	_.filter(this.props.data.series[g].data.series, function(point){
-							return point[otherdir] === curref;
+							return equal(point[otherdir],curref);
 						}),
 						function(point){return point[dir];});
 					var hist = Khist.opt_histo(data);
@@ -306,6 +319,34 @@ module.exports = React.createClass({
 			return out;
 		};
 
+		//utilities for print graph
+		var me = this;
+		var spanNeed = function(m){
+			return (me.props.data.series[m].type === 'Bars' && !me.props.data.series[m].stacked) ||
+				(me.props.graphProps[m].shader && me.props.graphProps[m].shader.type === 'histogram');
+		};
+
+		var distance = undefined;
+		var distPoint = function(){
+			if(!distance){
+				for(var s = 0; s < me.props.data.series.length; s++){
+					if(!spanNeed(s)){
+						continue;
+					}
+					var serie = (!!me.pseries[s])?me.pseries[s]:me.props.data.series[s].data.series;
+					for(var p = 0; p < serie.length - 1; p++){
+						var d = Math.abs(toAbs(serie[p + 1]) - toAbs(serie[p]));
+						if(d === 0){continue;}
+						if(!distance || distance > d){
+							distance = d;
+						}
+					}
+				}
+			}
+			return distance;
+		};
+
+
 		// printing the graph
 		var prints = [];
 		for(var m = 0; m < this.props.data.series.length; m++){
@@ -318,13 +359,12 @@ module.exports = React.createClass({
 			if(this.props.graphProps.length > m){
 				graphProps = this.props.graphProps[m];
 			}
+
 			// if bars
-			var spanNeed = (this.props.data.series[m].type === 'Bars' && !this.props.data.series[m].stacked) ||
-				(this.props.graphProps[m].shader && this.props.graphProps[m].shader.type === 'histogram');
-			if(spanNeed && !graphProps.span){
+			if(spanNeed(m) && !graphProps.span){
 				// necessary in x dir (for the moment)
-				graphProps.span = 0.8/nBar;
-				graphProps.xoffset = - 0.4 + (0.8 * m + 0.1)/nBar + 0.5 * graphProps.span;
+				graphProps.span = 0.8/nBar * distPoint() || (ds.x.d.max - ds.x.d.min) / 5;
+				//graphProps.xoffset = - 0.4 + (0.8 * m + 0.1)/nBar + 0.5 * graphProps.span;
 			}
 			// the world
 			graphProps.dsx = ds.x;
@@ -391,5 +431,8 @@ module.exports = React.createClass({
 					<Axes name={keyA} empty={empty} {...axisProps} type={types} placement={placement} barTicksLabel={btl} ds={ds} />
 					{foreground}
 			</svg>;
+
 	}
 });
+
+module.exports = Graph;
