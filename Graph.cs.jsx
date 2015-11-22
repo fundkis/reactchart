@@ -326,7 +326,7 @@ var Graph = React.createClass({
 				(me.props.graphProps[m].shader && me.props.graphProps[m].shader.type === 'histogram');
 		};
 
-		var distance = undefined;
+		var distance = null;
 		var distPoint = function(){
 			if(!distance){
 				for(var s = 0; s < me.props.data.series.length; s++){
@@ -425,7 +425,10 @@ var Graph = React.createClass({
 			foreground = this.buildFore(ds);
 		}
 
+		var cadre = (!!this.props.cadre)?<rect width={this.props.width} height={this.props.height} strokeWidth='1' stroke='black' fill='none' x='0' y='0'/>:null;
+
 		return <svg key={this.props.name} width={this.props.width} height={this.props.height}>
+					{cadre}
 					<text key={keyT} textAnchor='middle' fontSize={title.titleFSize} x={xT} y={yT}>{title.title}</text>
 					{prints}
 					<Axes name={keyA} empty={empty} {...axisProps} type={types} placement={placement} barTicksLabel={btl} ds={ds} />
