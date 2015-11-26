@@ -1,7 +1,7 @@
 var React = require('react');
 var dataScale = require('../core/space-transf.cs.js');
 
-module.exports = React.createClass({
+var BarMark = React.createClass({
   getDefaultProps: function() {
 	 return {
 		dsx: {}, // see space-mgr for details
@@ -40,13 +40,12 @@ module.exports = React.createClass({
 	var yr = dataScale.toC(this.props.dsy, 0.5 * height + this.props.y ); // all in dataSpace
 
 	var rotate = 'rotate(' + (this.props.dir - 90) + ' ' + xr + ' ' + yr + ')';
-	var key = this.props.name + 'r';
 	var color = this.props.markColor || this.props.fill || 'none';
 
-	 return (
-			<rect key={key}  x={x} y={y} height={height} width={width} transform={rotate}
+	 return <rect x={x} y={y} height={height} width={width} transform={rotate}
 			stroke={this.props.stroke} strokeWidth={this.props.strokeWidth} 
-			fill={color} opacity={this.props.shade}/>
-	 );
+			fill={color} opacity={this.props.shade}/>;
   }
 });
+
+module.exports = BarMark;

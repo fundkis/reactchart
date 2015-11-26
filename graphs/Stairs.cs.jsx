@@ -3,7 +3,7 @@ var marker = require('../marks/marker.cs.jsx');
 var space = require('../core/space-transf.cs.js');
 var _ = require('underscore');
 
-module.exports = React.createClass({
+var StairsChart = React.createClass({
 	getDefaultProps: function(){
 		return {
 			stroke: 'black',
@@ -27,13 +27,11 @@ module.exports = React.createClass({
 		var dsx = this.props.dsx;
 		var dsy = this.props.dsy;
 
-		var props = this.props;
-		var dropsx = _.map(this.props.points,function(point){return point.dropx || dsx.d.min;});
 		var dropsy = _.map(this.props.points,function(point){return point.dropy || dsy.d.min;});
 
 		var datas = [{x:0,y:0},{x:0,y:0}]; // dealing with empty values
 		if(this.props.points.length > 0){
-			datas = _.map(this.props.points, function(point,index){
+			datas = _.map(this.props.points, function(point){
 				return {
 					x: space.toC(dsx,point.x), 
 					y: space.toC(dsy,point.y)
@@ -86,15 +84,13 @@ module.exports = React.createClass({
 		markprops.name = this.props.name + 'm';
 		markprops.dsx = this.props.dsx;
 		markprops.dsy = this.props.dsy;
-			var marks = marker.marks(this.props.points,markprops,this.props.mark,this.props.markType);
+		var marks = marker.marks(this.props.points,markprops,this.props.mark,this.props.markType);
 
-		var key = this.props.name + 'p';
-		var keyg = this.props.name + 'g';
-		var keym = this.props.name + 'm';
-
-		return <g key={keyg}>
-					<polyline key={key} points={data} stroke={this.props.stroke} strokeWidth={this.props.strokeWidth} fill={this.props.fill} opacity={this.props.opacity}/>
-					<g key={keym}>{marks}</g>
+		return <g>
+					<polyline points={data} stroke={this.props.stroke} strokeWidth={this.props.strokeWidth} fill={this.props.fill} opacity={this.props.opacity}/>
+					<g>{marks}</g>
 				</g>;
 }
 });
+
+module.exports = StairsChart;

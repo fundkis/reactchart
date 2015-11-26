@@ -11,7 +11,7 @@ m.marks_map.dot = function(data,props){
 
 	return _.map(data, function(point){
 		var key = props.name + 'd' + point.x + ',' + point.y;
-		return <Dot name={key} x={point.x} y={point.y} {...props}/>;
+		return <Dot key={key} name={key} x={point.x} y={point.y} {...props}/>;
 	});
 };
 
@@ -21,12 +21,14 @@ m.marks_map.bar = function(data,props){
 		var key = props.name + '-' + index;
 		// props are passed first so they can be overwritten (like name)
 		props.span = fullSpan * ( (!!point.span)?point.span:1 );
-		return <Bar {...props} name={key} x={point.x} y={point.y} shade={point.shade} drop={point.drop}/>;
+		return <Bar {...props} key={key} name={key} x={point.x} y={point.y} shade={point.shade} drop={point.drop}/>;
 	});
 };
 
 m.marks = function(data,props,print,key){
-	if(!print)return [];
+	if(!print){
+		return [];
+	}
 	if(!m.marks_map[key]){
 		throw 'unrecognized mark type';
 	}

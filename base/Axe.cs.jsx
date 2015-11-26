@@ -3,7 +3,7 @@ var Tick = require('./Tick.cs.jsx');
 var ticker = require('./ticker.cs.js');
 var _ = require('underscore');
 
-module.exports = React.createClass({
+var Axe = React.createClass({
 	PropTypes:{
 		majorGrid: React.PropTypes.bool,
 		minorGrid: React.PropTypes.bool
@@ -33,7 +33,7 @@ module.exports = React.createClass({
 			tickProps: {},
 		};
 	},
-	deepCopy: function(tgt,thing,print){
+	deepCopy: function(tgt,thing){
 		if(typeof thing === 'object'){
 			if(!tgt){
 				if(thing instanceof Array){
@@ -87,6 +87,7 @@ module.exports = React.createClass({
 		var ticks = (this.props.majorTicks)?_.map(ticker.ticks(this.props.origin,this.props.ds,this.props.dir,props),function(tick,index){
 			if(!!tick.offset){tickProps.major.offset = tick.offset;}
 		   tickProps.name = key + 't' + index;
+		   tickProps.key = key + 't' + index;
 			return <Tick {...tickProps} where={tick.here} label={tick.me} dir={tick.dir} />;
 		}):[];
 		var subTickProps = Tick.getDefaultProps(); //always start fresh
@@ -99,6 +100,7 @@ module.exports = React.createClass({
 			ticks = ticks.concat(_.map(ticker.subticks(this.props.origin,this.props.ds,this.props.dir,props),function(subtick,index){
 					if(!!subtick.offset){subTickProps.minor.offset = subtick.offset;}
 		   		subTickProps.name = key + 'st' + index;
+		   		subTickProps.key = key + 'st' + index;
 					return <Tick {...subTickProps} where={subtick.here} label={subtick.me} dir={subtick.dir}/>;
 				})
 			);
@@ -133,16 +135,14 @@ module.exports = React.createClass({
 		var dird = (this.props.dir > 0)?-this.props.dir:this.props.dir;
 		var rotate = 'rotate(' + dird + ' ' + xL + ' ' + yL + ')'; // in degrees
 
-		var keyL = this.props.name + 'L';
-		var keyT = this.props.name + 'T';
-		var keyg = this.props.name + 'g';
-
-		return <g key={keyg}>
-			<line key={keyL} x1={xstart} x2={xend} y1={ystart} y2={yend} 
+		return <g>
+			<line x1={xstart} x2={xend} y1={ystart} y2={yend} 
 				stroke={this.props.stroke}
 				strokeWidth={this.props.strokeWidth} />
 			{ticks}
-			<text key={keyT} x={xL} y={yL} transform={rotate} textAnchor={textAnchor} fontSize={fs}>{this.props.label}</text>
+			<text x={xL} y={yL} transform={rotate} textAnchor={textAnchor} fontSize={fs}>{this.props.label}</text>
 			</g>;
 }
 });
+
+module.exports = Axe;

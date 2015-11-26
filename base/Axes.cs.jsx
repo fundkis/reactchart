@@ -10,7 +10,7 @@ var Axe = require('./Axe.cs.jsx');
  * explicit.
  *
  */
-module.exports = React.createClass({
+var Axes = React.createClass({
 	getDefaultProps: function(){
 		return {
 			// per axis
@@ -89,12 +89,12 @@ module.exports = React.createClass({
 		xAxeProps.dir = 0;
 		yAxeProps.dir = 90;
 
-		var keyg = this.props.name + 'g';
-
-		return <g key={keyg}>
+		return <g>
 				<Axe {...xAxeProps} />
 				<Axe {...yAxeProps} />
 			</g>;
 	}
 
 });
+
+module.exports = Axes;

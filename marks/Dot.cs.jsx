@@ -1,7 +1,7 @@
 var React = require('react');
 var dataScale = require('../core/space-transf.cs.js');
 
-module.exports = React.createClass({
+var DotMark = React.createClass({
 	getDefaultProps: function(){
 		return {
 			dsx: {},
@@ -21,6 +21,8 @@ module.exports = React.createClass({
 		var s = this.props.size;
 		var f = this.props.fill;
 		if(s > 0){r = s;}
-		return <circle key={this.props.name} cx={x} cy={y} r={r} fill={f} opacity={this.props.shade}/>;
+		return <circle cx={x} cy={y} r={r} fill={f} opacity={this.props.shade}/>;
 	}
 });
+
+module.exports = DotMark;

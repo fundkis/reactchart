@@ -2,7 +2,7 @@ var React = require('react');
 var marker = require('../marks/marker.cs.jsx');
 var _ = require('underscore');
 
-module.exports = React.createClass({
+var BarChart = React.createClass({
   getDefaultProps: function() {
 	 return {
 		dsx: {}, // see space-mgr for details
@@ -60,8 +60,8 @@ module.exports = React.createClass({
 	props.name = this.props.key + '.b';
    var bars = marker.marks(datas,props,this.props.mark,this.props.markType);
 
-	var keyg = this.props.name + 'g';
-
-	 return <g key={keyg}>{bars}</g>;
+	 return <g>{bars}</g>;
   }
 });
+
+module.exports = BarChart;

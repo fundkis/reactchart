@@ -1,6 +1,6 @@
 var React = require('react');
 
-module.exports = React.createClass({
+var Tick = React.createClass({
 	PropTypes:{
 		draw: React.PropTypes.bool,
 		label: React.PropTypes.string,
@@ -106,15 +106,12 @@ module.exports = React.createClass({
 
 		var width = (this.props.draw)?this.props.width:0;
 
-		var key1 = this.props.name + '1';
-		var key2 = this.props.name + '2';
-		var key3 = this.props.name + '3';
-		var keyg = this.props.name + 'g';
-
-		return <g key={keyg}>
-				<line key={key1} x1={x1} x2={xG2} y1={y1} y2={yG2} stroke={gridColor} strokeWidth={gridWidth}/>
-				<line key={key2} x1={x1} x2={x2} y1={y1} y2={y2} stroke={details.color} strokeWidth={width}/>
-				<text key={key3} x={xt} y={yt} textAnchor={textAnchor} fontSize={fs} fill={this.props.labelColor}>{this.props.label}</text>
+		return <g>
+				<line x1={x1} x2={xG2} y1={y1} y2={yG2} stroke={gridColor} strokeWidth={gridWidth}/>
+				<line x1={x1} x2={x2} y1={y1} y2={y2} stroke={details.color} strokeWidth={width}/>
+				<text x={xt} y={yt} textAnchor={textAnchor} fontSize={fs} fill={this.props.labelColor}>{this.props.label}</text>
 		</g>;
 	}
 });
+
+module.exports = Tick;

@@ -3,7 +3,7 @@ var _ = require('underscore');
 var marker = require('../marks/marker.cs.jsx');
 var space = require('../core/space-transf.cs.js');
 
-module.exports = React.createClass({
+var PlainChart = React.createClass({
 	propTypes: {
 		mark: React.PropTypes.bool
 	},
@@ -88,17 +88,15 @@ module.exports = React.createClass({
 			}
 		var marks = marker.marks(Dpoints,markprops,this.props.mark,this.props.markType);
 
-		var keyP = this.props.name + 'P';
-		var keyg = this.props.name + 'g';
-		var keym = this.props.name + 'M';
-
-		return (<g key={keyg}>
-			<path key={keyP}
+		return <g>
+			<path
 				d={points} 
 				stroke={this.props.stroke} 
 				strokeWidth={this.props.strokeWidth}
 				fill={this.props.fill}/>
-			<g key={keym}>{marks}</g>
-			</g>);
+			<g>{marks}</g>
+			</g>;
 }
 });
+
+module.exports = PlainChart;

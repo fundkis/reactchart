@@ -81,8 +81,7 @@ var Graph = React.createClass({
 		var wxc = (ds.x.c.max + ds.x.c.min - this.props.foreground.width) / 2;
 		var wyc = (ds.y.c.max + ds.y.c.min + this.props.foreground.height) / 2;
 		var trans = 'translate(' + wxc + ',' + wyc + ')';
-		var keyF = this.props.name + 'F';
-		return <g key={keyF} transform={trans} {...this.props.foreground}>{this.props.foreground.content}</g>;
+		return <g transform={trans} {...this.props.foreground}>{this.props.foreground.content}</g>;
 	},
 	pseries: [],
 	preprocess: function(nb){
@@ -419,7 +418,6 @@ var Graph = React.createClass({
 		empty = !empty;
 
 		var keyA = this.props.name + 'A';
-		var keyT = this.props.name + 'T';
 		var foreground;
 		if(this.props.foreground){
 			foreground = this.buildFore(ds);
@@ -427,9 +425,9 @@ var Graph = React.createClass({
 
 		var cadre = (!!this.props.cadre)?<rect width={this.props.width} height={this.props.height} strokeWidth='1' stroke='black' fill='none' x='0' y='0'/>:null;
 
-		return <svg key={this.props.name} width={this.props.width} height={this.props.height}>
+		return <svg width={this.props.width} height={this.props.height}>
 					{cadre}
-					<text key={keyT} textAnchor='middle' fontSize={title.titleFSize} x={xT} y={yT}>{title.title}</text>
+					<text textAnchor='middle' fontSize={title.titleFSize} x={xT} y={yT}>{title.title}</text>
 					{prints}
 					<Axes name={keyA} empty={empty} {...axisProps} type={types} placement={placement} barTicksLabel={btl} ds={ds} />
 					{foreground}
