@@ -53,12 +53,12 @@ var labelize = function(val_d,step,func){
 			// step = 3 month
 		} else if(step.step.asMonths() === 3){
 				//this is the first days of the next period, going back one day
-			var t = 'T' + ( Math.floor(( hd.addDays(val,-1).getMonth() + 1 )/3));
+			var t = 'T' + ( Math.floor(( hd.addDays(val,-1).getMonth())/3) + 1);
 			out.val = t;
 			out.off = true;
 		} else if(step.step.asMonths() === 6){
 				//this is the first days of the next period, going back one day
-			var s = 'S' + ( Math.floor(( hd.addDays(val,-1).getMonth() + 1 )/2));
+			var s = 'S' + ( Math.floor(( hd.addDays(val,-1).getMonth())/6) + 1);
 			out.val = s;
 			out.off = true;
 		} else {
