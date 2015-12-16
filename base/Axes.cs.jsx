@@ -1,5 +1,8 @@
 var React = require('react');
 var Axe = require('./Axe.cs.jsx');
+var aProps = require('../core/proprieties.cs.js');
+var _ = require('underscore');
+var utils = require('../core/utils.cs.js');
 
 /*
  * The Axes environment basically just
@@ -12,86 +15,56 @@ var Axe = require('./Axe.cs.jsx');
  */
 var Axes = React.createClass({
 	getDefaultProps: function(){
-		return {
-			// per axis
-			majorGrid:     {x: false, y: false},
-			minorGrid:     {x: false, y: false},
-			majorTicks:    {x: true,  y: true},
-			minorTicks:    {x: false, y: false},
-			stroke:        {x: 'black', y:'black'},
-			strokeWidth:   {x: 1, y: 1},
-			label:         {x: '', y: ''},
-			labelDist:     {x: 20, y: 20},
-			labelFSize:    {x: 20, y: 20},
-			labelize:      {x: {major: null, minor: null}, y:{major: null, minor: null}},
-			barTicksLabel: {x: [], y: []},
-			tickProps:     {x: {}, y: {}},
-			subTickProps:  {x: {}, y: {}},
-			placement:     {x: 'bottom', y:'left'},
-			ds:            {x: {}, y: {}}, // see space-mgr for details
-			type:          {},
-			empty:         true
-		};
+		return aProps.Axes;
 	},
-	render: function(){
 
-		var origin = {};
-		var ds = this.props.ds;
-		switch(this.props.placement.x){
+	abscissa: function(){
+		var axis = this.axis;
+		return _.map(this.props.abs, (p,idx) => {return axis(p,'a.' + idx);});
+	},
+
+	ordinate: function(){
+		var axis = this.axis;
+		return _.map(this.props.ord, (p,idx) => {return axis(p,'o.' + idx);});
+	},
+
+	axis: function(props,key){
+		var axisProps = utils.deepCp(props);
+		var partners = (key[0] === 'a') ? this.props.ord : this.props.abs;
+		if(utils.isNil(axisProps.partner)){
+			axisProps.origin = { x: axisProps.ds.c.min, y: partners[0].ds.c.min};
+		}else{
+			axisProps.origin = { x: axisProps.ds.c.min, y: partners[axisProps.partner].ds.c.min};
+		}
+		switch(axisProps.placement){
 			case 'bottom':
-				origin.x = {x:ds.x.c.min, y:ds.y.c.min};
+				axisProps.dir = {x:1, y: 0};
+				axisProps.labelDir = {x:0, y: 1};
 				break;
 			case 'top':
-				origin.x = {x:ds.x.c.min, y:ds.y.c.max};
+				axisProps.dir = {x:1, y: 0};
+				axisProps.labelDir = {x:0, y: -1};
 				break;
-			default:
-				throw 'Error in x axis placement';
-		}
-		switch(this.props.placement.y){
 			case 'left':
-				origin.y = {x:ds.x.c.min, y:ds.y.c.min};
+				axisProps.dir = {x:0, y: -1};
+				axisProps.labelDir = {x:-1, y: 0};
 				break;
 			case 'right':
-				origin.y = {x:ds.x.c.max, y:ds.y.c.max};
+				axisProps.dir = {x:0, y: -1};
+				axisProps.labelDir = {x:1, y: 0};
 				break;
 			default:
-				throw 'Error in y axis placement';
+				throw new Error('Placement of axis unknown, check axis: ' + key);
 		}
 
-		var gridXlength = ds.y.c.max - ds.y.c.min;
-		var gridYlength = ds.x.c.max - ds.x.c.min;
-		var xAxeProps = Axe.getDefaultProps(); // we always start fresh
-		var yAxeProps = Axe.getDefaultProps(); // we always start fresh
-		var prop;
-		for (prop in this.props){
-			switch(prop){
-			case 'empty':
-				continue;
-			case 'barTicksLabel':
-				xAxeProps.ticksLabel = this.props[prop].x; 
-				yAxeProps.ticksLabel = this.props[prop].y;
-				break;
-			default:
-				xAxeProps[prop] = this.props[prop].x; 
-				yAxeProps[prop] = (prop === 'type')?this.props[prop].y[0]:this.props[prop].y;
-				break;
-			}
-		}
-		xAxeProps.origin = origin.x;
-		yAxeProps.origin = origin.y;
-		xAxeProps.gridLength = gridXlength;
-		yAxeProps.gridLength = gridYlength;
-		xAxeProps.empty = this.props.empty;
-		yAxeProps.empty = this.props.empty;
+		return <Axe key={key} {...axisProps} CS={this.props.CS}/>;
+	},
 
-		xAxeProps.name = this.props.name + "x";
-		yAxeProps.name = this.props.name + "y";
-		xAxeProps.dir = 0;
-		yAxeProps.dir = 90;
+	render: function(){
 
 		return <g>
-				<Axe {...xAxeProps} />
-				<Axe {...yAxeProps} />
+				{this.abscissa()}
+				{this.ordinates()}
 			</g>;
 	}
 
