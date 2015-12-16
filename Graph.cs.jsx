@@ -5,6 +5,7 @@ var grapher = require('./graphs/grapher.cs.jsx');
 var core = require('./core/process.cs.js');
 var gProps = require('./core/proprieties.cs.js');
 var utils = require('./core/utils.cs.js');
+var _ = require('underscore');
 
 ///////////////////////////////////////////
 /* high-level API
@@ -118,7 +119,7 @@ var Graph = React.createClass({
 
 		var nameAx = this.props.name + '.axes';
 
-		var props = this.props.axisProps;
+		var props = utils.deepCp(this.props.axisProps);
 	/* DS = {
 	 *	y: {
 	 *		left:  space(lefts, universe.height,bordersy,title),
@@ -133,6 +134,8 @@ var Graph = React.createClass({
 		var DS = this.state.spaces;
 		var c   = {abs: 'x',      ord: 'y'};
 		var def = {abs: 'bottom', ord: 'left'};
+
+		// axis placement
 		for(var t in c){
 			for(var a = 0; a < props[t].length; a++){
 				// defaulted at 'bottom' & 'left'
@@ -144,6 +147,28 @@ var Graph = React.createClass({
 				}
 			}
 		}
+
+		// if labelled data
+		for(var s = 0; s < this.state.series.length; s++){
+			var firstPoint = this.state.series[s][0];
+			for(var k in c){
+				var label = c[k] + 'label';
+				if(!!firstPoint[label]){
+					// default
+					var look = def[k];
+					if(!utils.isNil(this.props.data[s][k]) && !!this.props.data[s][k].axis){
+						look = this.props.data[s][k].axis;
+					}
+					for(var ax = 0; ax < props[k].length; ax++){
+						if(props[k][ax].placement === look){
+							props[k][ax].ticksLabel = _.map(this.state.series[s],(point) => {return {coord: point[c[k]], label: point[label]};});
+							break;
+						}
+					}
+				}
+			}
+		}
+
 		return <Axes name={nameAx} {...props} />;
 	},
 
