@@ -35,6 +35,7 @@ var m = {};
 
 // that's a major
 m.Grid = {
+	show: false,
 	color: 'LightGray',
 	width: 0.5,
 	major: true,
@@ -49,13 +50,14 @@ m.Tick = {
 		x: 0,
 		y: 0
 	},
+	labelDir: {
+		x: 0,
+		y: 1
+	},
 	length: 15,
 	out: 0.25, // proportion that is outside (-dir)
 	color: 'black',
-	labelOffset: {
-		x: 0,
-		y: 0
-	},
+	labelOffset: 0,
 	labelize: null,
 	label: '',
 	labelFSize: 10,
@@ -72,10 +74,7 @@ m.Axe = {
 			length: 7,
 			out: 0,
 			color: 'gray',
-			labelOffset: {
-				x: 0,
-				y: 3.75
-			}
+			labelOffset: 3.75,
 		})
 	},
 	grid: {
@@ -85,10 +84,14 @@ m.Axe = {
 			major: false
 		})
 	},
+	tickLabels: [], //{coord: where, label: ''}, coord in ds
 	color:     'black',
 	width:      1,
 	label:      '',
-	labelDist:  20,
+	labelOffset: {
+		x: 40,
+		y: 40
+	},
 	labelFSize: 20,
 	ds:         {},
 	empty:      true,
@@ -102,6 +105,11 @@ m.Axe = {
 	dir: {
 		x: 1,
 		y: 0
+	},
+	// in cs !! y is top to bottom
+	labelDir: {
+		x: 0,
+		y: 1
 	}
 };
 
