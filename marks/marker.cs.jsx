@@ -3,37 +3,51 @@ var Dot = require('./Dot.cs.jsx');
 var Bar = require('./Bar.cs.jsx');
 var _ = require('underscore');
 
-var m = {};
 
-m.marks_map = {};
+// overwrite props if needed
+var p2P = function(ps,props,point){
 
-m.marks_map.dot = function(data,props){
+	var addProp = function(p,props,point){
+		if(!!point[p]){
+			props[p] = point[p];
+		}
+	};
+
+	for(var p = 0; p < ps.length; p++){
+		addProp(ps[p],props,point);
+	}
+};
+
+var marks = {};
+
+marks.dot = function(data,props){
 
 	return _.map(data, function(point){
 		var key = props.name + 'd' + point.x + ',' + point.y;
-		return <Dot key={key} name={key} x={point.x} y={point.y} {...props}/>;
+		p2P(['x','y'],props,point);
+		return <Dot key={key} name={key} {...props}/>;
 	});
 };
 
-m.marks_map.bar = function(data,props){
+marks.bar = function(data,props){
 	var fullSpan = props.span;
 	return _.map(data, function(point,index){
 		var key = props.name + '-' + index;
-		// props are passed first so they can be overwritten (like name)
 		props.span = fullSpan * ( (!!point.span)?point.span:1 );
-		return <Bar {...props} key={key} name={key} x={point.x} y={point.y} shade={point.shade} drop={point.drop}/>;
+		p2P(['x','y','shade','drop'],props,point);
+		return <Bar {...props} key={key} name={key}/>;
 	});
 };
 
-m.marks = function(data,props,print,key){
-	if(!print){
-		return [];
-	}
-	if(!m.marks_map[key]){
-		throw 'unrecognized mark type';
+var m = {};
+
+m.marks = function(data,props,key){
+
+	if(!marks[key]){
+		throw new Error('unrecognized mark type');
 	}
 
-	return (print)?m.marks_map[key](data,props):{};
+	return marks[key](data,props);
 };
 
 module.exports = m;
