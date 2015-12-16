@@ -27,36 +27,21 @@ var PlainChart = React.createClass({
 			points: [],
 			dsx: {}, // see space-mgr for details
 			dsy: {}  // see space-mgr for details
-			};
+		};
 	},
-	render: function(){
+
+	path: function(){
 		// getting values, easier
 		var dsx = this.props.dsx;
 		var dsy = this.props.dsy;
 		var dropsy = _.map(this.props.points,function(point){return point.dropy || dsy.d.min;});
 
-		var datas = [{x:0,y:0}]; // dealing with empty values
-		var Dpoints = [{x:0,y:0}]; // dealing with empty values
-		if(this.props.points.length > 0){
-			datas = _.map(this.props.points, function(point){
-				return {
-					x: space.toC(dsx,point.x), 
-					y: space.toC(dsy,point.y)
-				};
-			});
-			Dpoints = _.map(this.props.points, function(point){
-				return {
-					x: point.x,
-					y: point.y,
-					shade: point.shade,
-				//	span: point.span,
-					drop: {
-						x: point.dropx,
-						y: point.dropy
-					}
-				};
-			});
-		}
+		var datas = _.map(this.props.points, function(point){
+			return {
+				x: space.toC(dsx,point.x), 
+				y: space.toC(dsy,point.y)
+			};
+		});
 
 		var line = (this.props.onlyMarks)?' M ':' L ';
 		var points = 'M '+ datas[0].x + ' ' + datas[0].y; // init
@@ -69,32 +54,52 @@ var PlainChart = React.createClass({
 			points += ' M ' + datas[i].x + ' ' + space.toC(dsy,dropsy[i]);
 		}
 
-			// marks
+		return points;
+	},
+
+	marks: function(){
+		var Dpoints = _.map(this.props.points, function(point){
+			return {
+				x: point.x,
+				y: point.y,
+				shade: point.shade,
+			//	span: point.span,
+				drop: {
+					x: point.dropx,
+					y: point.dropy
+				}
+			};
+		});
+
 		var markprops = this.props.markProps;
+		var markCol = this.props.markColor || this.props.stroke;
 		if(!markprops.fill){
-			markprops.fill = this.props.markColor;
+			markprops.fill = markCol;
 		}
 		if(!markprops.size){
 			markprops.size = this.props.markSize;
 		}
 		markprops.name = this.props.name + 'm';
-		markprops.dsx = dsx;
-		markprops.dsy = dsy;
-			if(!!this.props.span){
-			 markprops.span = this.props.span;
-			}
-			if(!!this.props.xoffset){
-			 markprops.xoffset = this.props.xoffset;
-			}
-		var marks = marker.marks(Dpoints,markprops,this.props.mark,this.props.markType);
+		markprops.dsx = this.props.dsx;
+		markprops.dsy = this.props.dsy;
+		if(!!this.props.span){
+		 markprops.span = this.props.span;
+		}
+		if(!!this.props.xoffset){
+		 markprops.xoffset = this.props.xoffset;
+		}
+		return (this.props.mark === false)?null:marker.marks(Dpoints,markprops,this.props.markType);
+	},
+
+	render: function(){
 
 		return <g>
 			<path
-				d={points} 
+				d={this.path()} 
 				stroke={this.props.stroke} 
 				strokeWidth={this.props.strokeWidth}
 				fill={this.props.fill}/>
-			<g>{marks}</g>
+			{this.marks()}
 			</g>;
 }
 });
