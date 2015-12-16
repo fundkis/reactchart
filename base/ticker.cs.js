@@ -16,10 +16,7 @@
  *				- DD/MM else
  */
 
-var space  = require('../core/space-transf.cs.js');
-var moment = require('moment');
-var hd = require('../../tech/helpers/date.cs.js');
-var hmisc = require('../../tech/helpers/misc.cs.js');
+var utils = require('../core/utils.cs.js');
 
 /*
  * responsible for printing the label
@@ -266,14 +263,11 @@ var roundStart = function(start,d_step){
 
 };
 
-
-var m = {};
-
 // find the step, this is a 1D step in the dir direction
 // constrains are:
 //   - 1) no more than 10 ticks
 //   - 2) no less than 25 px between ticks
-m.stepper = function(ds,type){
+ var stepper = function(ds,type){
 
 	var step = 0;
 
@@ -331,7 +325,7 @@ m.stepper = function(ds,type){
 // props.labels = [{coord: , label:'tick labels'}] // if props.type === 'text'
 // props.placement = 'top' || 'bottom' || 'left' || 'right'
 // props.labelize = function(val){return ...}
-m.ticks = function(origin,ds,dir,props){
+var ticks = function(ds,dir,origin,major){
 	// boolean to simplify writings
 	var text = (props.type === 'text');
 
@@ -403,7 +397,7 @@ m.ticks = function(origin,ds,dir,props){
 // props.placement = 'top' || 'bottom' || 'left' || 'right'
 // props.empty = true || false // if there's no data
 // props.labelize = function(val){return ...}
-m.subticks = function(origin,ds,dir,props){
+var subticks = function(origin,ds,dir,props){
 
 	// boolean to simplify writings
 	if(props.type === 'text'){
@@ -516,6 +510,20 @@ m.subticks = function(origin,ds,dir,props){
 			ds, d_val, substep, origin.x, origin.y, xdir, ydir, tickdir, 1, offsetLabel));
 	}
 	return out;
+};
+
+var imposedTicks = function(ds,origin,labels){
+	
+};
+
+var m = {};
+
+m.ticks = function(ds,origin,labels,major){
+	if(!!labels && labels.length > 0){
+		return imposedTicks(ds,origin,labels);
+	}
+
+
 };
 
 
