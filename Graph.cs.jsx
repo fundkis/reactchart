@@ -363,7 +363,7 @@ var Graph = React.createClass({
 			if(spanNeed(m) && !graphProps.span){
 				// necessary in x dir (for the moment)
 				graphProps.span = 0.8/nBar * distPoint() || (ds.x.d.max - ds.x.d.min) / 5;
-				//graphProps.xoffset = - 0.4 + (0.8 * m + 0.1)/nBar + 0.5 * graphProps.span;
+				graphProps.xoffset = ( (0.8 * m + 0.1)/nBar - 0.4 )* distPoint() + 0.5 * graphProps.span;
 			}
 			// the world
 			graphProps.dsx = ds.x;
