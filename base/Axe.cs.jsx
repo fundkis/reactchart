@@ -68,49 +68,55 @@ var Axe = React.createClass({
 		return <text x={xL} y={yL} transform={rotate} textAnchor={textAnchor} fontSize={fs}>{this.props.label}</text>;
 	},
 
-	majorG: function(){
+	factor: function(){
+		if(utils.isNil(this.props.comFac) || this.props.comFac === 1){
+			return null;
+		}
+
+		var points = this.points();
+		var off = this.props.labelFsize || 2 * this.props.ticks.major.labelFSize;
+		var fac = {
+			x: this.props.dir.y * off + points.end.x,
+			y: - this.props.dir.x * off + points.end.y
+		};
+
+		var mgr = utils.mgr(this.props.comFac);
+		var om = mgr.orderMag(this.props.comFac);
+		return <text {...fac} textAnchor='center' fontSize={this.props.ticks.major.labelFSize}>
+				10<sup>{om}</sup>
+			</text>;
+	},
+
+	grid: function(){
 		if(!this.props.ticks.major.show &&
 			!this.props.grid.major.show){
 			return null;
 		}
-		var props = this.props.ticks.major;
-		return _.map(ticker.ticks(this.props.ds,this.props.origin,this.props.ticksLabel), (tick) => {
-			return <Tick labelDir={this.props.labelDir}  {...props} {...tick}/>;
+
+		var mgr = utils.mgr(ds.d.min);
+		var start = mgr.roundUp(ds.d.min);
+		var majProps = this.props.ticks.major;
+		var minProps = this.props.ticks.minor;
+		var minor = (this.props.ticks.minor.show === true || this.props.grid.minor.show === true);
+		var distance = utils.distance(this.props.ds.d.max,this.props.ds.d.max);
+		var axisDir = this.props.dir;
+		var labelDir = this.props.labelDir;
+
+		return _.map(ticker.ticks(start,distance,this.props.ticksLabel,minor,this.props.comFac), (tick) => {
+			var cstick = {};
+			cstick.label = tick.label;
+			cstick.where = {
+				x: ds.toC(tick.where * Math.cos(axisDir.x)),
+				y: ds.toC(tick.where * Math.sin(axisDir.y)),
+			};
+			cstick.offset = {
+				x: ds.toC(tick.offset.x * Math.cos(axisDir.x)),
+				y: ds.toC(tick.offset.y * Math.sin(axisDir.y)),
+			};
+			var p = tick.minor ? minProps : majProps;
+			p.labelDir = labelDir;
+			return <Tick {...p} {...cstick}/>;
 		});
-	},
-
-	minorG: function(){
-		if(!this.props.ticks.minor.show &&
-			!this.props.grid.minor.show){
-			return null;
-		}
-		// require major to be defined
-		if(this.ticker.major === null){
-			return null;
-		}
-
-		var props = this.props.ticks.minor;
-		return _.map(ticker.ticks(this.props.ds,this.props.origin,null,this.tick.major), (tick) => {
-			return <Tick {...props} {...tick}/>;
-		});
-	},
-
-	buildGrid: function(){
-		this.ticker = {};
-		this.ticker.major = this.majorG();
-		this.ticker.minor = this.minorG();
-	},
-
-	grid: function(){
-		if(this.ticker === null){
-			this.buildGrid();
-		}
-	},
-
-	ticks: function(){
-		if(this.ticker === null){
-			this.buildGrid();
-		}
 	},
 
 	render: function(){
@@ -121,8 +127,8 @@ var Axe = React.createClass({
 		return <g>
 			{this.grid()}
 			{this.axis()}
-			{this.ticks()}
 			{this.label()}
+			{this.factor()}
 			</g>;
 }
 });
