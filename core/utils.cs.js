@@ -1,7 +1,8 @@
+var nbr = require('./nbrMgr.cs.js');
+var date = require('./dateMgr.cs.js');
+
 var m ={};
 
-m.nbr = require('./nbrMgr.cs.js');
-m.date = require('./dateMgr.cs.js');
 m.math = require('./mathMgr.cs.js');
 
 m.isDate = function(v){
@@ -40,6 +41,18 @@ m.deepCp = function(tgt,thing){
 		tgt = thing;
 	}
 	return tgt;
+};
+
+m.mgr = function(ex){
+	return m.isDate(ex)?date:nbr;
+};
+
+m.homothe = function(src,tgt,fac,val){
+	var t = m.isDate(tgt) ? tgt.getTime() : tgt;
+	var v = m.isDate(val) ? val.getTime() : val;
+	var s = m.isDate(src) ? src.getTime() : src;
+	var sol = t + (v - s) * fac;
+  return ( m.isDate(tgt) ) ? new Date(sol) : sol ;
 };
 
 module.exports = m;
