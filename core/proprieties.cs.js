@@ -110,7 +110,9 @@ m.Axe = {
 	labelDir: {
 		x: 0,
 		y: 1
-	}
+	},
+	// for ticklabel formatting
+	comFac: 1
 };
 
 m.Axes = {
