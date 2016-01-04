@@ -8,9 +8,7 @@
  *  - polar
  */
 
-var homothe = function(src,tgt,fac,val){
-  return tgt + (val - src) * fac;
-};
+var homothe = require('./utils.cs.js').homothe;
 
 /**
  * ds is { c : {min, max}, d: {min,max}, c2d , d2c}
@@ -18,7 +16,7 @@ var homothe = function(src,tgt,fac,val){
 
 var m={};
 
-m.toC = m.toCy = m.toCx = function(ds, data) {
+m.toC = function(ds, data) {
 	return homothe(ds.d.min,ds.c.min,ds.d2c,data);
 };
 
@@ -27,7 +25,7 @@ m.toCwidth = function(ds, dist){
 	return Math.abs(ds.d2c * d);
 };
 
-m.toD = m.toDy = m.toDx = function(ds, coord) {
+m.toD = function(ds, coord) {
 	return homothe(ds.c.min,ds.d.min,ds.c2d,coord);
 };
 
