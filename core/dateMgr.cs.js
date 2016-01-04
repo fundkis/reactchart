@@ -1,7 +1,13 @@
 var moment = require('moment');
 var _ = require('underscore');
 
-var m = {};
+var pow   = Math.pow;
+var floor = Math.floor;
+var log   = Math.log;
+var min   = Math.min;
+var max   = Math.max;
+var abs   = Math.abs;
+var LN10  = Math.LN10;
 
 // period = {
 //	years : ,
@@ -35,9 +41,99 @@ var makePeriod = function(ms){
 	};
 };
 
-// order of magnitude of a period
-// always down
-var roundPeriod = function(p){
+var fetchFormat = function(p){
+	p = processPeriod(p);
+	if(p.years !== 0){
+		return {
+			string: 'YYYY',
+			pref: ''
+		};
+	}else if(p.months >= 6){
+		return {
+			string: 'S',
+			pref: 'S'
+		};
+	}else if(p.months >= 3){
+		return {
+			string: 'Q',
+			pref: 'T'
+		};
+	}else if(p.weeks !== 0){
+		return {
+			string: 'E/MM/YY',
+			pref: ''
+		};
+	}else{
+		return {
+			string: 'DD/MM/YY',
+			pref: ''
+		};
+	}
+};
+
+var roundDownPeriod = function(p){
+
+	var make = (lab,val) => {
+		return {
+			label: lab,
+			val: val
+		};
+	};
+
+	var out = {};
+	if(p.asYears > 2){
+		out = make('years',max(floor(p.asYears)/10,1));
+	}else if(p.asMonths >= 6){
+		out = make('months', 6);
+	}else if(p.asMonths >= 3){
+		out = make('months', 3);
+	}else if(p.asMonths >= 1){
+		out = make('months', 1);
+	}else if(p.asWeeks >= 2){
+		out = make('weeks', 2);
+	}else if(p.asWeeks >= 1){
+		out = make('weeks', 1);
+	}else{
+		out = make('days', 1);
+	}
+
+	return out;
+};
+
+var roundUpPeriod = function(p){
+
+	var make = (lab,val) => {
+		return {
+			label: lab,
+			val: val
+		};
+	};
+
+	var out = {};
+	if(p.asYears > 2){
+		out = make('years',max(floor(p.asYears)/10,1));
+	}else if(p.asMonths >= 6){
+		out = make('years', 1);
+	}else if(p.asMonths >= 3){
+		out = make('months', 6);
+	}else if(p.asMonths >= 1){
+		out = make('months', 3);
+	}else if(p.asWeeks >= 2){
+		out = make('months', 1);
+	}else if(p.asWeeks >= 1){
+		out = make('weeks', 2);
+	}else if(p.asDays() >= 1){
+		out = make('weeks', 1);
+	}else{
+		out = make('days', 1);
+	}
+
+	return out;
+};
+
+// round period of sale order of magnitude
+// down by default
+var roundPeriod = function(p,type){
 
 	var types = ['years','months','weeks','days'];
 
@@ -55,21 +151,8 @@ var roundPeriod = function(p){
 	// 6, 3 or 1 month(s)
 	// 2 or 1 week(s)
 	// 1 day
-	if(p.asYears > 2){
-		makeThis('years',Math.max(Math.floor(p.asYears)/10,1));
-	}else if(p.asMonths >= 6){
-		makeThis('months', 6);
-	}else if(p.asMonths >= 3){
-		makeThis('months', 3);
-	}else if(p.asMonths >= 1){
-		makeThis('months', 1);
-	}else if(p.asWeeks >= 2){
-		makeThis('weeks', 2);
-	}else if(p.asWeeks >= 1){
-		makeThis('weeks', 1);
-	}else{
-		makeThis('days', 1);
-	}
+	var round = ( type === 'up' ) ? roundUpPeriod(p) : roundDownPeriod(p);
+	makeThis(round.label,round.val);
 
 	p.total = moment(p).duration.asDays();
 };
@@ -103,6 +186,73 @@ var closestDown = function(date,per){
 	}
 };
 
+var m = {};
+
+// distance methods
+m.orderMag = function(dop){
+	var ms = (dop instanceof Date) ? dop.getTime() : moment.duration({days: processPeriod(dop).total}).asMilliseconds();
+
+	return floor( log(ms) / LN10);
+};
+
+m.roundUp = function(p){
+	return roundPeriod(p,'up');
+};
+
+m.roundDown = function(p){
+	return roundPeriod(p,'down');
+};
+
+m.multiply = function(p,f){
+	return makePeriod(moment.duration({days: processPeriod(p).total * f}).asMilliseconds());
+};
+
+m.divide = function(p,f){
+	return makePeriod(moment.duration({days: processPeriod(p).total / f}).asMilliseconds());
+};
+
+m.increase = function(p1,p2){
+	return makePeriod(moment.duration({days: processPeriod(p1).total + processPeriod(p2).total}).asMilliseconds());
+};
+
+m.offset = function(p){
+	p = roundPeriod(processPeriod(p));
+	return (p.offset )? roundPeriod(m.divide(p,2)) : null ;
+};
+
+// date methods
+m.closestRoundUp = function(ref,om){
+	return closestUp(ref, roundPeriod(makePeriod(pow(10,om))) );
+};
+
+m.closestRoundDown = function(ref,om){
+	return closestDown(ref, roundPeriod(makePeriod(pow(10,om))) );
+};
+
+m.closestRound = function(ref,om,type){
+	return (type === 'up')? m.closestRoundUp(ref,om):m.closestRoundDown(ref,om);
+};
+
+m.min = function(dates){
+	return new Date(min.apply(null,_.map(dates, (date) => {return date.getTime();})));
+};
+
+m.max = function(dates){
+	return new Date(max.apply(null,_.map(dates, (date) => {return date.getTime();})));
+};
+
+m.label = function(date,period){
+	var format = fetchFormat(period);
+	var out = '';
+	if(format.pref === 'S'){
+		out = (date.getMonth() > 5)? '2' : '1';
+	}else{
+		out = moment(date).format(format.string);
+	}
+	return format.pref + out;
+};
+
+// date & period methods
 m.add = function(d,p){
 	// preprocess period
 	p = processPeriod(p);
@@ -125,24 +275,8 @@ m.subtract = function(d,p){
 		.subtract(p.days,'days').toDate();
 };
 
-m.closestRoundUp = function(ref,om){
-	return closestUp(ref, roundPeriod(makePeriod(Math.pow(10,om))) );
-};
-
-m.closestRoundDown = function(ref,om){
-	return closestDown(ref, roundPeriod(makePeriod(Math.pow(10,om))) );
-};
-
-m.closestRound = function(ref,om,type){
-	return (type === 'up')? m.closestRoundUp(ref,om):m.closestRoundDown(ref,om);
-};
-
-m.min = function(dates){
-	return new Date(Math.min.apply(null,_.map(dates, (date) => {return date.getTime();})));
-};
-
-m.max = function(dates){
-	return new Date(Math.max.apply(null,_.map(dates, (date) => {return date.getTime();})));
+m.distance = function(d1,d2){
+	return makePeriod(abs(d1.getTime() - d2.getTime()));
 };
 
 module.exports = m;
