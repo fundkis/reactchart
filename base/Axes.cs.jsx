@@ -57,6 +57,12 @@ var Axes = React.createClass({
 				throw new Error('Placement of axis unknown, check axis: ' + key);
 		}
 
+		if(!utils.isDate(axisProps.ds.d.max) && axisProps.ds.d.max > 1e3){
+			var mgr = utils.mgr(axisProps.ds.d.max);
+			var om = mgr.orderMag(axisProps.ds.d.max);
+			axisProps.comFac = Math.pow(10,om);
+		}
+
 		return <Axe key={key} {...axisProps} CS={this.props.CS}/>;
 	},
 
