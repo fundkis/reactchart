@@ -135,6 +135,8 @@ var roundUpPeriod = function(p){
 // down by default
 var roundPeriod = function(p,type){
 
+	type = type || 'down';
+
 	var types = ['years','months','weeks','days'];
 
 	var makeThis = (type,n) => {
@@ -154,7 +156,9 @@ var roundPeriod = function(p,type){
 	var round = ( type === 'up' ) ? roundUpPeriod(p) : roundDownPeriod(p);
 	makeThis(round.label,round.val);
 
-	p.total = moment(p).duration.asDays();
+	p.total = moment.duration(p).asDays();
+
+	return p;
 };
 
 var closestUp = function(date,per){
