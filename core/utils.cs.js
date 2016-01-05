@@ -1,5 +1,5 @@
-var nbr = require('./nbrMgr.cs.js');
 var date = require('./dateMgr.cs.js');
+var nbr  = require('./nbrMgr.cs.js');
 
 var m ={};
 
@@ -7,6 +7,10 @@ m.math = require('./mathMgr.cs.js');
 
 m.isDate = function(v){
 	return v instanceof Date;
+};
+
+m.isArray = function(v){
+	return Array.isArray(v);
 };
 
 m.isString = function(v){
@@ -28,8 +32,10 @@ m.isValidParam = function(p){
 m.deepCp = function(tgt,thing){
 	if(typeof thing === 'object'){
 		if(!tgt){
-			if(thing instanceof Array){
+			if(m.isArray(thing)){
 				tgt = [];
+			}else if(m.isDate(thing)){
+				tgt = new Date(thing.getTime());
 			}else{
 				tgt = {};
 			}
