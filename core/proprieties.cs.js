@@ -94,7 +94,7 @@ m.Axe = {
 	},
 	labelFSize: 20,
 	ds:         {},
-	empty:      true,
+	empty:      false,
 	CS:         'cart',
 	// in c coordinate
 	origin: {
@@ -117,10 +117,10 @@ m.Axe = {
 
 m.Axes = {
 	abs: [
-		_.extend(m.Axe,{placement: 'bottom', partner: 0})
+		_.extend({}, m.Axe,{placement: 'bottom', partner: 0})
 	],
 	ord: [
-		_.extend(m.Axe,{placement: 'left', partner: 0})
+		_.extend({}, m.Axe,{placement: 'left', partner: 0})
 	],
 	CS: 'cart'
 };
