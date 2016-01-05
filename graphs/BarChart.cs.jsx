@@ -8,8 +8,7 @@ var BarChart = React.createClass({
 		dsx: {}, // see space-mgr for details
 		dsy: {}, // see space-mgr for details
 		color:'none',
-		stroke: 'none',
-		strokeWidth: 0,
+		width: 0,
 		span: 0.5, // in dataSpace
 		dir: 90,
 		points: [],
@@ -27,8 +26,8 @@ var BarChart = React.createClass({
 		dsx: this.props.dsx,
 		dsy:  this.props.dsy,
 		color: this.props.markColor,
-		stroke:  this.props.stroke,
-		strokeWidth:  this.props.strokeWidth,
+		stroke:  this.props.color,
+		strokeWidth:  this.props.width,
 		span: this.props.span,
 		dir: this.props.dir,
 		xoffset: this.props.xoffset

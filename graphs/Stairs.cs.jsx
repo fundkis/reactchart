@@ -6,8 +6,8 @@ var _ = require('underscore');
 var StairsChart = React.createClass({
 	getDefaultProps: function(){
 		return {
-			stroke: 'black',
-			strokeWidth: 1,
+			color: 'black',
+			width: 1,
 			fill: 'none',
 			opacity: 1,
 			mark: true,
@@ -87,7 +87,7 @@ var StairsChart = React.createClass({
 		var marks = marker.marks(this.props.points,markprops,this.props.mark,this.props.markType);
 
 		return <g>
-					<polyline points={data} stroke={this.props.stroke} strokeWidth={this.props.strokeWidth} fill={this.props.fill} opacity={this.props.opacity}/>
+					<polyline points={data} stroke={this.props.color} strokeWidth={this.props.width} fill={this.props.fill} opacity={this.props.opacity}/>
 					<g>{marks}</g>
 				</g>;
 }

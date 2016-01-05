@@ -9,8 +9,8 @@ var PlainChart = React.createClass({
 	},
 	getDefaultProps: function(){
 		return {
-			stroke: 'black',
-			strokeWidth: 1,
+			color: 'black',
+			width: 1,
 			fill: 'none',
 			// mark props, explicit at heigh level
 			// overwritten if present in markProps
@@ -31,6 +31,9 @@ var PlainChart = React.createClass({
 	},
 
 	path: function(){
+    if(this.props.points.length === 0){
+      return null;
+    }
 		// getting values, easier
 		var dsx = this.props.dsx;
 		var dsy = this.props.dsy;
@@ -58,6 +61,9 @@ var PlainChart = React.createClass({
 	},
 
 	marks: function(){
+    if(this.props.points.length === 0){
+      return null;
+    }
 		var Dpoints = _.map(this.props.points, function(point){
 			return {
 				x: point.x,
@@ -96,8 +102,8 @@ var PlainChart = React.createClass({
 		return <g>
 			<path
 				d={this.path()} 
-				stroke={this.props.stroke} 
-				strokeWidth={this.props.strokeWidth}
+				stroke={this.props.color} 
+				strokeWidth={this.props.width}
 				fill={this.props.fill}/>
 			{this.marks()}
 			</g>;
