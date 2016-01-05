@@ -52,11 +52,17 @@ var Graph = React.createClass({
 	},
 
 	componentWillMount: function(){
-		this.setState(core.process(this.props));
+		var fullprops = {};
+		fullprops = utils.deepCp(fullprops,gProps.Graph);
+		fullprops = utils.deepCp(fullprops,this.props);
+		this.setState(core.process(fullprops));
 	},
 
 	componentWillReceiveProps: function(props){
-		this.setState(core.process(props));
+		var fullprops = {};
+		fullprops = utils.deepCp(fullprops,gProps.Graph);
+		fullprops = utils.deepCp(fullprops,props);
+		this.setState(core.process(fullprops));
 	},
 
 	getDefaultProps: function() {
@@ -106,8 +112,8 @@ var Graph = React.createClass({
 				yplace = this.props.data[m].ord.axis.placement;
 			}
 
-			graphProps.dsx = this.state.spaces[xplace];
-			graphProps.dsy = this.state.spaces[yplace];
+			graphProps.dsx = this.state.spaces.x[xplace];
+			graphProps.dsy = this.state.spaces.y[yplace];
 			// we add the key (it's a vector)
 			graphProps.key = this.props.name + '.g.' + m;
 			prints.push(grapher.grapher(this.props.data[m].type,this.state.series[m],graphProps,m));
@@ -119,7 +125,7 @@ var Graph = React.createClass({
 
 		var nameAx = this.props.name + '.axes';
 
-		var props = utils.deepCp(this.props.axisProps);
+		var props = utils.deepCp(props,this.props.axisProps);
 	/* DS = {
 	 *	y: {
 	 *		left:  space(lefts, universe.height,bordersy,title),
@@ -127,12 +133,12 @@ var Graph = React.createClass({
 	 *	}, 
 	 *	x: {
 	 *		bottom: space(bottom,universe.width,bordersx),
-	 *		top:    space(top,   universe.width,bordersx)
+	 *		top:  space(top, universe.width,bordersx)
 	 *	}
 	 * }
 	 */
 		var DS = this.state.spaces;
-		var c   = {abs: 'x',      ord: 'y'};
+		var c  = {abs: 'x', ord: 'y'};
 		var def = {abs: 'bottom', ord: 'left'};
 
 		// axis placement
@@ -150,6 +156,7 @@ var Graph = React.createClass({
 
 		// if labelled data
 		for(var s = 0; s < this.state.series.length; s++){
+			if(this.state.series[s].length === 0){continue;}
 			var firstPoint = this.state.series[s][0];
 			for(var k in c){
 				var label = c[k] + 'label';
@@ -190,7 +197,7 @@ var Graph = React.createClass({
 					{this.cadre()}
 					{this.background()}
 					{this.title()}
-					{this.graph()}
+					{this.graphs()}
 					{this.axis()}
 					{this.foreground()}
 			</svg>;
