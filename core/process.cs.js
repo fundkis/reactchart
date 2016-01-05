@@ -32,13 +32,13 @@ var validate = function(series){
 	};
 
 	var testSerie = (serie) => {
-		var vx  = serTest(_.map(serie, (p) => {return p.x;}));
-		var vy  = serTest(_.map(serie, (p) => {return p.y;}));
+		var vx	= serTest(_.map(serie, (p) => {return p.x;}));
+		var vy	= serTest(_.map(serie, (p) => {return p.y;}));
 		return vx && vy;
 	};
 
 	for(var s = 0; s < series.length; s++){
-		if(series[s].length === 0 && !testSerie(series[s])){
+		if(utils.isNil(series[s]) || series[s].length === 0 || !testSerie(series[s])){
 			return false;
 		}
 	}
@@ -79,11 +79,11 @@ var preprocess = function(serie,type){
 		var notComplete = true;
 		var u = 0;
 		while(notComplete){
-			var data = _.map(	_.filter(serie, (point) => {return equal(point[otherdir],curref);}),
+			var data = _.map( _.filter(serie, (point) => {return equal(point[otherdir],curref);}),
 				(point) => {return point[dir];}
 			);
 			var hist = utils.math.histo.opt_histo(data);
-// drop	-> bin
+// drop -> bin
 // value -> bin + db ( = next bin)
 // shade -> prob
 			var maxProb = -1;
@@ -208,27 +208,30 @@ m.process = function(props){
 	
 	}else{
 
-		var preproc = _.map(props.graphProps, (gp) => {return gp.process;});
+		var preproc = _.map(props.graphProps, (gp) => {return (!!gp.process.type)?gp.process:null;});
 		state.series = _.map(raw, (serie,idx) => { return (!!preproc[idx])?preprocess(serie,preproc[idx]):copySerie(serie);});
 		addOffset(state.series, _.map(props.data, (ser) => {return ser.stacked;}));
-		addSpan(  state.series, _.map(props.data, (ser) => {return ser.type;}));
+		addSpan(	state.series, _.map(props.data, (ser) => {return ser.type;}));
 
 	}
 
 		// so we have all the keywords
 	var marginalize = (mar) => {
 		for(var m in {left: true, right: true, bottom: true, top: true}){
-			if(!!mar[m]){
+			if(!mar[m]){
 				mar[m] = 0;
 			}
 		}
+
+		return mar;
 	};
 
 	var abs = (utils.isArray(props.axisProps.abs))?props.axisProps.abs:[props.axisProps.abs];
 	var ord = (utils.isArray(props.axisProps.ord))?props.axisProps.ord:[props.axisProps.ord];
 
 	var borders = {
-		ord: ord, abs: abs,
+		ord: ord, 
+		abs: abs,
 		marginsO: marginalize(props.outerMargin), 
 		marginsI: marginalize(props.axisMargin)
 	};
@@ -241,10 +244,8 @@ m.process = function(props){
 		return {
 			series: ser,
 			stacked: props.data[idx].stacked,
-			type: {
-				abs: props.data[idx].abs.type,
-				ord: props.data[idx].ord.type
-			}
+			abs: props.data[idx].abs,
+			ord: props.data[idx].ord
 		};
 	});
  
