@@ -19,31 +19,22 @@ var utils = require('./utils.cs.js');
 var defaults = {
 	axis: {
 		label: {
-			x: 20,
-			y: 20,
+			bottom: 20,
+			top: 20,
+			left: 20,
+			right: 20,
 			mar: 10
 		},
 		ticks: {
-			y: 20,
-			X: 40
+			left: 20,
+			right: 20,
+			bottom: 40,
+			top: 40
 		}
 	},
 	title: 10,
 	min: 0,
 	max: 4
-};
-
-var roundDWorld = function(dWorld,isDate){
-
-	var min = dWorld.min;
-	var max = dWorld.max;
-	var om = utils.orderMag(max - min);
-
-	return {
-		min: (isDate)? utils.date.closestRound(min,om,'down'):utils.nbr.closestRound(min,om,'down'),
-		max: (isDate)? utils.date.closestRound(max,om,'up'):utils.nbr.closestRound(max,om,'up'),
-	};
-
 };
 
 var m = {};
@@ -123,6 +114,11 @@ var m = {};
  *    universe - marginsO - marginsI = datas
  */
 var space = function(datas,universe,borders,title){
+		// if no data, we don't waste time
+		if(datas.length === 0){
+			return null;
+		}
+
 	// 1 - the coordinate space
 
 		// get the (right,left) or (top,bottom)
@@ -140,11 +136,14 @@ var space = function(datas,universe,borders,title){
 			margins[places[p]] = 0;
 		}
 
-		// fetch the margin (label + default) for an axis
+		// fetch the margin (label + ticks + default) for an axis
 		var margin = function(axis){
-			var marg = defaults.axis[axis.placement];
+			var marg = defaults.axis.label[axis.placement];
+			if(!axis.empty){
+				marg += defaults.axis.ticks[axis.placement];
+			}
 			if(axis.label.length !== 0){
-			marg += ( axis.labelFSize + defaults.axis.mar );
+			marg += ( axis.labelFSize + defaults.axis.label.mar );
 			}
 			return marg;
 		};
@@ -178,16 +177,16 @@ var space = function(datas,universe,borders,title){
 		// placed at (origin.x.x + inner x margin, origin.y.y - inner y margin)
 		var min, max;
 		var rmin, rmax;
-		if(!!margins.left){
-			min = margins.left;
-			max = universe - margins.right;
-			rmin = min + borders.marginsI.left;
-			rmax = max - borders.marginsI.right;
-		}else{
+		if(utils.isNil(margins.left)){
 			min = universe - margins.bottom;
 			max = margins.top;
 			rmin = min - borders.marginsI.bottom;
 			rmax = max + borders.marginsI.top;
+		}else{
+			min = margins.left;
+			max = universe - margins.right;
+			rmin = min + borders.marginsI.left;
+			rmax = max - borders.marginsI.right;
 		}
 
 		var cWorld = {
@@ -200,18 +199,32 @@ var space = function(datas,universe,borders,title){
 		};
 
 	// 2 - the data space
+
+		var allValues = _.flatten(datas);
+
+		var mgr = (allValues.length === 0)?null:utils.mgr(allValues[0]);
+
 	// either data defined or explicitely defined
 		var minVals = (vals) => {
-			return utils.isDate(vals[0])? utils.date.min(vals) : utils.nbr.min(vals);
+      if(vals.length === 0){
+        return null;
+      }
+
+			return mgr.min(vals);
 		};
+
 		var maxVals = (vals) => {
-			return utils.isDate(vals[0])? utils.date.max(vals) : utils.nbr.max(vals);
+      if(vals.length === 0){
+        return null;
+      }
+
+			return mgr.max(vals);
 		};
 
 
 		var bounds = {
-			min: minVals(datas),
-			max: maxVals(datas)
+			min: minVals(allValues),
+			max: maxVals(allValues)
 		};
 		// empty graph
 		if(!isFinite(bounds.min)){
@@ -234,13 +247,10 @@ var space = function(datas,universe,borders,title){
 		};
 
 		// règle de trois
-		var rawDWorld = {
-			min: multiply(bounds.min, cWorld.min / rawCWorld.min),
-			max: multiply(bounds.max, cWorld.max / rawCWorld.max)
+		var dWorld = {
+			min: multiply(bounds.min, 1 - Math.abs( (cWorld.min - rawCWorld.min) / (rawCWorld.max - rawCWorld.min) ) ),
+			max: multiply(bounds.max, 1 + Math.abs( (cWorld.max - rawCWorld.max) / (rawCWorld.max - rawCWorld.min) ) )
 		};
-
-		var isDate = (!!_.find(datas, (value) => {return utils.isDate(value);}))?true:false;
-		var dWorld = roundDWorld(rawDWorld,isDate);
 
 /**
  * ds is { 
@@ -288,8 +298,8 @@ m.spaces = function(datas,universe,borders,title){
 	var bottom = filter(_.filter(datas,(series) => {return utils.isNil(series.abs) || series.abs.axis === 'bottom';}), 'x');
 
 	var bordersy = {
-		marginsO: {top: borders.marginsO.top, b: borders.marginsO.bottom},
-		marginsI: {top: borders.marginsI.top, b: borders.marginsI.bottom},
+		marginsO: {top: borders.marginsO.top, bottom: borders.marginsO.bottom},
+		marginsI: {top: borders.marginsI.top, bottom: borders.marginsI.bottom},
 		axis: borders.abs
 	};
 
