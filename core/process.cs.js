@@ -219,7 +219,7 @@ m.process = function(props){
 	var marginalize = (mar) => {
 		for(var m in {left: true, right: true, bottom: true, top: true}){
 			if(!mar[m]){
-				mar[m] = 0;
+				mar[m] = null;
 			}
 		}
 
