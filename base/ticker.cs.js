@@ -5,8 +5,10 @@ var _ = require('underscore');
  * beware of distance (period) versus
  * values (date), see {date,nbr}Mgr.cs.js
 */
-var computeTicks = function(start,length,minor,fac){
-	var mgr = utils.mgr(length);
+var computeTicks = function(first,last,minor,fac){
+	var mgr = utils.mgr(first);
+	var start = mgr.closestRoundUp(first,mgr.divide(mgr.distance(first,last),10));
+	var length = mgr.distance(start,last);
 	// distance min criteria 1
 	// 10 ticks max
 	var dec = mgr.divide(length,10);
@@ -17,45 +19,52 @@ var computeTicks = function(start,length,minor,fac){
 		majDist = mgr.roundUp(majDist);
 	}
 
+// redefine start to have the biggest rounded value
+	if(!utils.isDate(first)){
+		var biggestRounded = mgr.orderMagValue(last);
+		start = biggestRounded;
+		while(mgr.greaterThan(start,first)){
+			start = mgr.subtract(start,majDist);
+		}
+		start = mgr.add(start,majDist);
+		length = mgr.distance(start,last);
+	}
+
 	var out = [];
-	var nmaj = 0;
-	var totLength =	mgr.multiply(majDist,nmaj);
-	while(totLength <= length){
-		var curValue = mgr.add(start,totLength);
+	var curValue = start;
+	while(mgr.lowerThan(curValue,last)){
 		out.push({
 			where: curValue,
-			offset: mgr.offset(majDist),
+			offset: {
+				along: mgr.offset(majDist),
+				perp: 0
+			},
 			label: mgr.label(curValue,majDist,fac)
 		});
 		// minor ticks
 		if(minor){
-			var nmin = 1;
-			var minLength = mgr.multiply(minDist,nmin);
-			totLength = mgr.increase(totLength,minLength);
-			while(minLength < majDist){
-				if(totLength > length){
+			curValue = mgr.closestRoundUp(curValue,minDist);
+			var ceil = mgr.closestRoundUp(curValue,majDist);
+			while(mgr.lowerThan(curValue,ceil)){
+				if(mgr.greaterThan(curValue,last)){
 					break;
 				}
-				curValue = mgr.add(start,minLength);
 				out.push({
 					where: curValue,
-					offset: mgr.offset(minDist),
+					offset: {
+						along: mgr.offset(minDist),
+						perp: 0
+					},
 					label: mgr.label(curValue,minDist,fac)
 				});
-				nmin++;
-				minLength = mgr.multiply(minDist,nmin);
-				totLength = mgr.increase(totLength,minLength);
+				curValue = mgr.closestRoundUp(curValue,minDist);
 			}
 		}
 
-		if(totLength > length){
-			break;
-		}
-
-		nmaj++;
-		totLength =	mgr.multiply(majDist,nmaj);
+		curValue = mgr.closestRoundUp(curValue,majDist);
 	}
 
+	out = out.concat(mgr.extraTicks(majDist,first,last));
 	return out;
 };
 
