@@ -28,9 +28,10 @@ var defaults = {
 		ticks: {
 			left: 20,
 			right: 20,
-			bottom: 40,
-			top: 40
-		}
+			bottom: 15,
+			top: 15
+		},
+		min: 3
 	},
 	title: 10,
 	min: 0,
@@ -169,6 +170,7 @@ var space = function(datas,universe,borders,title){
 			if(!utils.isNil(borders.marginsO[k])){
 				margins[k] = borders.marginsO[k];
 			}
+			margins[k] = Math.max(margins[k],defaults.axis.min);
 		}
 
 		// we have the world's corners
@@ -193,7 +195,7 @@ var space = function(datas,universe,borders,title){
 			min: min,
 			max: max
 		};
-		var rawCWorld = {
+		var posCWorld = {
 			min: rmin,
 			max: rmax
 		};
@@ -234,23 +236,21 @@ var space = function(datas,universe,borders,title){
 			bounds.max = 4;
 		}
 
-		var multiply = (val,fac) => {
-			return ( utils.isDate(val) ) ?  new Date(val.getTime() * fac):val * fac;
-		};
-
-		var subtract = (val1,val2) => {
-			return ( utils.isDate(val1) ) ?  val1.getTime() - val2.getTime() : val1 - val2;
-		};
-
-		var divide = (val,fac) => {
-			return ( utils.isDate(val) ) ?  val.getTime() / fac : val / fac;
-		};
-
-		// règle de trois
+		// on augmente la distance totale
+		var cRelMinMore = Math.abs( (cWorld.min - posCWorld.min) / (posCWorld.max - posCWorld.min) );
+		var cRelMaxMore = Math.abs( (cWorld.max - posCWorld.max) / (posCWorld.max - posCWorld.min) );
+		var dMinMore = mgr.multiply(mgr.distance(bounds.max,bounds.min),cRelMinMore);
+		var dMaxMore = mgr.multiply(mgr.distance(bounds.max,bounds.min),cRelMaxMore);
 		var dWorld = {
-			min: multiply(bounds.min, 1 - Math.abs( (cWorld.min - rawCWorld.min) / (rawCWorld.max - rawCWorld.min) ) ),
-			max: multiply(bounds.max, 1 + Math.abs( (cWorld.max - rawCWorld.max) / (rawCWorld.max - rawCWorld.min) ) )
+			min: mgr.subtract(bounds.min, dMinMore),
+			max: mgr.add(bounds.max, dMaxMore)
 		};
+
+		// on s'assure que ce sera toujours > 0
+		if(dWorld.min - dWorld.max === 0){
+			dWorld.min = mgr.subtract(bounds.min, mgr.smallestStep());
+			dWorld.max = mgr.add(bounds.max, mgr.smallestStep());
+		}
 
 /**
  * ds is { 
@@ -266,6 +266,7 @@ var space = function(datas,universe,borders,title){
     d2c
   }
 */
+		var fromCtoD = mgr.getValue( mgr.divide( mgr.distance( dWorld.max , dWorld.min ), cWorld.max - cWorld.min));
 		return {
 			c: {
 				min: cWorld.min,
@@ -275,8 +276,8 @@ var space = function(datas,universe,borders,title){
 				min: dWorld.min,
 				max: dWorld.max,
 			},
-			d2c: divide(cWorld.max - cWorld.min, subtract( dWorld.max , dWorld.min ) ),
-			c2d: divide ( subtract(dWorld.max, dWorld.min) , cWorld.max - cWorld.min ) 
+			d2c: 1 / fromCtoD,
+			c2d: fromCtoD
 		};
 
 };
