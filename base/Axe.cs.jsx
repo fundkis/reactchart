@@ -4,6 +4,7 @@ var ticker = require('./ticker.cs.js');
 var _ = require('underscore');
 var utils = require('../core/utils.cs.js');
 var aProps = require('../core/proprieties.cs.js');
+var sp = require('../core/space-transf.cs.js');
 
 var Axe = React.createClass({
 	getDefaultProps: function(){
@@ -88,34 +89,42 @@ var Axe = React.createClass({
 	},
 
 	grid: function(){
-		if(!this.props.ticks.major.show &&
-			!this.props.grid.major.show){
-			return null;
-		}
-
-		var mgr = utils.mgr(ds.d.min);
-		var start = mgr.roundUp(ds.d.min);
+		var ds = this.props.ds;
 		var majProps = this.props.ticks.major;
 		var minProps = this.props.ticks.minor;
+		var majGrid = this.props.grid.major;
+		var minGrid = this.props.grid.minor;
 		var minor = (this.props.ticks.minor.show === true || this.props.grid.minor.show === true);
-		var distance = utils.distance(this.props.ds.d.max,this.props.ds.d.max);
 		var axisDir = this.props.dir;
 		var labelDir = this.props.labelDir;
+		var origin = this.props.origin;
 
-		return _.map(ticker.ticks(start,distance,this.props.ticksLabel,minor,this.props.comFac), (tick) => {
+		return _.map(ticker.ticks(ds.d.min,ds.d.max,this.props.ticksLabel,minor,this.props.comFac), (tick,idx) => {
 			var cstick = {};
-			cstick.label = tick.label;
 			cstick.where = {
-				x: ds.toC(tick.where * Math.cos(axisDir.x)),
-				y: ds.toC(tick.where * Math.sin(axisDir.y)),
+				x: origin.x + (sp.toC(ds,tick.where) * axisDir.x - origin.x) * axisDir.x,
+				y: origin.y + (sp.toC(ds,tick.where) * axisDir.y - origin.y) * axisDir.y
 			};
-			cstick.offset = {
-				x: ds.toC(tick.offset.x * Math.cos(axisDir.x)),
-				y: ds.toC(tick.offset.y * Math.sin(axisDir.y)),
+			cstick.labelOffset = {
+				x: sp.toCwidth(ds,tick.offset.along) * axisDir.x + tick.offset.perp * axisDir.y * majGrid.length,
+				y: sp.toCwidth(ds,tick.offset.along) * axisDir.y + tick.offset.perp * axisDir.x * majGrid.length
 			};
+			for(var pr in tick){
+				if(pr === 'where' || pr === 'labelOffset'){continue;}
+				cstick[pr] = utils.deepCp({},tick[pr]);
+			}
+			// for grid length, just in case
+			if(!!cstick.grid){
+				cstick.grid.length = minGrid.length;
+			}
 			var p = tick.minor ? minProps : majProps;
 			p.labelDir = labelDir;
-			return <Tick {...p} {...cstick}/>;
+			if(!utils.isNil(tick.extra)){
+				p.width = 0;
+			}
+			p.grid = tick.minor ? minGrid.show ? minGrid: null : majGrid.show ? majGrid: null;
+			var k = 'tick.' + idx;
+			return <Tick key={k} {...p} {...cstick}/>;
 		});
 	},
 
