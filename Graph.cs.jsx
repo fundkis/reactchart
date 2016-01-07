@@ -52,21 +52,28 @@ var Graph = React.createClass({
 	},
 
 	componentWillMount: function(){
-		var fullprops = {};
-		fullprops = utils.deepCp(fullprops,gProps.Graph);
-		fullprops = utils.deepCp(fullprops,this.props);
-		this.setState(core.process(fullprops));
+		this.setState(core.process(this.defaultTheProps(this.props)));
 	},
 
 	componentWillReceiveProps: function(props){
-		var fullprops = {};
-		fullprops = utils.deepCp(fullprops,gProps.Graph);
-		fullprops = utils.deepCp(fullprops,props);
-		this.setState(core.process(fullprops));
+		this.setState(core.process(this.defaultTheProps(props)));
 	},
 
 	getDefaultProps: function() {
 		return gProps.Graph;
+	},
+
+	defaultTheProps: function(props){
+		var data = gProps.Graph.data[0];
+		var gprops = gProps.Graph.graphProps[0];
+
+		var fullprops = utils.deepCp({},gProps.Graph);
+		for(var ng = 0; ng < props.data.length; ng++){
+			fullprops.data[ng] = utils.deepCp({},data);
+			fullprops.graphProps[ng] = utils.deepCp({},gprops);
+		}
+
+		return utils.deepCp(fullprops,props);
 	},
 
 	foreground: function(){
@@ -116,7 +123,8 @@ var Graph = React.createClass({
 			graphProps.dsy = this.state.spaces.y[yplace];
 			// we add the key (it's a vector)
 			graphProps.key = this.props.name + '.g.' + m;
-			prints.push(grapher.grapher(this.props.data[m].type,this.state.series[m],graphProps,m));
+			var type = this.props.data[m].type || 'Plain';
+			prints.push(grapher.grapher(type,this.state.series[m],graphProps,m));
 		}
 		return prints;
 	},
@@ -125,7 +133,8 @@ var Graph = React.createClass({
 
 		var nameAx = this.props.name + '.axes';
 
-		var props = utils.deepCp(props,this.props.axisProps);
+		var props = utils.deepCp(props,gProps.Graph.axisProps);
+		props = utils.deepCp(props,this.props.axisProps);
 	/* DS = {
 	 *	y: {
 	 *		left:  space(lefts, universe.height,bordersy,title),
@@ -197,8 +206,8 @@ var Graph = React.createClass({
 					{this.cadre()}
 					{this.background()}
 					{this.title()}
-					{this.graphs()}
 					{this.axis()}
+					{this.graphs()}
 					{this.foreground()}
 			</svg>;
 
