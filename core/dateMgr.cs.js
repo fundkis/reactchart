@@ -27,16 +27,20 @@ var processPeriod = function(period){
 		period.total = moment.duration(period).asDays();
 	}
 
+	if(period.total > 7){
+		period.offset = true;
+	}
+
 	return period;
 };
 
-var makePeriod = function(ms){
-	var dur = moment.duration(ms);
+var makePeriod = function(msOrDur){
+	var dur = ( !!msOrDur.years ) ? msOrDur : moment.duration(msOrDur);
 	return {
 		years: dur.years(),
 		months: dur.months(),
 		weeks: dur.weeks(),
-		days: dur.days(),
+		days: dur.days() - 7 * dur.weeks(),
 		total: dur.asDays()
 	};
 };
@@ -81,17 +85,17 @@ var roundDownPeriod = function(p){
 	};
 
 	var out = {};
-	if(p.asYears > 2){
-		out = make('years',max(floor(p.asYears)/10,1));
-	}else if(p.asMonths >= 6){
+	if(p.years > 2){
+		out = make('years',max(floor(p.years)/10,1));
+	}else if(p.months >= 6){
 		out = make('months', 6);
-	}else if(p.asMonths >= 3){
+	}else if(p.months >= 3){
 		out = make('months', 3);
-	}else if(p.asMonths >= 1){
+	}else if(p.months >= 1){
 		out = make('months', 1);
-	}else if(p.asWeeks >= 2){
+	}else if(p.weeks >= 2){
 		out = make('weeks', 2);
-	}else if(p.asWeeks >= 1){
+	}else if(p.weeks >= 1){
 		out = make('weeks', 1);
 	}else{
 		out = make('days', 1);
@@ -110,19 +114,19 @@ var roundUpPeriod = function(p){
 	};
 
 	var out = {};
-	if(p.asYears > 2){
-		out = make('years',max(floor(p.asYears)/10,1));
-	}else if(p.asMonths >= 6){
+	if(p.years > 2){
+		out = make('years',max(floor(p.years)/10,1));
+	}else if(p.months >= 6){
 		out = make('years', 1);
-	}else if(p.asMonths >= 3){
+	}else if(p.months >= 3){
 		out = make('months', 6);
-	}else if(p.asMonths >= 1){
+	}else if(p.months >= 1){
 		out = make('months', 3);
-	}else if(p.asWeeks >= 2){
+	}else if(p.weeks >= 2){
 		out = make('months', 1);
-	}else if(p.asWeeks >= 1){
+	}else if(p.weeks >= 1){
 		out = make('weeks', 2);
-	}else if(p.asDays() >= 1){
+	}else if(p.days >= 1){
 		out = make('weeks', 1);
 	}else{
 		out = make('days', 1);
@@ -163,7 +167,7 @@ var roundPeriod = function(p,type){
 
 var closestUp = function(date,per){
 	var out = closestDown(date,per);
-	while(out.getTime() < date.getTime()){
+	while(out.getTime() <= date.getTime()){
 		out = m.add(out,per);
 	}
 
@@ -182,21 +186,68 @@ var closestDown = function(date,per){
 	}
 	// start of month
 	if(per.months !== 0){
-		 return moment(date).subtract(per.months,'months').startOf('month').toDate();
+		var month = 0;
+		while(month < date.getMonth()){
+			month += per.months;
+		}
+		month -= per.months;
+		return new Date(date.getFullYear(),month,1);
 	}
 	// start of year
 	if(per.months !== 0){
-		 return moment(date).subtract(per.years,'years').startOf("year").toDate();
+		return new Date(date.getFullYear(),0,1);
 	}
+};
+
+var sameDoP = function(dop1,dop2){
+	var b1 = dop1 instanceof Date;
+	var b2 = dop2 instanceof Date;
+	if(b1 !== b2){
+		return null;
+	}
+
+	return (b1)?'date':'period';
+};
+
+var dateGT = function(d1,d2){
+	return d1.getTime() > d2.getTime();
+};
+
+var dateLT = function(d1,d2){
+	return d1.getTime() < d2.getTime();
+};
+
+var periodGT = function(p1,p2){
+	return p1.total > p2.total;
+};
+
+var periodLT = function(p1,p2){
+	return p1.total < p2.total;
+};
+
+var greaterThan = function(v1,v2,type){
+	return (type === 'date')?dateGT(v1,v2):periodGT(v1,v2);
+};
+
+var lowerThan = function(v1,v2,type){
+	return (type === 'date')?dateLT(v1,v2):periodLT(v1,v2);
 };
 
 var m = {};
 
-// distance methods
+// date / distance methods
 m.orderMag = function(dop){
 	var ms = (dop instanceof Date) ? dop.getTime() : moment.duration({days: processPeriod(dop).total}).asMilliseconds();
 
 	return floor( log(ms) / LN10);
+};
+
+m.orderMagValue = function(r){
+	return r;
+};
+
+m.orderMagDist = function(r){
+	return makePeriod(pow(10,m.orderMag(r)));
 };
 
 m.roundUp = function(p){
@@ -208,29 +259,29 @@ m.roundDown = function(p){
 };
 
 m.multiply = function(p,f){
-	return makePeriod(moment.duration({days: processPeriod(p).total * f}).asMilliseconds());
+	return makePeriod(moment.duration({days: processPeriod(p).total * f}));
 };
 
 m.divide = function(p,f){
-	return makePeriod(moment.duration({days: processPeriod(p).total / f}).asMilliseconds());
+	return makePeriod(moment.duration({days: processPeriod(p).total / f}));
 };
 
 m.increase = function(p1,p2){
-	return makePeriod(moment.duration({days: processPeriod(p1).total + processPeriod(p2).total}).asMilliseconds());
+	return makePeriod(moment.duration({days: processPeriod(p1).total + processPeriod(p2).total}));
 };
 
 m.offset = function(p){
-	p = roundPeriod(processPeriod(p));
-	return (p.offset )? roundPeriod(m.divide(p,2)) : null ;
+	p = processPeriod(p);
+	return (p.offset )? m.divide(p,2) : makePeriod(0) ;
 };
 
 // date methods
-m.closestRoundUp = function(ref,om){
-	return closestUp(ref, roundPeriod(makePeriod(pow(10,om))) );
+m.closestRoundUp = function(ref,per){
+	return closestUp(ref, roundPeriod(per) );
 };
 
-m.closestRoundDown = function(ref,om){
-	return closestDown(ref, roundPeriod(makePeriod(pow(10,om))) );
+m.closestRoundDown = function(ref,per){
+	return closestDown(ref, roundPeriod(per) );
 };
 
 m.closestRound = function(ref,om,type){
@@ -281,6 +332,79 @@ m.subtract = function(d,p){
 
 m.distance = function(d1,d2){
 	return makePeriod(abs(d1.getTime() - d2.getTime()));
+};
+
+m.greaterThan = function(dop1,dop2){
+	var sd = sameDoP(dop1,dop2);
+	if(sd === null){
+		throw 'Error in dateMgr: trying to compare a Date with a Period';
+	}
+	return greaterThan(dop1,dop2,sd);
+};
+
+m.lowerThan = function(dop1,dop2){
+	var sd = sameDoP(dop1,dop2);
+	if(sd === null){
+		throw 'Error in dateMgr: trying to compare a Date with a Period';
+	}
+	return lowerThan(dop1,dop2,sd);
+};
+
+// managements
+m.getValue = function(dop){
+	return (dop instanceof Date) ? dop.getTime() : moment.duration(dop).asMilliseconds();
+};
+
+m.extraTicks = function(step,start,end){
+	var out = [];
+	var startYear = start.getFullYear();
+	var lastYear = end.getFullYear();
+	// every year, whatever happens
+	for(var ye = startYear; ye <= lastYear; ye++){
+		var dat = new Date(ye,0,1);
+		if(m.lowerThan(start,dat) && m.lowerThan(dat,end)){
+			out.push({
+				where: dat,
+				offset: {
+					along: 0,
+					perp: 0
+				},
+				extra: true,
+				grid: {
+					show: true,
+					color: 'LightGray',
+					width: 0.5,
+					length: 0
+				}
+			});
+		}
+	}
+
+	// label for years if not present
+	if(m.lowerThan(step,makePeriod(moment.duration({years: 1})))){
+		var zeroPeriod = makePeriod(0);
+		for(var y = startYear; y <= lastYear; y++){
+			var date = new Date(y,6,1);
+			if(m.lowerThan(start,date) && m.lowerThan(date,end)){
+				out.push({
+					where: date,
+					offset: {
+						along: zeroPeriod,
+						perp: -0.98
+					},
+					label: '' + y,
+					labelColor: '#758D99', // grisFundKis '#3A83F1', // blueFundKis
+					labelFSize: 20,
+					extra: true
+				});
+			}
+		}
+	}
+	return out;
+};
+
+m.smallestStep = function(){
+	return makePeriod(moment.duration({days: 1}));
 };
 
 module.exports = m;
