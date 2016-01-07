@@ -38,7 +38,7 @@ m.Grid = {
 	show: false,
 	color: 'LightGray',
 	width: 0.5,
-	major: true,
+	length: 0,
 	cart: cartCS,
 	polar: polarCS
 };
@@ -54,6 +54,7 @@ m.Tick = {
 		x: 0,
 		y: 1
 	},
+	width: 1,
 	length: 15,
 	out: 0.25, // proportion that is outside (-dir)
 	color: 'black',
@@ -69,7 +70,7 @@ m.Tick = {
 m.Axe = {
 	ticks: {
 		major: m.Tick,
-		minor: _.extendOwn(m.Tick,{
+		minor: _.extendOwn(_.extend({},m.Tick),{
 			show: false,
 			length: 7,
 			out: 0,
@@ -79,9 +80,8 @@ m.Axe = {
 	},
 	grid: {
 		major: m.Grid,
-		minor: _.extendOwn(m.Grid,{
-			width: 0.3,
-			major: false
+		minor: _.extendOwn(_.extend({},m.Grid),{
+			width: 0.3
 		})
 	},
 	tickLabels: [], //{coord: where, label: ''}, coord in ds
