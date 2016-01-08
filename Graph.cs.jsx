@@ -121,6 +121,9 @@ var Graph = React.createClass({
 
 			graphProps.dsx = this.state.spaces.x[xplace];
 			graphProps.dsy = this.state.spaces.y[yplace];
+			for(var more in this.state.spanOffset[m]){
+				graphProps[more] = this.state.spanOffset[m][more];
+			}
 			// we add the key (it's a vector)
 			graphProps.key = this.props.name + '.g.' + m;
 			var type = this.props.data[m].type || 'Plain';
