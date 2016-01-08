@@ -50,10 +50,8 @@ var BarMark = React.createClass({
 		return dataScale.toC(ds[dir], mgr[dir].add( props[dir], props.offset[dir])); // all in dataSpace
 	};
 
-console.log(drop.y + ' to ' + this.props.y + ' offset ' + props.offset.y);
 	var x = toC('x');
 	var y = toC('y');
-console.log(drop.y + ' to ' + this.props.y + ' offset ' + props.offset.y + ' ' + y);
 
 	var toCwidth = (dir) => {
 		return dataScale.toCwidth(ds[dir], mgr[dir].add(mgr[dir].distance(drop[dir],props[dir]), span[dir]));
