@@ -123,6 +123,10 @@ var Axe = React.createClass({
 				p.width = 0;
 			}
 			p.grid = tick.minor ? minGrid.show ? minGrid: null : majGrid.show ? majGrid: null;
+
+			if(!utils.isNil(p.labelize) && typeof p.labelize === 'function' ){
+				cstick.label = p.labelize(tick.where);
+			}
 			var k = 'tick.' + idx;
 			return <Tick key={k} {...p} {...cstick}/>;
 		});
