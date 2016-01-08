@@ -162,39 +162,76 @@ var addOffset = function(series,stacked){
 	}
 };
 
-var addSpan = function(series,types){
-	var n = 0;
-	_.each(series, (serie,idx) => {
-		if(types[idx] === 'Bars' || types[idx] === 'yBars'){
-			spanify(serie, types[idx][0]);
-			n++;
-		}
-	});
+var makeSpan = function(series,data){
 
-	var spanDiv = (point,n) => {
-		if(!!point.xSpan){
-			point.xSpan /= n;
-		}
-		if(!!point.ySpan){
-			point.ySpan /= n;
-		}
+	var out = [];
+
+	var spanSer = (barType) => {
+		var n = 0;
+		_.each(series, (serie,idx) => {
+			if(data[idx].type === barType){
+				out[idx] = spanify(serie, data[idx]);
+				n++;
+			}
+		});
+
+		var makeOffset = (serie,n,s) => {
+			if(utils.isNil(serie.Span)){
+				return;
+			}
+			var mgr = utils.mgr(serie.span);
+			if(utils.isNil(serie.offset)){
+				serie.offset = {};
+			}
+
+			var dir = barType[0] === 'y' ? 'y' : 'x';
+			var othdir = dir === 'y' ? 'x' : 'y';
+	// start[s] = x - span * n / 2 + s * span => offset = (s *  span  - span * n / 2 ) = span * (s - n / 2 )
+			serie.offset[dir] = mgr.multiply(serie.span, s - n / 2 );
+			if(utils.isNil(serie.offset[othdir])){
+				serie.offset[othdir] = 0;
+			}
+			delete serie.Span;
+		};
+
+		var spanDiv = (serie,n,idx) => {
+			if(utils.isNil(serie.Span)){
+				return;
+			}
+			var mgr = utils.mgr(serie.span);
+			serie.span = mgr.divide(serie.span,n);
+			makeOffset(serie,n,idx);
+		};
+
+		_.each(out, (serie,idx) => spanDiv(serie,n,idx));
 	};
 
-	_.each(series, (serie) =>  _.each(serie, (point) => spanDiv(point,n) ) );
+	spanSer('Bars');
+	spanSer('yBars');
 
+	return out;
 };
 
-var spanify = function(serie,dir){
-	var d = null;
-	dir = (dir === 'y')?dir:'x';
-	for(var i = 1; i < serie.length; d++){
-		var dd = Math.abs(serie[i][dir] - serie[i - 1][dir]);
-		if(d === null || dd < d){
-			d = dd;
+var spanify = function(serie,data){
+	var out = {};
+	if(utils.isNil(data.span)){
+		var d = null;
+		var dir = (data.type[0] === 'y')?'y':'x';
+
+		var mgr = utils.mgr(serie[0][dir]);
+		for(var i = 1; i < serie.length; i++){
+			var dd = mgr.distance(serie[i][dir],serie[i - 1][dir]);
+			if(d === null || mgr.lowerThan(dd, d)){
+				d = dd;
+			}
 		}
+		out.span = d;
+	}else{
+		out.span = data.span;
 	}
-	var sp = dir + 'Span';
-	_.each(serie, (point) => point[sp] = d);
+	out.Span = true;
+
+	return out;
 };
 
 m.process = function(props){
@@ -202,6 +239,7 @@ m.process = function(props){
 	var raw = _.map(props.data,(dat) => {return dat.series;});
 
 	var state = {};
+	var spanOffset = [];
 	if(!validate(raw)){
 
 		state.series = _.map(props.data, (/*ser*/) => {return [];});
@@ -211,9 +249,10 @@ m.process = function(props){
 		var preproc = _.map(props.graphProps, (gp) => {return (!!gp.process.type)?gp.process:null;});
 		state.series = _.map(raw, (serie,idx) => { return (!!preproc[idx])?preprocess(serie,preproc[idx]):copySerie(serie);});
 		addOffset(state.series, _.map(props.data, (ser) => {return ser.stacked;}));
-		addSpan(	state.series, _.map(props.data, (ser) => {return ser.type;}));
+		spanOffset = makeSpan(state.series, _.map(props.data, (ser,idx) => {return {type: ser.type, span: props.graphProps[idx].span};}));
 
 	}
+	state.spanOffset = spanOffset;
 
 		// so we have all the keywords
 	var marginalize = (mar) => {
@@ -245,12 +284,14 @@ m.process = function(props){
 			series: ser,
 			stacked: props.data[idx].stacked,
 			abs: props.data[idx].abs,
-			ord: props.data[idx].ord
+			ord: props.data[idx].ord,
+			offset: (!!spanOffset[idx]) ? spanOffset[idx].offset : null
 		};
 	});
  
 	// space = {dsx, dsy}
 	state.spaces = space.spaces(data,universe,borders,title);
+
 
 	return state;
 
