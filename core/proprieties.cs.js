@@ -157,6 +157,11 @@ m.Graph = {
 		markSize: 3, 
 		markColor: undefined, // if undefined = color 
 		onlyMarks: false,
+		offset: { // offset, in dataspace
+			x: 0,
+			y: 0
+		},
+		span: 0, //
 		shader: null, //playing with colors
 		process: null //playing with data {dir: x || y, type: 'histogram'}
 	}],
