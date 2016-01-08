@@ -7,57 +7,51 @@ var BarChart = React.createClass({
 	 return {
 		dsx: {}, // see space-mgr for details
 		dsy: {}, // see space-mgr for details
-		color:'none',
+		color: 'none',
 		width: 0,
 		span: 0.5, // in dataSpace
-		dir: 90,
+		dir: {
+			x: false,
+			y: true
+		},
 		points: [],
-		mark: true,
 		markColor: 'black',
 		markType: 'bar',
-		markProps: {},
-		xoffset: 0
+		markProps: {
+			width: 0,
+			draw: false
+		},
+		offset: {x: 0, y: 0}
 	 };
   },
   render : function() {
 
-	var props = this.props.markProps;
-	var toAdd = {
-		dsx: this.props.dsx,
-		dsy:  this.props.dsy,
-		color: this.props.markColor,
-		stroke:  this.props.color,
-		strokeWidth:  this.props.width,
-		span: this.props.span,
-		dir: this.props.dir,
-		xoffset: this.props.xoffset
-	};
-
-	var adder = function(toAdd){
-		for(var thing in toAdd){
-			if(!props[thing]){
-				props[thing] = toAdd[thing];
-			}
+	var props = {
+		dsx:    this.props.dsx,
+		dsy:    this.props.dsy,
+		color:  this.props.markColor,
+		draw:   this.props.markProps.draw || false,
+		width:  this.props.width,
+		span:   this.props.span,
+		dir:    this.props.dir,
+		offset: this.props.offset,
+		drop:   {
+			x: this.props.dir.x ? 0 : null,
+			y: this.props.dir.y ? 0 : null
 		}
 	};
-
-	adder(toAdd);
 
 	var datas = _.map(this.props.points,function(point){
 		return {
 			x: point.x, 
-			y: point.y, 
-			drop:{
-				x: point.dropx, 
-				y: point.dropy
-			}
+			y: point.y
 		};
 	});
 	// marks
 	props.markprops = this.props.markProps;
 	
 	props.name = this.props.key + '.b';
-   var bars = marker.marks(datas,props,this.props.mark,this.props.markType);
+	var bars = marker.marks(datas,props,this.props.markType);
 
 	 return <g>{bars}</g>;
   }
