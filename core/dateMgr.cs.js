@@ -114,8 +114,8 @@ var roundUpPeriod = function(p){
 	};
 
 	var out = {};
-	if(p.years > 2){
-		out = make('years',max(floor(p.years)/10,1));
+	if(p.years !== 0){
+		out = make('years',floor(p.years) + 1);
 	}else if(p.months >= 6){
 		out = make('years', 1);
 	}else if(p.months >= 3){
@@ -242,8 +242,8 @@ m.orderMag = function(dop){
 	return floor( log(ms) / LN10);
 };
 
-m.orderMagValue = function(r){
-	return r;
+m.orderMagValue = function(last/*,first*/){
+	return last;
 };
 
 m.orderMagDist = function(r){
@@ -272,7 +272,16 @@ m.increase = function(p1,p2){
 
 m.offset = function(p){
 	p = processPeriod(p);
-	return (p.offset )? m.divide(p,2) : makePeriod(0) ;
+
+	var offsetMe = (per) => {
+		if(per.years !== 0){
+			return makePeriod(moment.duration({months: 6}));
+		}else{
+			return m.divide(p,2);
+		}
+	};
+
+	return (p.offset )? offsetMe(p) : makePeriod(0) ;
 };
 
 // date methods
