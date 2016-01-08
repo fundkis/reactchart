@@ -4,9 +4,9 @@ var nbr  = require('./nbrMgr.cs.js');
 var m ={};
 
 var isPeriod = function(v){
-	var out = true;
-	for(var t in {years: true, 	months: true, weeks: true, days: true, total: true}){
-		out = out && !m.isNil(v[t]);
+	var out = false;
+	for(var t in {years: true, 	months: true, weeks: true, days: true}){
+		out = out || !m.isNil(v[t]);
 	}
 	return out;
 };

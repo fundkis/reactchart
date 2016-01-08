@@ -18,6 +18,10 @@ var LN10  = Math.LN10;
 // }
 var processPeriod = function(period){
 
+	if(typeof period === 'number'){ // ms
+		period = makePeriod(moment.duration(period));
+	}
+
 	for(var t in {years: true, months: true, weeks: true, days: true}){
 		if(!period[t]){
 			period[t] = 0;
@@ -233,6 +237,16 @@ var lowerThan = function(v1,v2,type){
 	return (type === 'date')?dateLT(v1,v2):periodLT(v1,v2);
 };
 
+var addPer = function(p1,p2){
+	p1 = processPeriod(p1);
+	return makePeriod(moment.duration(p1).add(moment.duration(p2)));
+};
+
+var subPer = function(p1,p2){
+	p1 = processPeriod(p1);
+	return makePeriod(moment.duration(p1).subtract(moment.duration(p2)));
+};
+
 var m = {};
 
 // date / distance methods
@@ -317,26 +331,28 @@ m.label = function(date,period){
 };
 
 // date & period methods
-m.add = function(d,p){
+m.add = function(dop,p){
 	// preprocess period
 	p = processPeriod(p);
 
-	return moment(d)
+	return (dop instanceof Date) ? moment(dop)
 		.add(p.years,'years')
 		.add(p.months,'months')
 		.add(p.weeks,'weeks')
-		.add(p.days,'days').toDate();
+		.add(p.days,'days').toDate():
+		addPer(dop,p);
 };
 
-m.subtract = function(d,p){
+m.subtract = function(dop,p){
 	// preprocess period
 	p = processPeriod(p);
 
-	return moment(d)
+	return (dop instanceof Date) ? moment(dop)
 		.subtract(p.years,'years')
 		.subtract(p.months,'months')
 		.subtract(p.weeks,'weeks')
-		.subtract(p.days,'days').toDate();
+		.subtract(p.days,'days').toDate():
+		subPer(dop,p);
 };
 
 m.distance = function(d1,d2){
