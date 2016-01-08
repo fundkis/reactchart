@@ -256,8 +256,51 @@ m.orderMag = function(dop){
 	return floor( log(ms) / LN10);
 };
 
-m.orderMagValue = function(last/*,first*/){
-	return last;
+m.orderMagValue = function(last,first){
+	// start of next year
+	var nextfst = new Date(first.getFullYear() + 1,0,1);
+	if(m.lowerThan(nextfst,last)){
+		return nextfst;
+	}
+
+	// start of next semester 
+	if(first.getMonth() < 7){
+		nextfst = new Date(first.getFullYear(),7,1);
+		if(m.lowerThan(nextfst,last)){
+			return nextfst;
+		}
+	}
+
+	// start of next trimester
+	var mm = first.getMonth() + 3 - first.getMonth() % 3;
+	nextfst = new Date(first.getFullYear(),mm,1);
+	if(m.lowerThan(nextfst,last)){
+		return nextfst;
+	}
+
+	// start of next month
+	nextfst = new Date(first.getFullYear(),first.getMonth() + 1,1);
+	if(m.lowerThan(nextfst,last)){
+		return nextfst;
+	}
+
+	// start of next half-month
+	if(first.getDate() < 15){
+		nextfst = new Date(first.getFullYear(),first.getMonth(),15);
+		if(m.lowerThan(nextfst,last)){
+			return nextfst;
+		}
+	}
+
+	// start of next quarter-month (as 7 days)
+	var dd = first.getDate() + 7 - first.getDate() % 7;
+	nextfst = new Date(first.getFullYear(),first.getMonth(),dd);
+	if(m.lowerThan(nextfst,last)){
+		return nextfst;
+	}
+
+	// next day
+	return new Date(first.getFullYear(),first.getMonth(),first.getDate() + 1);
 };
 
 m.orderMagDist = function(r){
