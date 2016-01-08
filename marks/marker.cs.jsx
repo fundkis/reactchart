@@ -30,11 +30,9 @@ marks.dot = function(data,props){
 };
 
 marks.bar = function(data,props){
-	var fullSpan = props.span;
 	return _.map(data, function(point,index){
 		var key = props.name + '-' + index;
-		props.span = fullSpan * ( (!!point.span)?point.span:1 );
-		p2P(['x','y','shade','drop'],props,point);
+		p2P(['x','y','shade'],props,point);
 		return <Bar {...props} key={key} name={key}/>;
 	});
 };
