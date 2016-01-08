@@ -12,17 +12,16 @@ var computeTicks = function(first,last,minor,fac){
 	// distance min criteria 1
 	// 10 ticks max
 	var dec = mgr.divide(length,10);
-	var majDist = mgr.roundUp(dec);
-	var minDist = 0;
-	if(minor){
-		minDist = majDist;
-		majDist = mgr.roundUp(majDist);
+	var minDist = mgr.roundUp(dec);
+	var majDist = mgr.roundUp(minDist);
+	if(!minor){
+		majDist = utils.deepCp({},minDist);
 	}
 
 // redefine start to have the biggest rounded value
 	if(!utils.isDate(first)){
-		var biggestRounded = mgr.orderMagValue(last);
-		start = biggestRounded;
+		var biggestRounded = mgr.orderMagValue(last,first);
+		start = biggestRounded || start;
 		while(mgr.greaterThan(start,first)){
 			start = mgr.subtract(start,majDist);
 		}
@@ -43,25 +42,25 @@ var computeTicks = function(first,last,minor,fac){
 		});
 		// minor ticks
 		if(minor){
-			curValue = mgr.closestRoundUp(curValue,minDist);
-			var ceil = mgr.closestRoundUp(curValue,majDist);
-			while(mgr.lowerThan(curValue,ceil)){
-				if(mgr.greaterThan(curValue,last)){
+			var curminValue = mgr.add(curValue,minDist);
+			var ceil = mgr.add(curValue,majDist);
+			while(mgr.lowerThan(curminValue,ceil)){
+				if(mgr.greaterThan(curminValue,last)){
 					break;
 				}
 				out.push({
-					where: curValue,
+					where: curminValue,
 					offset: {
 						along: mgr.offset(minDist),
 						perp: 0
 					},
-					label: mgr.label(curValue,minDist,fac)
+					label: mgr.label(curminValue,minDist,fac)
 				});
-				curValue = mgr.closestRoundUp(curValue,minDist);
+				curminValue = mgr.add(curminValue,minDist);
 			}
 		}
 
-		curValue = mgr.closestRoundUp(curValue,majDist);
+		curValue = mgr.add(curValue,majDist);
 	}
 
 	out = out.concat(mgr.extraTicks(majDist,first,last));
