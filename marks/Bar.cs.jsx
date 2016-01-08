@@ -1,5 +1,6 @@
 var React = require('react');
 var dataScale = require('../core/space-transf.cs.js');
+var utils = require('../core/utils.cs.js');
 
 var BarMark = React.createClass({
   getDefaultProps: function() {
@@ -8,42 +9,67 @@ var BarMark = React.createClass({
 		dsy: {}, // see space-mgr for details
 		x:0,
 		y:0,
-		drop:{x:undefined, y:undefined},
-		markColor: undefined,
-		stroke: 'none',
-		strokeWidth: 0,
+		drop:{x:null, y:0},
+		draw: false,
+		width: 0,
 		span:0.5,
-		dir:90,
-		xoffset: 0,
+		offset: {
+			x: 0,
+			y: 0
+		},
 		shade: 1
 	 };
   },
   render : function() {
 
-	var drop = this.props.drop.y;
-	if(drop === undefined || drop === null){
-		drop = this.props.dsy.d.min;
-	}
+	var mgr = {
+		x: utils.mgr(this.props.x),
+		y: utils.mgr(this.props.y)
+	};
+
+	var ds = {
+		x: this.props.dsx,
+		y: this.props.dsy
+	};
+
+	var span = {
+		x: utils.isNil(this.props.drop.y) ? 0 : this.props.span,
+		y: utils.isNil(this.props.drop.x) ? 0 : this.props.span 
+	};
+
+	var drop = {
+		x: utils.isNil(this.props.drop.x) ? this.props.x : this.props.drop.x,
+		y: utils.isNil(this.props.drop.y) ? this.props.y : this.props.drop.y 
+	};
+
+	var props = this.props;
+
 	// 
-	var x = dataScale.toC(this.props.dsx, this.props.x - 0.5 * this.props.span + this.props.xoffset); // all in dataSpace
-	var y = dataScale.toC(this.props.dsy, this.props.y);
 
-	var height = dataScale.toCwidth(this.props.dsy, this.props.y - drop);
-	var width  = dataScale.toCwidth(this.props.dsx, this.props.span);
+	var toC = (dir) => {
+		return dataScale.toC(ds[dir], mgr[dir].add( props[dir], props.offset[dir])); // all in dataSpace
+	};
 
-	if(this.props.y < drop){
+console.log(drop.y + ' to ' + this.props.y + ' offset ' + props.offset.y);
+	var x = toC('x');
+	var y = toC('y');
+console.log(drop.y + ' to ' + this.props.y + ' offset ' + props.offset.y + ' ' + y);
+
+	var toCwidth = (dir) => {
+		return dataScale.toCwidth(ds[dir], mgr[dir].add(mgr[dir].distance(drop[dir],props[dir]), span[dir]));
+	};
+
+	var height = toCwidth('y');
+	var width  = toCwidth('x');
+
+	var color = this.props.color || this.props.fill || 'none';
+	var stroke = this.props.draw ? color : null;
+	if(drop.y > this.props.y){
 		y -= height;
 	}
 
-	// rotation
-	var xr = dataScale.toC(this.props.dsx, 0.5 * width  + this.props.x ); // all in dataSpace
-	var yr = dataScale.toC(this.props.dsy, 0.5 * height + this.props.y ); // all in dataSpace
-
-	var rotate = 'rotate(' + (this.props.dir - 90) + ' ' + xr + ' ' + yr + ')';
-	var color = this.props.markColor || this.props.fill || 'none';
-
-	 return <rect x={x} y={y} height={height} width={width} transform={rotate}
-			stroke={this.props.stroke} strokeWidth={this.props.strokeWidth} 
+	 return <rect x={x} y={y} height={height} width={width}
+			stroke={stroke} strokeWidth={this.props.strokeWidth} 
 			fill={color} opacity={this.props.shade}/>;
   }
 });
