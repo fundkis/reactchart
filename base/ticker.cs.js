@@ -19,15 +19,13 @@ var computeTicks = function(first,last,minor,fac){
 	}
 
 // redefine start to have the biggest rounded value
-	if(!utils.isDate(first)){
-		var biggestRounded = mgr.orderMagValue(last,first);
-		start = biggestRounded || start;
-		while(mgr.greaterThan(start,first)){
-			start = mgr.subtract(start,majDist);
-		}
-		start = mgr.add(start,majDist);
-		length = mgr.distance(start,last);
+	var biggestRounded = mgr.orderMagValue(last,first);
+	start = biggestRounded || start;
+	while(mgr.greaterThan(start,first)){
+		start = mgr.subtract(start,majDist);
 	}
+	start = mgr.add(start,majDist);
+	length = mgr.distance(start,last);
 
 	var out = [];
 	var curValue = start;
