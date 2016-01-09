@@ -214,7 +214,7 @@ var makeSpan = function(series,data){
 
 var spanify = function(serie,data){
 	var out = {};
-	if(utils.isNil(data.span)){
+	if(utils.isNil(data.span) || data.span === 0){
 		var d = null;
 		var dir = (data.type[0] === 'y')?'y':'x';
 
