@@ -15,7 +15,7 @@ var BarChart = React.createClass({
 			y: true
 		},
 		points: [],
-		markColor: 'black',
+		markColor: null,
 		markType: 'bar',
 		markProps: {
 			width: 0,
@@ -29,7 +29,7 @@ var BarChart = React.createClass({
 	var props = {
 		dsx:    this.props.dsx,
 		dsy:    this.props.dsy,
-		color:  this.props.markColor,
+		color:  this.props.markColor || this.props.color,
 		draw:   this.props.markProps.draw || false,
 		width:  this.props.width,
 		span:   this.props.span,
