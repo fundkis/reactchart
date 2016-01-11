@@ -5,6 +5,7 @@ var grapher = require('./graphs/grapher.cs.jsx');
 var core = require('./core/process.cs.js');
 var gProps = require('./core/proprieties.cs.js');
 var utils = require('./core/utils.cs.js');
+var shader = require('./core/colorMgr.cs.js');
 var _ = require('underscore');
 
 ///////////////////////////////////////////
@@ -124,10 +125,16 @@ var Graph = React.createClass({
 			for(var more in this.state.spanOffset[m]){
 				graphProps[more] = this.state.spanOffset[m][more];
 			}
+
+			var points = this.state.series[m].concat();
+
+			// shader
+			shader(graphProps.shader,points);
+
 			// we add the key (it's a vector)
 			graphProps.key = this.props.name + '.g.' + m;
 			var type = this.props.data[m].type || 'Plain';
-			prints.push(grapher.grapher(type,this.state.series[m],graphProps,m));
+			prints.push(grapher.grapher(type,points,graphProps,m));
 		}
 		return prints;
 	},
