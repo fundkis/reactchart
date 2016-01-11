@@ -38,11 +38,12 @@ m.isValidParam = function(p){
 };
 
 m.deepCp = function(tgt,thing){
+
 	if(typeof thing === 'object'){
-		if(!tgt){
+		if(!tgt || typeof tgt !== 'object'){
 			if(m.isArray(thing)){
 				tgt = [];
-			}else if(m.isDate(thing) && !isPeriod(thing)){
+			}else if(thing instanceof Date){
 				tgt = new Date(thing.getTime());
 			}else{
 				tgt = {};
