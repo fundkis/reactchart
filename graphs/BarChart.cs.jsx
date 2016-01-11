@@ -5,7 +5,7 @@ var defProps = require('../core/proprieties.cs.js');
 
 var BarChart = React.createClass({
   getDefaultProps: function() {
-	 return defProps.defaults('BarChart');
+	 return defProps.defaults('Bars');
   },
 
 	drop: function(dir){

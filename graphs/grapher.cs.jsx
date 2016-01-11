@@ -21,12 +21,12 @@ graph.Stairs = function(points,props,keyid){
 
 graph.Bars = function(points,props,keyid){
 	var key = 'bars' + keyid;
-	return <BarChart name={key} dir={{x: false, y: true}} {...props} points={points} />;
+	return <BarChart name={key} {...props} dir={{x: false, y: true}} points={points} />;
 };
 
 graph.yBars = function(points,props,keyid){
 	var key = 'ybars' + keyid;
-	return <BarChart name={key} dir={{x: true, y: false}} {...props} points={points} />;
+	return <BarChart name={key} {...props} dir={{x: true, y: false}} points={points} />;
 };
 
 var m = {};
