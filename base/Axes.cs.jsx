@@ -29,6 +29,9 @@ var Axes = React.createClass({
 	},
 
 	axis: function(props,key){
+		if(props.show === false){
+			return null;
+		}
 		var axisProps = utils.deepCp(axisProps,props);
 
 		// dir
