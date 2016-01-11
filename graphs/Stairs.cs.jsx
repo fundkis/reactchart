@@ -2,25 +2,32 @@ var React = require('react');
 var marker = require('../marks/marker.cs.jsx');
 var space = require('../core/space-transf.cs.js');
 var _ = require('underscore');
+var defProps = require('../core/proprieties.cs.js');
 
 var StairsChart = React.createClass({
 	getDefaultProps: function(){
-		return {
-			color: 'black',
-			width: 1,
-			fill: 'none',
-			opacity: 1,
-			mark: true,
-			markColor: 'black',
-			markSize: 3,
-			markType: 'dot',
-			markProps: {},
-			points: [],
-			stairs: 'right',
-			dsx: {}, // see space-mgr for details
-			dsy: {}  // see space-mgr for details
-		};
+		return defProps.defaults('Stairs');
 	},
+
+	marks: function(){
+		if(this.props.points.length === 0 || this.props.mark === false){
+			return null;
+		}
+			// marks
+		var markprops = this.props.markProps;
+		if(!markprops.fill){
+			markprops.fill = this.props.markColor || this.props.color;
+		}
+		if(!markprops.size){
+			markprops.size = this.props.markSize;
+		}
+
+		markprops.name = this.props.name + 'm';
+		markprops.dsx = this.props.dsx;
+		markprops.dsy = this.props.dsy;
+		return marker.marks(this.props.points,markprops,this.props.mark,this.props.markType);
+	},
+
 	render: function(){
 
 		var Nd = this.props.points.length;
@@ -72,23 +79,9 @@ var StairsChart = React.createClass({
 				throw 'Stairs are either right or left';
 		}
 
-			// marks
-		var markprops = this.props.markProps;
-		if(!markprops.fill){
-			markprops.fill = this.props.markColor;
-		}
-		if(!markprops.size){
-			markprops.size = this.props.markSize;
-		}
-
-		markprops.name = this.props.name + 'm';
-		markprops.dsx = this.props.dsx;
-		markprops.dsy = this.props.dsy;
-		var marks = marker.marks(this.props.points,markprops,this.props.mark,this.props.markType);
-
 		return <g>
 					<polyline points={data} stroke={this.props.color} strokeWidth={this.props.width} fill={this.props.fill} opacity={this.props.opacity}/>
-					<g>{marks}</g>
+					<g>{this.marks()}</g>
 				</g>;
 }
 });

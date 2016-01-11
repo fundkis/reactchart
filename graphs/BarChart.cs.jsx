@@ -1,30 +1,26 @@
 var React = require('react');
 var marker = require('../marks/marker.cs.jsx');
 var _ = require('underscore');
+var defProps = require('../core/proprieties.cs.js');
 
 var BarChart = React.createClass({
   getDefaultProps: function() {
-	 return {
-		dsx: {}, // see space-mgr for details
-		dsy: {}, // see space-mgr for details
-		color: 'none',
-		width: 0,
-		span: 0.5, // in dataSpace
-		dir: {
-			x: false,
-			y: true
-		},
-		points: [],
-		markColor: null,
-		markType: 'bar',
-		markProps: {
-			width: 0,
-			draw: false
-		},
-		offset: {x: 0, y: 0}
-	 };
+	 return defProps.defaults('BarChart');
   },
+
+	drop: function(dir){
+		var drop = 0;
+		if(!!this.props.drop){ 
+			drop = this.props.drop[dir] || drop;
+		}
+		return this.props.dir[dir] ? drop : undefined;
+	},
+
   render : function() {
+
+	if(this.props.points.length === 0){
+		return null;
+	}
 
 	var props = {
 		dsx:    this.props.dsx,
@@ -33,11 +29,10 @@ var BarChart = React.createClass({
 		draw:   this.props.markProps.draw || false,
 		width:  this.props.width,
 		span:   this.props.span,
-		dir:    this.props.dir,
 		offset: this.props.offset,
 		drop:   {
-			x: this.props.dir.x ? 0 : null,
-			y: this.props.dir.y ? 0 : null
+			x: this.drop('x'),
+			y: this.drop('y')
 		}
 	};
 

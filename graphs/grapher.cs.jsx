@@ -4,6 +4,7 @@ var Stairs = require('./Stairs.cs.jsx');
 var BarChart = require('./BarChart.cs.jsx');
 
 var utils = require('../core/utils.cs.js');
+var defaults = require('../core/proprieties.cs.js').defaults;
 
 // the graphs function generator
 var graph = {};
@@ -35,7 +36,10 @@ m.grapher = function(key,points,props,keyid){
 		throw new Error('Unknown graph type "' + key + '"');
 	}
 
-	return graph[key](points,props,keyid);
+	var pr = utils.deepCp({},defaults(key));
+	utils.deepCp(pr,props);
+
+	return graph[key](points,pr,keyid);
 };
 
 module.exports = m;

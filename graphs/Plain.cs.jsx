@@ -2,32 +2,14 @@ var React = require('react');
 var _ = require('underscore');
 var marker = require('../marks/marker.cs.jsx');
 var space = require('../core/space-transf.cs.js');
+var defProps = require('../core/proprieties.cs.js');
 
 var PlainChart = React.createClass({
 	propTypes: {
 		mark: React.PropTypes.bool
 	},
 	getDefaultProps: function(){
-		return {
-			color: 'black',
-			width: 1,
-			fill: 'none',
-			// mark props, explicit at heigh level
-			// overwritten if present in markProps
-			mark: true,
-			markColor: 'black',
-			markSize: 3,
-			markType: 'dot',
-			onlyMarks: false,
-			// contains low-level description,
-			// i.e. specific things like radius
-			// for a dot, or anything.
-			// overrides high-level if conflicts
-			markProps: {},
-			points: [],
-			dsx: {}, // see space-mgr for details
-			dsy: {}  // see space-mgr for details
-		};
+		return defProps.defaults('Plain');
 	},
 
 	path: function(){
@@ -61,26 +43,13 @@ var PlainChart = React.createClass({
 	},
 
 	marks: function(){
-    if(this.props.points.length === 0){
+    if(this.props.points.length === 0 || this.props.mark === false){
       return null;
     }
-		var Dpoints = _.map(this.props.points, function(point){
-			return {
-				x: point.x,
-				y: point.y,
-				shade: point.shade,
-			//	span: point.span,
-				drop: {
-					x: point.dropx,
-					y: point.dropy
-				}
-			};
-		});
-
 		var markprops = this.props.markProps;
-		var markCol = this.props.markColor || this.props.stroke;
-		if(!markprops.fill){
-			markprops.fill = markCol;
+		var markCol = this.props.markColor || this.props.color;
+		if(!markprops.color){
+			markprops.color = markCol;
 		}
 		if(!markprops.size){
 			markprops.size = this.props.markSize;
@@ -94,7 +63,7 @@ var PlainChart = React.createClass({
 		if(!!this.props.xoffset){
 		 markprops.xoffset = this.props.xoffset;
 		}
-		return (this.props.mark === false)?null:marker.marks(Dpoints,markprops,this.props.markType);
+		return marker.marks(this.props.points,markprops,this.props.markType);
 	},
 
 	render: function(){
