@@ -285,7 +285,7 @@ m.process = function(props){
 	
 	}else{
 
-		var preproc = _.map(props.graphProps, (gp) => {return (!!gp.process.type)?gp.process:null;});
+		var preproc = _.map(props.graphProps, (gp) => {return (!!gp.process && !!gp.process.type)?gp.process:null;});
 		state.series = _.map(raw, (serie,idx) => { return (!!preproc[idx])?preprocess(serie,preproc[idx]):copySerie(serie);});
 		addOffset(state.series, _.map(props.data, (ser) => {return ser.stacked;}));
 		spanOffset = makeSpan(state.series, _.map(props.data, (ser,idx) => {return {type: ser.type, span: props.graphProps[idx].span};}));
@@ -330,7 +330,6 @@ m.process = function(props){
  
 	// space = {dsx, dsy}
 	state.spaces = space.spaces(data,universe,borders,title);
-
 
 	return state;
 
