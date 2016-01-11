@@ -42,12 +42,17 @@ var BarMark = React.createClass({
 		y: utils.isNil(this.props.drop.y) ? this.props.y : this.props.drop.y 
 	};
 
+  var offset = {
+		x: utils.isNil(this.props.offset.x) ? 0 : this.props.offset.x,
+		y: utils.isNil(this.props.offset.y) ? 0 : this.props.offset.y 
+  };
+
 	var props = this.props;
 
 	// 
 
 	var toC = (dir) => {
-		return dataScale.toC(ds[dir], mgr[dir].add( props[dir], props.offset[dir])); // all in dataSpace
+		return dataScale.toC(ds[dir], mgr[dir].add( props[dir], offset[dir])); // all in dataSpace
 	};
 
 	var x = toC('x');
