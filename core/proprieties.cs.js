@@ -3,6 +3,54 @@
 */
 var _ = require('underscore');
 
+// defaults for graphs
+var graph = {};
+graph.common = {
+	color: 'black',
+	width: 1,
+	fill: 'none',
+	// mark props, explicit at heigh level
+	// overwritten if present in markProps
+	mark: true,
+	markColor: undefined,
+	markSize: 3,
+	markType: 'dot',
+	onlyMarks: false,
+	// contains low-level description,
+	// i.e. specific things like radius
+	// for a dot, or anything.
+	markProps: {},
+	points: [],
+	dsx: {}, // see space-mgr for details
+	dsy: {},  // see space-mgr for details
+	shader: null, //playing with colors
+	process: null //playing with data {dir: x || y, type: 'histogram'}
+};
+
+graph.Plain = graph.common;
+
+graph.BarChart = {
+	dsx: {}, // see space-mgr for details
+	dsy: {}, // see space-mgr for details
+	color: 'none',
+	width: 0,
+	span: 0.5, // in dataSpace
+	dir: {
+		x: false,
+		y: true
+	},
+	points: [],
+	markColor: undefined,
+	markType: 'bar',
+	markProps: {
+		width: 0,
+		draw: false
+	},
+	offset: {x: 0, y: 0}
+};
+
+graph.Stairs = graph.common;
+
 /// coordinates systems
 
 var cartCS = {
@@ -84,6 +132,10 @@ m.Axe = {
 			width: 0.3
 		})
 	},
+	show: true,
+	// to force locally definition
+	min: undefined,
+	max: undefined,
 	tickLabels: [], //{coord: where, label: ''}, coord in ds
 	color:     'black',
 	width:      1,
@@ -151,20 +203,9 @@ m.Graph = {
 			type: 'number' // 'number' || 'date' || 'label'
 		}
 	}],
-	graphProps: [{
-		color: 'black', 
-		mark: true, 
-		markSize: 3, 
-		markColor: undefined, // if undefined = color 
-		onlyMarks: false,
-		offset: { // offset, in dataspace
-			x: 0,
-			y: 0
-		},
-		span: 0, //
-		shader: null, //playing with colors
-		process: null //playing with data {dir: x || y, type: 'histogram'}
-	}],
+	graphProps: [
+		graph.common
+	],
 	// axis
 	axisProps: m.Axes,
 	axis: undefined,	// b = bottom, l = left, t = top, r = right, any combination; overrides xaxis and yaxis
@@ -178,14 +219,13 @@ m.Graph = {
 	// axis
 	xaxis: '',	// bottom || top
 	yaxis: '',		// left || right
-	// to force definition
-	xmin: undefined,
-	xmax: undefined,
-	ymin: undefined,
-	ymax: undefined,
 	// margins
 	axisMargin: {left: 10, bottom: 10, right: 10, top: 10}, // left, bottom, right, top
 	outerMargin: {} // left, bottom, right, top
+};
+
+m.defaults = function(key){
+	return graph[key];
 };
 
 module.exports = m;
