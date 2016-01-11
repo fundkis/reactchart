@@ -82,12 +82,16 @@ var m = {};
  * borders = {
  *  axis: [{label: '', labelFSize: 15, placement: left}],
  *  marginsO: {l: 0,  r: 0}, 
- *  marginsI: {l: 10, r: 10}
+ *  marginsI: {l: 10, r: 10},
+ *  min: ,
+ *  max:
  * } or
  * borders = {
  *  axis: [{label: '', labelFSize: 15, placement: bottom}],
  *  marginsO: {t: 0,  b: 0}, 
- *  marginsI: {t: 10, b: 10}
+ *  marginsI: {t: 10, b: 10},
+ *  min: ,
+ *  max:
  * }
  *
  * marginsO is for the outer margin, it overrides any
@@ -204,7 +208,7 @@ var space = function(datas,universe,borders,title){
 
 		var allValues = _.flatten(datas);
 
-		var mgr = (allValues.length === 0)?null:utils.mgr(allValues[0]);
+		var mgr = (allValues.length === 0)?utils.mgr(5):utils.mgr(allValues[0]);
 
 	// either data defined or explicitely defined
 		var minVals = (vals) => {
@@ -246,7 +250,15 @@ var space = function(datas,universe,borders,title){
 			max: mgr.add(bounds.max, dMaxMore)
 		};
 
-		// on s'assure que ce sera toujours > 0
+		// si imposé par l'utilisateur
+		if(!utils.isNil(borders.min)){
+			dWorld.min = borders.min;
+		}
+		if(!utils.isNil(borders.max)){
+			dWorld.max = borders.max;
+		}
+
+		// on s'assure que ce sera toujours > 0, peu importe ce que dit l'user
 		if(dWorld.min - dWorld.max === 0){
 			dWorld.min = mgr.subtract(bounds.min, mgr.smallestStep());
 			dWorld.max = mgr.add(bounds.max, mgr.smallestStep());
@@ -287,37 +299,102 @@ m.spaces = function(datas,universe,borders,title){
 	var filter = (datas,dir) => {
 		return _.map(datas, (serie) => {
 			return _.map(serie.series, (point,idx) => {
-				return (utils.isString(point[dir]))?idx:point[dir];
+					// if label
+					if(utils.isString(point[dir])){
+						return idx;
+					}
+					var val = point[dir];
+					// modifiers are span, drop and offset
+					// offset changes the value
+					if(!utils.isNil(point.offset) && !utils.isNil(point.offset[dir])){
+						var mgr = utils.mgr(val);
+						val = mgr.add(val,point.offset[dir]);
+					}
+					// drop adds a value
+					if(!utils.isNil(point.drop) && !utils.isNil(point.drop[dir])){
+						val = [val];
+						val.push(point.drop[dir]);
+					}
+					// span makes value into two values, in the other direction than drop
+					if(!utils.isNil(point.span) && !utils.isNil(point.drop) && utils.isNil(point.drop[dir])){
+						val = [val];
+						var mm = utils.mgr(val[0]);
+						val[0] = mm.subtract(val[0],mm.divide(point.span,2));
+						val.push(mm.add(val[0],point.span));
+					}
+					return val;
 				});
 			});
 	};
 
-	// worlds = (l,b), (l,t), (r,b), (r,t)
-	var rights = filter(_.filter(datas,(series) => {return !!series.ord            && series.ord.axis === 'right';}),  'y');
-	var lefts  = filter(_.filter(datas,(series) => {return utils.isNil(series.ord) || series.ord.axis === 'left';}),   'y');
-	var top    = filter(_.filter(datas,(series) => {return !!series.abs            && series.abs.axis === 'top';}),    'x');
-	var bottom = filter(_.filter(datas,(series) => {return utils.isNil(series.abs) || series.abs.axis === 'bottom';}), 'x');
+	var ob = {right: 'ord', left: 'ord', top: 'abs', bottom: 'abs'};
+	var dats = {};
+	for(var w in ob){
+		dats[w] = _.filter(datas,(series) => {return !!series[ob[w]] && series[ob[w]].axis === w;});
+	}
 
-	var bordersy = {
+	var mins = {};
+	var maxs = {};
+	for(w in ob){
+		mins[w] = null;
+		maxs[w] = null;
+		for(var i = 0; i < borders[ob[w]].length; i++){
+			if(borders[ob[w]][i].placement !== w){
+				continue;
+			}
+			// min
+			var mgr;
+			if(!utils.isNil(borders[ob[w]][i].min)){
+				mgr = utils.mgr(borders[ob[w]][i].min);
+				if(utils.isNil(mins[w]) || mgr.lowerThan(borders[ob[w]][i].min,mins[w])){
+					mins[w] = borders[ob[w]][i].min;
+				}
+			}
+			// max
+			if(!utils.isNil(borders[ob[w]][i].max)){
+				mgr = utils.mgr(borders[ob[w]][i].max);
+				if(utils.isNil(maxs[w]) || mgr.greaterThan(borders[ob[w]][i].max,maxs[w])){
+					maxs[w] = borders[ob[w]][i].max;
+				}
+			}
+		}
+	}
+
+	// worlds = (l,b), (l,t), (r,b), (r,t)
+	var rights = filter(dats.right,  'y');
+	var lefts  = filter(dats.left,   'y');
+	var top    = filter(dats.top,    'x');
+	var bottom = filter(dats.bottom, 'x');
+
+
+	var border = {};
+	border.ord = {
 		marginsO: {top: borders.marginsO.top, bottom: borders.marginsO.bottom},
 		marginsI: {top: borders.marginsI.top, bottom: borders.marginsI.bottom},
 		axis: borders.abs
 	};
 
-	var bordersx = {
+	border.abs = {
 		marginsO: {left: borders.marginsO.left, right: borders.marginsO.right},
 		marginsI: {left: borders.marginsI.left, right: borders.marginsI.right},
 		axis: borders.ord
 	};
 
+	var bor = {};
+	for(w in ob){
+		// copy/expand
+		bor[w] = _.extend(_.extend({},border[ob[w]]), {min: mins[w], max: maxs[w]});
+	}
+	
+
 	return {
 		y: {
-			left:  space(lefts, universe.height,bordersy,title),
-			right: space(rights,universe.height,bordersy,title)
+			left:  space(lefts, universe.height,bor.left,title),
+			right: space(rights,universe.height,bor.right,title)
 		}, 
 		x: {
-			bottom: space(bottom,universe.width,bordersx),
-			top:    space(top,   universe.width,bordersx)
+			bottom: space(bottom,universe.width,bor.bottom),
+			top:    space(top,   universe.width,bor.top)
 		}
 	};
 };
