@@ -5,51 +5,59 @@ var _ = require('underscore');
 
 // defaults for graphs
 var graph = {};
-graph.common = {
-	color: 'black',
-	width: 1,
-	fill: 'none',
-	// mark props, explicit at heigh level
-	// overwritten if present in markProps
-	mark: true,
-	markColor: undefined,
-	markSize: 3,
-	markType: 'dot',
-	onlyMarks: false,
-	// contains low-level description,
-	// i.e. specific things like radius
-	// for a dot, or anything.
-	markProps: {},
-	points: [],
-	dsx: {}, // see space-mgr for details
-	dsy: {},  // see space-mgr for details
-	shader: null, //playing with colors
-	process: null //playing with data {dir: x || y, type: 'histogram'}
+graph.common = function () {
+	return {
+		color: 'black',
+		width: 1,
+		fill: 'none',
+		// mark props, explicit at heigh level
+		// overwritten if present in markProps
+		mark: true,
+		markColor: undefined,
+		markSize: 3,
+		markType: 'dot',
+		onlyMarks: false,
+		// contains low-level description,
+		// i.e. specific things like radius
+		// for a dot, or anything.
+		markProps: {},
+		points: [],
+		dsx: {}, // see space-mgr for details
+		dsy: {},  // see space-mgr for details
+		shader: undefined, //playing with colors
+		process: undefined //playing with data {dir: x || y, type: 'histogram'}
+	};
 };
 
-graph.Plain = graph.common;
+graph.Bars = function() {
 
-graph.BarChart = {
-	dsx: {}, // see space-mgr for details
-	dsy: {}, // see space-mgr for details
-	color: 'none',
-	width: 0,
-	span: 0.5, // in dataSpace
-	dir: {
-		x: false,
-		y: true
-	},
-	points: [],
-	markColor: undefined,
-	markType: 'bar',
-	markProps: {
+	return {
+		dsx: {}, // see space-mgr for details
+		dsy: {}, // see space-mgr for details
+		color: 'none',
 		width: 0,
-		draw: false
-	},
-	offset: {x: 0, y: 0}
+		dir: {
+			x: false,
+			y: true
+		},
+		drop: {x: undefined, y: 0},
+		points: [],
+		markColor: undefined,
+		markType: 'bar',
+		markProps: {
+			width: 0,
+			draw: false
+		},
+		// Number or {}
+		span: 0.5, // in dataSpace
+		offset: {x: 0, y: 0},
+		shader: undefined, //playing with colors
+		process: undefined//playing with data {dir: x || y, type: 'histogram'}
+	};
 };
 
-graph.Stairs = graph.common;
+//graph.Bars = graph.common;
+graph.Plain = graph.Stairs = graph.common;
 
 /// coordinates systems
 
@@ -225,7 +233,7 @@ m.Graph = {
 };
 
 m.defaults = function(key){
-	return graph[key];
+	return graph[key]();
 };
 
 module.exports = m;
