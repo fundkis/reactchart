@@ -8,12 +8,22 @@ var copySerie = function(serie){
 	return _.map(serie, (point,idx) => {
 		var xstr = utils.isString(point.x);
 		var ystr = utils.isString(point.y);
-		return {
+		var raw = {
 			x: (xstr)?idx:point.x, 
 			y: (ystr)?idx:point.y, 
-			xlabel: (xstr)?point.x:null,
-			ylabel: (ystr)?point.y:null
+			label: {
+				x: (xstr)?point.x:null,
+				y: (ystr)?point.y:null
+			}
 		};
+		for(var u in point){
+			if(u !== 'x' &&
+				u !== 'y'  &&
+				u !== 'label'){
+				raw[u] = point[u];
+			}
+		}
+		return raw;
 	});
 };
 
@@ -47,10 +57,10 @@ var validate = function(series){
 
 };
 
-var preprocess = function(serie,type){
+var preprocess = function(serie,preproc){
 
-		if(type.key !== 'histogram'){
-			throw new Error("Only 'histogram' is known as a preprocessing");
+		if(preproc.type !== 'histogram'){
+			throw new Error('Only "histogram" is known as a preprocessing: "' + preproc.type);
 		}
 
 		var equal = function(p1,p2){
@@ -71,13 +81,17 @@ var preprocess = function(serie,type){
 
 		var out = [];
 
-		var dir = type.dir;
+		var dir = preproc.dir;
 		var otherdir = (dir === 'x')?'y':'x';
 		var ind = 0;
 		var curref = serie[0][otherdir];
+		var refBef = null;
 
 		var notComplete = true;
 		var u = 0;
+		var directionProps = {};
+		directionProps[dir] = 1;
+		directionProps[otherdir] = 0;
 		while(notComplete){
 			var data = _.map( _.filter(serie, (point) => {return equal(point[otherdir],curref);}),
 				(point) => {return point[dir];}
@@ -90,34 +104,59 @@ var preprocess = function(serie,type){
 			var start = ind;
 			for(var d = 0; d < hist.length; d++){
 				out[ind] = {};
-				out[ind]['drop' + dir] = hist[d].bin;
+				out[ind].drop = {};
+				out[ind].drop[dir] = hist[d].bin;
 				out[ind][dir] = hist[d].bin + hist[d].db;
 				out[ind].shade = hist[d].prob;
 				out[ind][otherdir] = curref;
 				if(utils.isString(curref)){
-					out[ind][otherdir + 'label'] = curref;
+					out[ind].label = {};
+					out[ind].label[otherdir] = curref;
 				}
 				if(hist[d].prob > maxProb){
 					maxProb = hist[d].prob;
 				}
 				ind++;
 			}
+	// rescale the shade (max = 1)
 			for(var i = start; i < ind; i++){
 				out[i].shade /= maxProb;
-				out[i].span = out[i].shade;
 			}
+
+			// span
+			var first = true;
+			if(u !== 0){
+				first = false;
+				var mgr = utils.mgr(curref);
+				for(var j = start; j < ind; j++){
+					out[j].span = mgr.multiply(mgr.distance(curref,refBef),0.9);
+					out[j].offset = {}; 
+					out[j].offset[otherdir] = mgr.divide(out[j].span,- 2);
+				}
+			}
+			refBef = curref;
 
 			notComplete = false;
 			for(var p = u; p < serie.length; p++){
-				if(!equal(curref,serie[p])){
-					curref = serie[p];
+				if(!equal(curref,serie[p][otherdir])){
+					curref = serie[p][otherdir];
 					u = p;
 					notComplete = true;
 					break;
 				}
 			}
 
+			if(first){
+				var m = utils.mgr(refBef);
+				for(var k = start; k < ind; k++){
+					out[k].span = m.multiply(m.distance(curref,refBef),0.9);
+					out[k].offset = {}; 
+					out[k].offset[otherdir] = m.divide(out[k].span, - 2);
+				}
+			}
+
 		}
+
 		return out;
 };
 
@@ -186,7 +225,7 @@ var makeSpan = function(series,data){
 
 			var dir = barType[0] === 'y' ? 'y' : 'x';
 			var othdir = dir === 'y' ? 'x' : 'y';
-	// start[s] = x - span * n / 2 + s * span => offset = (s *  span  - span * n / 2 ) = span * (s - n / 2 )
+	// start[s] = x - span * n / 2 + s * span => offset = (s *	span	- span * n / 2 ) = span * (s - n / 2 )
 			serie.offset[dir] = mgr.multiply(serie.span, s - n / 2 );
 			if(utils.isNil(serie.offset[othdir])){
 				serie.offset[othdir] = 0;
