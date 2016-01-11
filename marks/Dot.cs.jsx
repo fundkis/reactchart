@@ -9,7 +9,10 @@ var DotMark = React.createClass({
 			x: '0',
 			y: '0',
 			radius: 3,
-			fill: 'black',
+			draw: false,
+			color: 'black',
+			width: 0,
+			fill: undefined,
 			size: -1,
 			shade: 1
 		};
@@ -19,9 +22,9 @@ var DotMark = React.createClass({
 		var y = dataScale.toC(this.props.dsy,this.props.y);
 		var r = this.props.radius;
 		var s = this.props.size;
-		var f = this.props.fill;
+		var f = this.props.fill || this.props.color;
 		if(s > 0){r = s;}
-		return <circle cx={x} cy={y} r={r} fill={f} opacity={this.props.shade}/>;
+		return <circle cx={x} cy={y} r={r} fill={f} opacity={this.props.shade} stroke={this.props.color} strokeWidth={this.props.width}/>;
 	}
 });
 
