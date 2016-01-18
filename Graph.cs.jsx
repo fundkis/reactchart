@@ -101,7 +101,7 @@ var Graph = React.createClass({
 
 		// printing the graph
 		var prints = [];
-		for(var m = 0; m < this.state.series.length; m++){
+		for(var m = 0; m < this.props.data.length; m++){
 			var graphProps = this.props.graphProps[m];
 
 			// we add the world
