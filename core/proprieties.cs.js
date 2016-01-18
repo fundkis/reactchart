@@ -190,8 +190,8 @@ m.Axes = {
 m.Graph = {
 	// general
 	name: 'G',
-	height: 800,	// defines the universe's height
-	width:	400,	// defines the universe's width
+	height: 400,	// defines the universe's height
+	width:	800,	// defines the universe's width
 	foreground: undefined,
 	background: undefined,
 	title: '',
@@ -199,7 +199,7 @@ m.Graph = {
 	// data
 	data: [{
 		type: 'Plain', // Plain, Bars, yBars, Stairs
-		series:[{x:0, y:0}], // x, y
+		series:[], // x, y
 		stacked: undefined, // x || y || null
 		coordSys: 'cart', // cart || polar
 		ord: {
