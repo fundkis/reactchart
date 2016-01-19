@@ -3,6 +3,7 @@ var _ = require('underscore');
 var marker = require('../marks/marker.cs.jsx');
 var space = require('../core/space-transf.cs.js');
 var defProps = require('../core/proprieties.cs.js');
+var utils = require('../core/utils.cs.js');
 
 var PlainChart = React.createClass({
 	propTypes: {
@@ -19,7 +20,11 @@ var PlainChart = React.createClass({
 		// getting values, easier
 		var dsx = this.props.dsx;
 		var dsy = this.props.dsy;
-		var dropsy = _.map(this.props.points,function(point){return point.dropy || dsy.d.min;});
+		var dropsy = _.map(this.props.points,function(point){return point.dropy;});
+		var dropsx = _.map(this.props.points,function(point){return point.dropx;});
+
+		var doDropx = utils.isNil( _.find(dropsx, (val) => {return utils.isNil(val);})) ? false : true;
+		var doDropy = utils.isNil( _.find(dropsy, (val) => {return utils.isNil(val);})) ? false : true;
 
 		var datas = _.map(this.props.points, function(point){
 			return {
@@ -28,15 +33,32 @@ var PlainChart = React.createClass({
 			};
 		});
 
+
+		var dropLinex = !!this.props.dropLine && this.props.dropLine.x === true;
+		var dropLiney = !!this.props.dropLine && this.props.dropLine.y === true;
+
 		var line = (this.props.onlyMarks)?' M ':' L ';
 		var points = 'M '+ datas[0].x + ' ' + datas[0].y; // init
 		for(var i = 1; i < this.props.points.length; i++){
 			points += line + datas[i].x + ' ' + datas[i].y;
+			if(dropLiney){
+				points += line + datas[i].x + ' ' + dsy.c.min + ' M ' +  datas[i].x + ' ' + datas[i].y;
+			}
+			if(dropLinex){
+				points += line + dsx.c.min + ' ' + datas[i].y + ' M ' +  datas[i].x + ' ' + datas[i].y;
+			}
 		}
 
-		// we close the curve, nothing is printed
-		for(i = dropsy.length - 1; i >= 0; i--){
-			points += ' M ' + datas[i].x + ' ' + space.toC(dsy,dropsy[i]);
+		// we close the curve if wanted
+		// y dir has prevalence
+		if(doDropy){
+			for(i = dropsy.length - 1; i >= 0; i--){
+				points += ' M ' + datas[i].x + ' ' + space.toC(dsy,dropsy[i]);
+			}
+		}else if(doDropx){
+			for(i = dropsx.length - 1; i >= 0; i--){
+				points += ' M ' + space.toC(dsx,dropsx[i]) + ' ' + datas[i].y;
+			}
 		}
 
 		return points;
