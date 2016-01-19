@@ -59,11 +59,8 @@ m.orderMag = function(r){
 
 m.orderMagValue = m.orderMagDist = function(max,min){
 
-	var valord = Math.max(m.orderMag(max), m.orderMag(min));
-	var distord = m.orderMag(m.distance(max,min));
-
 	// zero case treated right away
-	if(min * max < 0 && valord < distord ){
+	if(min * max < 0){
 		return 0;
 	}
 	var absMin = max < 0 ? Math.abs(max) : min;
