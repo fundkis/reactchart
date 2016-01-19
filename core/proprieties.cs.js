@@ -14,6 +14,7 @@ graph.common = function () {
 		// overwritten if present in markProps
 		mark: true,
 		markColor: undefined,
+		dropLine: {},
 		markSize: 3,
 		markType: 'dot',
 		onlyMarks: false,
