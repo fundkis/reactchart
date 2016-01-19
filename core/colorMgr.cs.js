@@ -39,6 +39,8 @@ var compute = function(mgr){
 			return shader[mgr.type](mgr.options.colors,mgr.index / mgr.N);
 		case 'explicit':
 			return shader[mgr.type](mgr.options.colors,mgr.factor[mgr.index]);
+		case 'by function':
+			return !!mgr.shadeFunction ? mgr.shadeFunction(mgr.point) : 'black';
 	}
 };
 
@@ -53,6 +55,7 @@ var fun = function(shade,points){
 	mgr.N = points.length - 1;
 	for(var i = 0; i < points.length; i++){
 		mgr.index = i;
+		mgr.point = points[i];
 		points[i][shade.type] = compute(mgr);
 	}
 };
