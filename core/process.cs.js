@@ -273,12 +273,28 @@ var spanify = function(serie,data){
 	return out;
 };
 
+// if stairs, we need an offset
+// at one boundary value
+var offStairs = function(props,gprops){
+	if(props.type ==='Stairs'){
+		if(gprops.stairs === 'right'){
+			return props.series[props.series.length - 1].x - props.series[props.series.length - 2].x;
+		}else if(gprops.stairs === 'left'){
+			return props.series[0].x - props.series[1].x;
+		}else{
+			return null;
+		}
+	}
+	return null;
+};
+
 m.process = function(props){
 
 	var raw = _.map(props.data,(dat) => {return dat.series;});
 
 	var state = {};
 	var spanOffset = [];
+	var lOffset = [];
 	if(!validate(raw)){
 
 		state.series = _.map(props.data, (/*ser*/) => {return [];});
@@ -289,6 +305,7 @@ m.process = function(props){
 		state.series = _.map(raw, (serie,idx) => { return (!!preproc[idx])?preprocess(serie,preproc[idx]):copySerie(serie);});
 		addOffset(state.series, _.map(props.data, (ser) => {return ser.stacked;}));
 		spanOffset = makeSpan(state.series, _.map(props.data, (ser,idx) => {return {type: ser.type, span: props.graphProps[idx].span};}));
+		lOffset = _.map(props.data, (p,idx) => {return offStairs(p,props.graphProps[idx]);});
 
 	}
 	state.spanOffset = spanOffset;
@@ -313,6 +330,19 @@ m.process = function(props){
 		marginsO: marginalize(props.outerMargin), 
 		marginsI: marginalize(props.axisMargin)
 	};
+
+	// xmin, xmax...
+	var obDir = {x: 'abs', y: 'ord'};
+	var obMM = {min: true, max: true};
+	for(var dir in obDir){
+		for(var type in obMM){
+			var tmp = dir + type; //xmin, xmax, ...
+			if(!utils.isNil(props[tmp])){
+				borders[obDir[dir]][0][type] = props[tmp];
+			}
+		}
+	}
+
 	var title = {title: props.title, titleFSize: props.titleFSize};
 
 	// getting dsx and dsy
@@ -324,7 +354,9 @@ m.process = function(props){
 			stacked: props.data[idx].stacked,
 			abs: props.data[idx].abs,
 			ord: props.data[idx].ord,
-			offset: (!!spanOffset[idx]) ? spanOffset[idx].offset : null
+			offset: (!!spanOffset[idx]) ? spanOffset[idx].offset : null,
+			span: (!!spanOffset[idx]) ? spanOffset[idx].span : null,
+			limitOffset: (!!lOffset[idx]) ? lOffset[idx] : null,
 		};
 	});
  
