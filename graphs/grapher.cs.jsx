@@ -10,36 +10,35 @@ var defaults = require('../core/proprieties.cs.js').defaults;
 var graph = {};
 
 graph.Plain = function(points,props,keyid){
-		var key = 'plain' + keyid;
-		return <Plain name={key} {...props} points={points} />;
+		props.name += '.plain';
+		return <Plain key={props.name} {...props} points={points} />;
 };
 
 graph.Stairs = function(points,props,keyid){
-	var key = 'stairs' + keyid;
-	return <Stairs name={key} {...props} points={points} />;
+	props.name += '.stairs';
+	return <Stairs key={props.name} {...props} points={points} />;
 };
 
-graph.Bars = function(points,props,keyid){
-	var key = 'bars' + keyid;
-	return <BarChart name={key} {...props} dir={{x: false, y: true}} points={points} />;
+graph.Bars = function(points,props){
+	props.name += '.bars';
+	return <BarChart key={props.name} {...props} dir={{x: false, y: true}} points={points} />;
 };
 
-graph.yBars = function(points,props,keyid){
-	var key = 'ybars' + keyid;
-	return <BarChart name={key} {...props} dir={{x: true, y: false}} points={points} />;
+graph.yBars = function(points,props){
+	props.name += '.ybars';
+	return <BarChart key={props.name} {...props} dir={{x: true, y: false}} points={points} />;
 };
 
 var m = {};
 
-m.grapher = function(key,points,props,keyid){
+m.grapher = function(key,points,props){
 	if(utils.isNil(graph[key])){
 		throw new Error('Unknown graph type "' + key + '"');
 	}
 
-	var pr = utils.deepCp({},defaults(key));
-	utils.deepCp(pr,props);
+	var pr = utils.deepCp(utils.deepCp({},defaults(key)),props);
 
-	return graph[key](points,pr,keyid);
+	return graph[key](points,pr);
 };
 
 module.exports = m;
