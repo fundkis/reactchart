@@ -45,23 +45,28 @@ var Axe = React.createClass({
 // label
 		// on axis
 		var fs = this.props.labelFSize; // font size
-		var fd = 0.25 * fh; // font depth, 25 %
-		var fh = 0.75 * fh; // font height, 75 %
+		var fd = 0.25 * fs; // font depth, 25 %
+		var fh = 0.75 * fs; // font height, 75 %
 
 		// arbitrary values, from some font:
 		// width "m" = 40 px
 		// width "M" = 45 px => used
-		var xoffset = this.props.label.length * 22.5;
-		var yoffset = (this.props.labelDir.y > 0)? fh : fd ;
+		var labelWidthOff = - this.props.label.length * 22.5;
+		var labelHeightOff = (dir) => {
+			return dir > 0 ? fh : fd;
+		};
+
+		var xoffset = this.props.labelDir.x !== 0 ? labelHeightOff(this.props.labelDir.x) : labelWidthOff ;
+		var yoffset = this.props.labelDir.y !== 0 ? labelHeightOff(this.props.labelDir.y) : labelWidthOff ;
 
 		var points = this.points();
-		var xL = (points.end.x + points.start.x)/2 + this.props.labelDir.x * xoffset + this.props.labelOffset.x;
-		var yL = (points.end.y + points.start.y)/2 + this.props.labelDir.y * yoffset + this.props.labelOffset.y;
+		var xL = (points.end.x + points.start.x)/2 + this.props.labelDir.x * ( xoffset + this.props.labelOffset.x);
+		var yL = (points.end.y + points.start.y)/2 + this.props.labelDir.y * ( yoffset + this.props.labelOffset.y); 
 		var textAnchor = 'middle'; // base point, middle
 		// x = r cos(theta)
 		// y = r sin(theta)
 		// => theta = arctan(y/x) [-90,90]
-		var theta = Math.floor( Math.atan( this.props.dir.y / this.props.dir.x ) * 180 / Math.PI ); // in degrees
+		var theta = Math.floor( Math.atan( -this.props.dir.y / this.props.dir.x ) * 180 / Math.PI ); // in degrees
 		// shifting from axis
 
 		var rotate = 'rotate(' + theta + ' ' + xL + ' ' + yL + ')';
