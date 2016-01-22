@@ -197,6 +197,7 @@ m.Graph = {
 	background: undefined,
 	title: '',
 	titleFSize: 30,
+	axisOnTop: false,
 	// data
 	data: [{
 		type: 'Plain', // Plain, Bars, yBars, Stairs

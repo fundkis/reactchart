@@ -94,7 +94,16 @@ var Graph = React.createClass({
 			return null;
 		}
 		var col = this.props.background;
-		return <rect width={this.props.width} height={this.props.height} strokeWidth='0' fill={col} x='0' y='0'/>;
+
+		var spaceX = !!this.state.spaces.x.bottom ? this.state.spaces.x.bottom.c : this.state.spaces.x.top.c ;
+		var spaceY = !!this.state.spaces.y.left ? this.state.spaces.y.left.c : this.state.spaces.y.right.c ;
+
+		var x = spaceX.min;
+		var y = spaceY.max;
+		var width = spaceX.max - spaceX.min;
+		var height = spaceY.min - spaceY.max;
+
+		return <rect width={width} height={height} strokeWidth='0' fill={col} x={x} y={y}/>;
 	},
 
 	graphs: function(){
@@ -132,9 +141,9 @@ var Graph = React.createClass({
 			shader(graphProps.shader,points);
 
 			// we add the key (it's a vector)
-			graphProps.key = this.props.name + '.g.' + m;
+			graphProps.name = this.props.name + '.g.' + m;
 			var type = this.props.data[m].type || 'Plain';
-			prints.push(grapher.grapher(type,points,graphProps,m));
+			prints.push(grapher.grapher(type,points,graphProps));
 		}
 		return prints;
 	},
@@ -210,14 +219,18 @@ var Graph = React.createClass({
 		return (!!title && title.length !== 0)? <text textAnchor='middle' fontSize={titleFSize} x={xT} y={yT}>{title}</text>:null;
 	},
 
+	orderAG: function(){
+		return this.props.axisOnTop === 'true' ? <g>{this.graphs()}{this.axis()}</g> : <g>{this.axis()}{this.graphs()}</g> ;
+					
+	},
+
 	render: function(){
 
 		return <svg width={this.props.width} height={this.props.height}>
 					{this.cadre()}
 					{this.background()}
 					{this.title()}
-					{this.axis()}
-					{this.graphs()}
+					{this.orderAG()}
 					{this.foreground()}
 			</svg>;
 
