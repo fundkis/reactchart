@@ -20,11 +20,12 @@ var PlainChart = React.createClass({
 		// getting values, easier
 		var dsx = this.props.dsx;
 		var dsy = this.props.dsy;
-		var dropsy = _.map(this.props.points,function(point){return point.dropy;});
-		var dropsx = _.map(this.props.points,function(point){return point.dropx;});
+		var baseLine = this.props.baseLine;
+		var dropsy = _.map(this.props.points,function(point){return point.dropy || baseLine.y;});
+		var dropsx = _.map(this.props.points,function(point){return point.dropx || baseLine.x;});
 
-		var doDropx = utils.isNil( _.find(dropsx, (val) => {return utils.isNil(val);})) ? false : true;
-		var doDropy = utils.isNil( _.find(dropsy, (val) => {return utils.isNil(val);})) ? false : true;
+		var doDropx = !!this.props.fill && this.props.fill !== 'none' && utils.isNil( _.find(dropsx, (val) => {return utils.isNil(val);}));
+		var doDropy = !!this.props.fill && this.props.fill !== "none" && utils.isNil( _.find(dropsy, (val) => {return utils.isNil(val);})); 
 
 		var datas = _.map(this.props.points, function(point){
 			return {
@@ -36,16 +37,20 @@ var PlainChart = React.createClass({
 
 		var dropLinex = !!this.props.dropLine && this.props.dropLine.x === true;
 		var dropLiney = !!this.props.dropLine && this.props.dropLine.y === true;
+		var base = {
+			x: utils.isNil(this.props.baseLine.x) ? dsx.c.min : this.props.baseLine.x,
+			y: utils.isNil(this.props.baseLine.y) ? dsy.c.min : this.props.baseLine.y
+		};
 
 		var line = (this.props.onlyMarks)?' M ':' L ';
 		var points = 'M '+ datas[0].x + ' ' + datas[0].y; // init
 		for(var i = 1; i < this.props.points.length; i++){
 			points += line + datas[i].x + ' ' + datas[i].y;
 			if(dropLiney){
-				points += line + datas[i].x + ' ' + dsy.c.min + ' M ' +  datas[i].x + ' ' + datas[i].y;
+				points += line + datas[i].x + ' ' + base.y + ' L ' +  datas[i].x + ' ' + datas[i].y;
 			}
 			if(dropLinex){
-				points += line + dsx.c.min + ' ' + datas[i].y + ' M ' +  datas[i].x + ' ' + datas[i].y;
+				points += line + base.x + ' ' + datas[i].y + ' L ' +  datas[i].x + ' ' + datas[i].y;
 			}
 		}
 
@@ -53,11 +58,11 @@ var PlainChart = React.createClass({
 		// y dir has prevalence
 		if(doDropy){
 			for(i = dropsy.length - 1; i >= 0; i--){
-				points += ' M ' + datas[i].x + ' ' + space.toC(dsy,dropsy[i]);
+				points += ' L ' + datas[i].x + ' ' + space.toC(dsy,dropsy[i]);
 			}
 		}else if(doDropx){
 			for(i = dropsx.length - 1; i >= 0; i--){
-				points += ' M ' + space.toC(dsx,dropsx[i]) + ' ' + datas[i].y;
+				points += ' L ' + space.toC(dsx,dropsx[i]) + ' ' + datas[i].y;
 			}
 		}
 
@@ -90,11 +95,13 @@ var PlainChart = React.createClass({
 
 	render: function(){
 
+		var shade = this.props.shade || 1;
 		return <g>
 			<path
 				d={this.path()} 
 				stroke={this.props.color} 
 				strokeWidth={this.props.width}
+				opacity={shade}
 				fill={this.props.fill}/>
 			{this.marks()}
 			</g>;

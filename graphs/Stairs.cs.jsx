@@ -48,8 +48,9 @@ var StairsChart = React.createClass({
 		}
 
 		var color = this.props.points[idx].fill || this.props.fill;
+		var shade = this.props.shade || 1;
 
-		return <path key={idx} d={path} strokeWidth={0} fill={color}/>;
+		return <path key={idx} d={path} strokeWidth={0} fill={color} opacity={shade}/>;
 	},
 
 	compute: function(){
@@ -139,7 +140,7 @@ var StairsChart = React.createClass({
 						data += comp.datas[i + 1].x + ',' + comp.drops[i + 1].y + ' ';
 					}
 					if(comp.dropLine.x){
-						data += comp.datas[i + 1].x + ',' + comp.datas[i].y + ' ' + comp.drops[i].x + ',' + datas[i].y  + ' ' + comp.datas[i + 1].x + ',' + comp.datas[i].y + ' ';
+						data += comp.datas[i + 1].x + ',' + comp.datas[i].y + ' ' + comp.drops[i].x + ',' + comp.datas[i].y  + ' ' + comp.datas[i + 1].x + ',' + comp.datas[i].y + ' ';
 					}
 				}
 				data += comp.datas[Nd - 1].x + ',' + comp.datas[Nd - 1].y + ' ' + (comp.datas[Nd - 1].x + comp.delta.x) + ',' + comp.datas[Nd - 1].y; // last bin
@@ -150,7 +151,7 @@ var StairsChart = React.createClass({
 				data =(comp.datas[0].x - comp.delta.x) + ',' + comp.drops[0].y + ' ' + (comp.datas[0].x - comp.delta.x) + ',' + comp.datas[0].y + ' ' + comp.datas[0].x + ',' + comp.datas[0].y + ' ';
 				for(i = 0; i < Nd - 1; i++){
 					if(comp.dropLine.x){
-						data += comp.drops[i].x + ',' + datas[i].y  + ' ' + comp.datas[i].x + ',' + comp.datas[i].y + ' ';
+						data += comp.drops[i].x + ',' + comp.datas[i].y  + ' ' + comp.datas[i].x + ',' + comp.datas[i].y + ' ';
 					}
 					if(comp.dropLine.y){
 						data += comp.datas[i].x + ',' + comp.drops[i].y + ' ';
