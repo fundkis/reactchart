@@ -345,10 +345,14 @@ m.spaces = function(datas,universe,borders,title){
 
 					// limitOffset changes only one boundary
 					if(limOfIdx === idx){
-						val += loff;
+						if(utils.isArray(val)){
+							_.each(val, (v) => v += loff);
+						}else{
+							val += loff;
+						}
 					}
 					return val;
-				});
+				}).concat(_.map(serie.phantomSeries,(p) => {return p[dir];}));
 			});
 	};
 

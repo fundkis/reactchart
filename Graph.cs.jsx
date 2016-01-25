@@ -73,6 +73,16 @@ var Graph = React.createClass({
 			fullprops.data[ng] = utils.deepCp({},data);
 			fullprops.graphProps[ng] = utils.deepCp({},gprops);
 		}
+		if(!!props.axisProps.abs){
+			for(var nabs = 0; nabs < props.axisProps.abs.length; nabs++){
+				fullprops.axisProps.abs[nabs] = utils.deepCp({},gProps.Axe('abs'));
+			}
+		}
+		if(!!props.axisProps.ord){
+			for(var nord = 0; nord < props.axisProps.ord.length; nord++){
+				fullprops.axisProps.ord[nord] = utils.deepCp({},gProps.Axe('ord'));
+			}
+		}
 
 		return utils.deepCp(fullprops,props);
 	},
@@ -117,16 +127,14 @@ var Graph = React.createClass({
 			// we find the proper x & y axis
 			var xplace = 'bottom';
 			if(!!this.props.data[m].abs && 
-				!!this.props.data[m].abs.axis &&
-				!!this.props.data[m].abs.axis.placement){
-				xplace = this.props.data[m].abs.axis.placement;
+				!!this.props.data[m].abs.axis){
+				xplace = this.props.data[m].abs.axis;
 			}
 
 			var yplace = 'left';
 			if(!!this.props.data[m].ord && 
-				!!this.props.data[m].ord.axis &&
-				!!this.props.data[m].ord.axis.placement){
-				yplace = this.props.data[m].ord.axis.placement;
+				!!this.props.data[m].ord.axis){
+				yplace = this.props.data[m].ord.axis;
 			}
 
 			graphProps.dsx = this.state.spaces.x[xplace];
@@ -152,7 +160,21 @@ var Graph = React.createClass({
 
 		var nameAx = this.props.name + '.axes';
 
+		// defaulting the axisProps
 		var props = utils.deepCp(props,gProps.Graph.axisProps);
+		// for all the abs and ord
+		if(!!this.props.axisProps.abs){
+			for(var nabs = 1; nabs < this.props.axisProps.abs.length; nabs++){
+				props.abs[nabs] = utils.deepCp({},gProps.Axe('abs'));
+			}
+		}
+		if(!!this.props.axisProps.ord){
+			for(var nord = 1; nord < this.props.axisProps.ord.length; nord++){
+				props.ord[nord] = utils.deepCp({},gProps.Axe('ord'));
+			}
+		}
+		
+		// replacing with defined values
 		props = utils.deepCp(props,this.props.axisProps);
 	/* DS = {
 	 *	y: {

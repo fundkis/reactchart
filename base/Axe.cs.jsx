@@ -8,7 +8,7 @@ var sp = require('../core/space-transf.cs.js');
 
 var Axe = React.createClass({
 	getDefaultProps: function(){
-		return aProps.Axe;
+		return aProps.Axe('abs');
 	},
 
 	points: function(){

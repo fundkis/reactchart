@@ -14,6 +14,10 @@ var copySerie = function(serie){
 			label: {
 				x: (xstr)?point.x:null,
 				y: (ystr)?point.y:null
+			},
+			drop: {
+				x: utils.isDate(point.x) ? null : 0,
+				y: utils.isDate(point.y) ? null : 0
 			}
 		};
 		for(var u in point){
@@ -351,6 +355,7 @@ m.process = function(props){
 	var data = _.map(state.series,(ser,idx) => {
 		return {
 			series: ser,
+			phantomSeries: props.data[idx].phantomSeries,
 			stacked: props.data[idx].stacked,
 			abs: props.data[idx].abs,
 			ord: props.data[idx].ord,
