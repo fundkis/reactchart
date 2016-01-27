@@ -205,6 +205,7 @@ var space = function(datas,universe,borders,title){
 		};
 
 	// 2 - the data space
+<<<<<<< HEAD
 
 		var allValues = _.flatten(datas);
 
@@ -216,6 +217,19 @@ var space = function(datas,universe,borders,title){
         return null;
       }
 
+=======
+
+		var allValues = _.flatten(datas);
+
+		var mgr = (allValues.length === 0)?utils.mgr(5):utils.mgr(allValues[0]);
+
+	// either data defined or explicitely defined
+		var minVals = (vals) => {
+      if(vals.length === 0){
+        return null;
+      }
+
+>>>>>>> develop
 			return mgr.min(vals);
 		};
 
@@ -295,6 +309,7 @@ var space = function(datas,universe,borders,title){
 };
 
 m.spaces = function(datas,universe,borders,title){
+<<<<<<< HEAD
 
 	var filter = (datas,dir) => {
 		return _.map(datas, (serie) => {
@@ -324,6 +339,66 @@ m.spaces = function(datas,universe,borders,title){
 					}
 					return val;
 				});
+=======
+
+	var filter = (datas,dir) => {
+		return _.map(datas, (serie) => {
+			// global characteristics
+			var offset = serie.offset;
+			var span = serie.span;
+			var loff = serie.limitOffset;
+			var limOfIdx = utils.isNil(loff) ? -1 : loff > 0 ? serie.series.length - 1: 0;
+			return _.map(serie.series, (point,idx) => {
+					// if label
+					if(utils.isString(point[dir])){
+						return idx;
+					}
+					var val = point[dir];
+					// modifiers are span, drop and offset
+					// offset changes the value
+					if(!utils.isNil(offset) && !utils.isNil(offset[dir])){
+						var mgr = utils.mgr(val);
+						val = mgr.add(val,offset[dir]);
+					}
+					// drop adds a value
+					if(!utils.isNil(point.drop) && !utils.isNil(point.drop[dir])){
+						val = [val];
+						val.push(point.drop[dir]);
+					}
+
+					// offset can be a point def
+					if(!utils.isNil(point.offset) && !utils.isNil(point.offset[dir])){
+						var pmgr = utils.mgr(val);
+						val = pmgr.add(val,point.offset[dir]);
+					}
+
+					// span makes value into two values, in the other direction than drop
+					if(!utils.isNil(span) && !utils.isNil(point.drop) && utils.isNil(point.drop[dir])){
+						val = [val];
+						var mm = utils.mgr(val[0]);
+						val[0] = mm.subtract(val[0],mm.divide(span,2));
+						val.push(mm.add(val[0],span));
+					}
+
+					// span can be a point def
+					if(!utils.isNil(point.span) && !utils.isNil(point.drop) && utils.isNil(point.drop[dir])){
+						val = [val];
+						var pmm = utils.mgr(val[0]);
+						val[0] = pmm.subtract(val[0],pmm.divide(point.span,2));
+						val.push(pmm.add(val[0],point.span));
+					}
+
+					// limitOffset changes only one boundary
+					if(limOfIdx === idx){
+						if(utils.isArray(val)){
+							_.each(val, (v) => v += loff);
+						}else{
+							val += loff;
+						}
+					}
+					return val;
+				}).concat(_.map(serie.phantomSeries,(p) => {return p[dir];}));
+>>>>>>> develop
 			});
 	};
 

@@ -10,10 +10,19 @@ graph.common = function () {
 		color: 'black',
 		width: 1,
 		fill: 'none',
+<<<<<<< HEAD
+=======
+		shade: 1,
+>>>>>>> develop
 		// mark props, explicit at heigh level
 		// overwritten if present in markProps
 		mark: true,
 		markColor: undefined,
+<<<<<<< HEAD
+=======
+		baseLine: {x:undefined, y:0},
+		dropLine: {x: false, y:false},
+>>>>>>> develop
 		markSize: 3,
 		markType: 'dot',
 		onlyMarks: false,
@@ -35,11 +44,19 @@ graph.Bars = function() {
 		dsx: {}, // see space-mgr for details
 		dsy: {}, // see space-mgr for details
 		color: 'none',
+<<<<<<< HEAD
+=======
+		shade: 1,
+>>>>>>> develop
 		width: 0,
 		dir: {
 			x: false,
 			y: true
 		},
+<<<<<<< HEAD
+=======
+		baseLine: {x: undefined, y: 0},
+>>>>>>> develop
 		drop: {x: undefined, y: 0},
 		points: [],
 		markColor: undefined,
@@ -123,7 +140,11 @@ m.Tick = {
 
 
 //
+<<<<<<< HEAD
 m.Axe = {
+=======
+var axe = {
+>>>>>>> develop
 	ticks: {
 		major: m.Tick,
 		minor: _.extendOwn(_.extend({},m.Tick),{
@@ -156,11 +177,16 @@ m.Axe = {
 	ds:         {},
 	empty:      false,
 	CS:         'cart',
+<<<<<<< HEAD
+=======
+	partner: 0,
+>>>>>>> develop
 	// in c coordinate
 	origin: {
 		x: 0,
 		y: 0
 	},
+<<<<<<< HEAD
 	// vector of axis
 	dir: {
 		x: 1,
@@ -171,16 +197,62 @@ m.Axe = {
 		x: 0,
 		y: 1
 	},
+=======
+>>>>>>> develop
 	// for ticklabel formatting
 	comFac: 1
 };
 
+<<<<<<< HEAD
 m.Axes = {
 	abs: [
 		_.extend({}, m.Axe,{placement: 'bottom', partner: 0})
 	],
 	ord: [
 		_.extend({}, m.Axe,{placement: 'left', partner: 0})
+=======
+m.Axe = function(key){
+	switch(key){
+		case 'abs':
+			return _.extend({}, axe,{
+				placement: 'bottom',
+				// vector of axis
+				dir: {
+					x: 1,
+					y: 0
+				},
+				// in cs !! y is top to bottom
+				labelDir: {
+					x: 0,
+					y: 1
+				}
+			});
+		case 'ord':
+			return _.extend({}, axe,{
+				placement: 'left',
+				// vector of axis
+				dir: {
+					x: 0,
+					y: 1
+				},
+				// in cs !! y is top to bottom
+				labelDir: {
+					x: 1,
+					y: 0
+				}
+			});
+		default:
+			return axe;
+	}
+};
+
+m.Axes = {
+	abs: [
+		m.Axe('abs')
+	],
+	ord: [
+		m.Axe('ord')
+>>>>>>> develop
 	],
 	CS: 'cart'
 };
@@ -196,10 +268,18 @@ m.Graph = {
 	background: undefined,
 	title: '',
 	titleFSize: 30,
+<<<<<<< HEAD
+=======
+	axisOnTop: false,
+>>>>>>> develop
 	// data
 	data: [{
 		type: 'Plain', // Plain, Bars, yBars, Stairs
 		series:[], // x, y
+<<<<<<< HEAD
+=======
+		phantomSeries:[], // added points to play on the world's limit
+>>>>>>> develop
 		stacked: undefined, // x || y || null
 		coordSys: 'cart', // cart || polar
 		ord: {
@@ -212,7 +292,11 @@ m.Graph = {
 		}
 	}],
 	graphProps: [
+<<<<<<< HEAD
 		graph.common
+=======
+		graph.common()
+>>>>>>> develop
 	],
 	// axis
 	axisProps: m.Axes,

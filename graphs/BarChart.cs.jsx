@@ -12,6 +12,11 @@ var BarChart = React.createClass({
 		var drop = 0;
 		if(!!this.props.drop){ 
 			drop = this.props.drop[dir] || drop;
+<<<<<<< HEAD
+=======
+		}else if(!!this.props.baseLine){ 
+			drop = this.props.baseLine[dir] || drop;
+>>>>>>> develop
 		}
 		return this.props.dir[dir] ? drop : undefined;
 	},
@@ -29,6 +34,10 @@ var BarChart = React.createClass({
 		draw:   this.props.markProps.draw || false,
 		width:  this.props.width,
 		span:   this.props.span,
+<<<<<<< HEAD
+=======
+		shade:  this.props.shade,
+>>>>>>> develop
 		offset: this.props.offset,
 		drop:   {
 			x: this.drop('x'),

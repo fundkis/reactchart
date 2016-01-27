@@ -32,9 +32,16 @@ var Axes = React.createClass({
 		if(props.show === false){
 			return null;
 		}
+<<<<<<< HEAD
 		var axisProps = utils.deepCp(axisProps,props);
 
 		// dir
+=======
+		var axisProps = utils.deepCp({},props);
+
+		// dir
+		var minmax = false;
+>>>>>>> develop
 		switch(axisProps.placement){
 			case 'bottom':
 				axisProps.dir = {x: 1, y: 0};
@@ -43,6 +50,10 @@ var Axes = React.createClass({
 			case 'top':
 				axisProps.dir = {x: 1, y: 0};
 				axisProps.labelDir = {x:0, y: -1};
+<<<<<<< HEAD
+=======
+				minmax = true;
+>>>>>>> develop
 				break;
 			case 'left':
 				axisProps.dir = {x: 0, y: 1};
@@ -51,6 +62,10 @@ var Axes = React.createClass({
 			case 'right':
 				axisProps.dir = {x: 0, y: 1};
 				axisProps.labelDir = {x: 1, y: 0};
+<<<<<<< HEAD
+=======
+				minmax = true;
+>>>>>>> develop
 				break;
 			default:
 				throw new Error('Placement of axis unknown, check axis: ' + key);
@@ -62,7 +77,11 @@ var Axes = React.createClass({
 		var partners = (key[0] === 'a') ? this.props.ord : this.props.abs;
 		axisProps.origin = {};
 		axisProps.origin[curDir] = axisProps.ds.c.min;
+<<<<<<< HEAD
 		axisProps.origin[othDir] = partners[idx].ds.c.min;
+=======
+		axisProps.origin[othDir] = minmax ? partners[idx].ds.c.max : partners[idx].ds.c.min;
+>>>>>>> develop
 		axisProps.grid.major.length = Math.abs(partners[idx].ds.c.max - partners[idx].ds.c.min);
 		axisProps.grid.minor.length = Math.abs(partners[idx].ds.c.max - partners[idx].ds.c.min);
 
