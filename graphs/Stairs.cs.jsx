@@ -8,30 +8,6 @@ var StairsChart = React.createClass({
 	getDefaultProps: function(){
 		return defProps.defaults('Stairs');
 	},
-<<<<<<< HEAD
-
-	marks: function(){
-		if(this.props.points.length === 0 || this.props.mark === false){
-			return null;
-		}
-			// marks
-		var markprops = this.props.markProps;
-		if(!markprops.fill){
-			markprops.fill = this.props.markColor || this.props.color;
-		}
-		if(!markprops.size){
-			markprops.size = this.props.markSize;
-		}
-
-		markprops.name = this.props.name + 'm';
-		markprops.dsx = this.props.dsx;
-		markprops.dsy = this.props.dsy;
-		return marker.marks(this.props.points,markprops,this.props.mark,this.props.markType);
-	},
-
-	render: function(){
-=======
->>>>>>> develop
 
 	marks: function(){
 		if(this.props.points.length === 0 || this.props.mark === false){
@@ -188,10 +164,6 @@ var StairsChart = React.createClass({
 					throw 'Stairs are either right or left';
 		}
 
-<<<<<<< HEAD
-		return <g>
-					<polyline points={data} stroke={this.props.color} strokeWidth={this.props.width} fill={this.props.fill} opacity={this.props.opacity}/>
-=======
 		return <polyline points={data} stroke={this.props.color} strokeWidth={this.props.width} fill='none'/>;
 
 	},
@@ -201,7 +173,6 @@ var StairsChart = React.createClass({
 		return <g>
 					{this.bins()}
 					{this.path()}
->>>>>>> develop
 					<g>{this.marks()}</g>
 				</g>;
 }

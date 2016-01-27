@@ -3,10 +3,7 @@ var _ = require('underscore');
 var marker = require('../marks/marker.cs.jsx');
 var space = require('../core/space-transf.cs.js');
 var defProps = require('../core/proprieties.cs.js');
-<<<<<<< HEAD
-=======
 var utils = require('../core/utils.cs.js');
->>>>>>> develop
 
 var PlainChart = React.createClass({
 	propTypes: {
@@ -27,20 +24,15 @@ var PlainChart = React.createClass({
 		var dropsy = _.map(this.props.points,function(point){return point.dropy || baseLine.y;});
 		var dropsx = _.map(this.props.points,function(point){return point.dropx || baseLine.x;});
 
-<<<<<<< HEAD
-=======
 		var doDropx = !!this.props.fill && this.props.fill !== 'none' && utils.isNil( _.find(dropsx, (val) => {return utils.isNil(val);}));
 		var doDropy = !!this.props.fill && this.props.fill !== "none" && utils.isNil( _.find(dropsy, (val) => {return utils.isNil(val);})); 
 
->>>>>>> develop
 		var datas = _.map(this.props.points, function(point){
 			return {
 				x: space.toC(dsx,point.x), 
 				y: space.toC(dsy,point.y)
 			};
 		});
-<<<<<<< HEAD
-=======
 
 
 		var dropLinex = !!this.props.dropLine && this.props.dropLine.x === true;
@@ -49,7 +41,6 @@ var PlainChart = React.createClass({
 			x: utils.isNil(this.props.baseLine.x) ? dsx.c.min : this.props.baseLine.x,
 			y: utils.isNil(this.props.baseLine.y) ? dsy.c.min : this.props.baseLine.y
 		};
->>>>>>> develop
 
 		var line = (this.props.onlyMarks)?' M ':' L ';
 		var points = 'M '+ datas[0].x + ' ' + datas[0].y; // init
@@ -110,10 +101,7 @@ var PlainChart = React.createClass({
 				d={this.path()} 
 				stroke={this.props.color} 
 				strokeWidth={this.props.width}
-<<<<<<< HEAD
-=======
 				opacity={shade}
->>>>>>> develop
 				fill={this.props.fill}/>
 			{this.marks()}
 			</g>;

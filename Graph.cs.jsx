@@ -51,165 +51,6 @@ var Graph = React.createClass({
 			space: null
 		};
 	},
-<<<<<<< HEAD
-
-	componentWillMount: function(){
-		this.setState(core.process(this.defaultTheProps(this.props)));
-	},
-
-	componentWillReceiveProps: function(props){
-		this.setState(core.process(this.defaultTheProps(props)));
-	},
-
-	getDefaultProps: function() {
-		return gProps.Graph;
-	},
-
-	defaultTheProps: function(props){
-		var data = gProps.Graph.data[0];
-		var gprops = gProps.Graph.graphProps[0];
-
-		var fullprops = utils.deepCp({},gProps.Graph);
-		for(var ng = 0; ng < props.data.length; ng++){
-			fullprops.data[ng] = utils.deepCp({},data);
-			fullprops.graphProps[ng] = utils.deepCp({},gprops);
-		}
-
-		return utils.deepCp(fullprops,props);
-	},
-
-	foreground: function(){
-		if(utils.isNil(this.props.foreground)){
-			return null;
-		}
-		var dsx = (!!this.state.spaces.x.bottom) ? this.state.spaces.x.bottom : this.state.spaces.x.top;
-		var dsy = (!!this.state.spaces.y.left)   ? this.state.spaces.y.left   : this.state.spaces.y.right;
-		var wxc = (dsx.c.max + dsx.c.min - this.props.foreground.width) / 2;
-		var wyc = (dsy.c.max + dsy.c.min + this.props.foreground.height) / 2;
-		var trans = 'translate(' + wxc + ',' + wyc + ')';
-		return <g transform={trans} {...this.props.foreground}>{this.props.foreground.content}</g>;
-	},
-
-	background: function(){
-		if(utils.isNil(this.props.background)){
-			return null;
-		}
-		var col = this.props.background;
-		return <rect width={this.props.width} height={this.props.height} strokeWidth='0' fill={col} x='0' y='0'/>;
-	},
-
-	graphs: function(){
-
-		// printing the graph
-		var prints = [];
-		for(var m = 0; m < this.props.data.length; m++){
-			var graphProps = this.props.graphProps[m];
-
-			// we add the world
-			// we find the proper x & y axis
-			var xplace = 'bottom';
-			if(!!this.props.data[m].abs && 
-				!!this.props.data[m].abs.axis &&
-				!!this.props.data[m].abs.axis.placement){
-				xplace = this.props.data[m].abs.axis.placement;
-			}
-
-			var yplace = 'left';
-			if(!!this.props.data[m].ord && 
-				!!this.props.data[m].ord.axis &&
-				!!this.props.data[m].ord.axis.placement){
-				yplace = this.props.data[m].ord.axis.placement;
-			}
-
-			graphProps.dsx = this.state.spaces.x[xplace];
-			graphProps.dsy = this.state.spaces.y[yplace];
-			for(var more in this.state.spanOffset[m]){
-				graphProps[more] = this.state.spanOffset[m][more];
-			}
-
-			var points = this.state.series[m].concat();
-
-			// shader
-			shader(graphProps.shader,points);
-
-			// we add the key (it's a vector)
-			graphProps.key = this.props.name + '.g.' + m;
-			var type = this.props.data[m].type || 'Plain';
-			prints.push(grapher.grapher(type,points,graphProps,m));
-		}
-		return prints;
-	},
-
-	axis: function(){
-
-		var nameAx = this.props.name + '.axes';
-
-		var props = utils.deepCp(props,gProps.Graph.axisProps);
-		props = utils.deepCp(props,this.props.axisProps);
-	/* DS = {
-	 *	y: {
-	 *		left:  space(lefts, universe.height,bordersy,title),
-	 *		right: space(rights,universe.height,bordersy,title)
-	 *	}, 
-	 *	x: {
-	 *		bottom: space(bottom,universe.width,bordersx),
-	 *		top:  space(top, universe.width,bordersx)
-	 *	}
-	 * }
-	 */
-		var DS = this.state.spaces;
-		var c  = {abs: 'x', ord: 'y'};
-		var def = {abs: 'bottom', ord: 'left'};
-
-		// axis placement
-		for(var t in c){
-			for(var a = 0; a < props[t].length; a++){
-				// defaulted at 'bottom' & 'left'
-				if(!!props[t][a].placement){
-					props[t][a].ds = DS[c[t]][props[t][a].placement];
-				}else{
-					props[t][a].placement = def[t];
-					props[t][a].ds = DS[c[t]][props[t][a].placement];
-				}
-			}
-		}
-
-		// if labelled data
-		for(var s = 0; s < this.state.series.length; s++){
-			if(this.state.series[s].length === 0){continue;}
-			var firstPoint = this.state.series[s][0];
-			for(var k in c){
-				var label = c[k] + 'label';
-				if(!!firstPoint[label]){
-					// default
-					var look = def[k];
-					if(!utils.isNil(this.props.data[s][k]) && !!this.props.data[s][k].axis){
-						look = this.props.data[s][k].axis;
-					}
-					for(var ax = 0; ax < props[k].length; ax++){
-						if(props[k][ax].placement === look){
-							props[k][ax].ticksLabel = _.map(this.state.series[s],(point) => {return {coord: point[c[k]], label: point[label]};});
-							break;
-						}
-					}
-				}
-			}
-		}
-
-		return <Axes name={nameAx} {...props} />;
-	},
-
-	cadre: function(){
-		return (!!this.props.cadre)?<rect width={this.props.width} height={this.props.height} strokeWidth='1' stroke='black' fill='none' x='0' y='0'/>:null;
-	},
-
-	title: function(){
-		var title = this.props.title;
-		var titleFSize = this.props.titleFSize;
-		var xT = this.props.width / 2;
-		var yT = titleFSize + 5; // see defaults in space-mgr, its 10 px margin
-		return (!!title && title.length !== 0)? <text textAnchor='middle' fontSize={titleFSize} x={xT} y={yT}>{title}</text>:null;
-=======
 
 	componentWillMount: function(){
 		this.setState(core.process(this.defaultTheProps(this.props)));
@@ -403,7 +244,6 @@ var Graph = React.createClass({
 	orderAG: function(){
 		return this.props.axisOnTop === 'true' ? <g>{this.graphs()}{this.axis()}</g> : <g>{this.axis()}{this.graphs()}</g> ;
 					
->>>>>>> develop
 	},
 
 	render: function(){
@@ -412,12 +252,7 @@ var Graph = React.createClass({
 					{this.cadre()}
 					{this.background()}
 					{this.title()}
-<<<<<<< HEAD
-					{this.axis()}
-					{this.graphs()}
-=======
 					{this.orderAG()}
->>>>>>> develop
 					{this.foreground()}
 			</svg>;
 
