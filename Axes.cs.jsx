@@ -2,6 +2,13 @@ var React = require('react');
 var Axe = require('./Axe.cs.jsx');
 var _ = require('underscore');
 
+/*
+	{
+		abs: [Axe],
+		ord: [Axe]
+	}
+*/
+
 var Axes = React.createClass({
 	shouldComponentUpdate: function(props){
 		return props !== this.props;

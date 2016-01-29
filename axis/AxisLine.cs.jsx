@@ -1,33 +1,32 @@
 var React = require('react');
+var Label = require('./Label.cs.jsx');
 var utils = require('../core/utils.cs.js');
-
 
 /*
 	{
+		show: true || false,
+
 	///// line part
-		CS: ''
-		start: {x,y},
-		end: {x, y},
-		origin: {x,y},
-		radius: {x, y},
-		lineColor: '',
-		lineWidth:,
+		line: {
+			CS: ''
+			start: {x,y},
+			end: {x, y},
+			origin: {x,y},
+			radius: {x, y},
+			color: '',
+			width:,
+		},
 
 	/// label part
-		label: {
-			label: '',
-			FSize: ,
-			dir: {x, y},
-			offset: {x, y},
-			anchor: ''
-		},
+		label: Label 
 
  /// common factor part
 		comFac: {
 			factor: ,
 			offset: {x, y},
 			FSize: ,
-			anchor
+			anchor: '',
+			color: ''
 		}
 
 	}
@@ -41,76 +40,38 @@ var AxisLine = React.createClass({
 	},
 
 	axis: function(){
-		switch(this.props.CS){
+		var lprops = this.props.line;
+
+		switch(lprops.CS){
 			case 'cart':
 				return <line 
-					x1={this.props.start.x} x2={this.props.end.x} y1={this.props.start.y} y2={this.props.end.y} 
-					stroke={this.props.lineColor} strokeWidth={this.props.lineWidth} />;
+					x1={lprops.start.x} x2={lprops.end.x} y1={lprops.start.y} y2={lprops.end.y} 
+					stroke={lprops.color} strokeWidth={lprops.width} />;
 			case 'polar':
-				return <ellipse cx={this.props.origin.x} cy={this.props.origin.y} rx={this.props.radius.x} ry={this.props.radius.y}
-					stroke={this.props.lineColor} strokeWidth={this.props.lineWidth}/>;
+				return <ellipse cx={lprops.origin.x} cy={lprops.origin.y} rx={lprops.radius.x} ry={lprops.radius.y}
+					stroke={lprops.color} strokeWidth={lprops.width}/>;
 			default:
 				throw new Error('Unknown coordinate system: "' + this.props.CS + '"' );
 		}
 	},
 
-	dir: function(){
-		// axe is AC
-		//
-		//             C
-		//            /|
-		//          /  |
-		//        /    |
-		//      /      |
-		//    /        |
-		//	A -------- B
-		//
+	textOffset: function(fs,text,dir){
 
-		var distSqr = (p1,p2) => {return (p2.x - p1.x) * (p2.x - p1.x) + (p2.y - p1.y) * (p2.y - p1.y);};
-		var B = {x: this.props.end.x, y: this.start.y};
-		var AB = distSqr(this.props.start,B);
-		var BC = distSqr(B,this.props.end);
-
-		return {x: AB, y: AC, axe: distSqr(this.props.end,this.props.start)};
-
-	},
-
-	label: function(){
-		var props = this.props.label;
-		if(utils.isNil(props.label) || props.label.length === 0){
-			return null;
-		}
-
-// label
-		// => theta = arctan(y/x) [-90,90]
-		var dir = this.dir();
-
-		var theta = Math.floor( Math.atan( - Math.sqrt( dir.y / dir.x ) ) * 180 / Math.PI ); // in degrees
-
-		var fs = props.FSize; // font size
 		var fd = 0.25 * fs; // font depth, 25 %
 		var fh = 0.75 * fs; // font height, 75 %
 
 		// arbitrary values, from some font:
 		// width "m" = 40 px
 		// width "M" = 45 px => used
-		var labelWidthOff = - props.label.length * 22.5;
+		var labelWidthOff = - text.length * 22.5;
 		var labelHeightOff = (dir) => {
 			return dir > 0 ? fh : fd;
 		};
 
-		var xoffset = props.dir.x !== 0 ? labelHeightOff(props.dir.x) : labelWidthOff ;
-		var yoffset = props.dir.y !== 0 ? labelHeightOff(props.dir.y) : labelWidthOff ;
-
-		var xL = (this.props.end.x + this.props.start.x)/2 + props.dir.x * ( xoffset + props.offset.x);
-		var yL = (this.props.end.y + this.props.start.y)/2 + props.dir.y * ( yoffset + props.offset.y); 
-
-
-		// shifting from axis
-
-		var rotate = 'rotate(' + theta + ' ' + xL + ' ' + yL + ')';
-
-		return <text x={xL} y={yL} transform={rotate} textAnchor={props.anchor} fontSize={props.FSize}>{props.label}</text>;
+		return {
+			x: dir.x !== 0 ? labelHeightOff(dir.x) : labelWidthOff ,
+			y: dir.y !== 0 ? labelHeightOff(dir.y) : labelWidthOff
+		};
 	},
 
 	factor: function(){
@@ -119,27 +80,29 @@ var AxisLine = React.createClass({
 			return null;
 		}
 
-		var dir = this.dir();
+		var dir = utils.direction(this.props.line);
 		dir.x = Math.sqrt(dir.x / dir.axe);
 		dir.y = Math.sqrt(dir.y / dir.axe);
 
+		var offset = this.textOffset(props.FSize,'10-10',dir); // if more than that, there are questions to be asked...
+
 		var fac = {
-			x:   dir.y * this.props.offset + this.props.end.x,
-			y: - dir.x * this.props.offset + this.props.end.y
+			x:   props.offset.x + this.props.line.end.x + dir.y * ( offset.x + 10 ),
+			y: - props.offset.y + this.props.line.end.y + dir.x * ( offset.y + 10 )
 		};
 
 		var mgr = utils.mgr(props.factor);
 		var om = mgr.orderMag(props.factor);
-		return <text {...fac} textAnchor={props.anchor} fontSize={props.FSize}>
+		return <text {...fac} textAnchor={props.anchor} fill={props.color} fontSize={props.FSize}>
 				10<sup>{om}</sup>
 			</text>;
 	},
 
 	render: function(){
 
-		return <g>
+		return this.props.show === false ? null : <g>
 			{this.axis()}
-			{this.label()}
+			<Label {...this.props.label}/>
 			{this.factor()}
 		</g>;
 	}
