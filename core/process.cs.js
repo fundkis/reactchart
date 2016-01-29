@@ -4,6 +4,19 @@ var utils = require('./utils.cs.js');
 
 var m = {};
 
+var addDefaultDrop = function(serie){
+	return _.map(serie, (point) => {
+		var raw = point;
+    if(utils.isNil(raw.drop)){
+			raw.drop = {
+				x: utils.isDate(point.x) ? null : 0,
+				y: utils.isDate(point.y) ? null : 0
+			};
+		}
+		return raw;
+	});
+};
+
 var copySerie = function(serie){
 	return _.map(serie, (point,idx) => {
 		var xstr = utils.isString(point.x);
@@ -14,10 +27,6 @@ var copySerie = function(serie){
 			label: {
 				x: (xstr)?point.x:null,
 				y: (ystr)?point.y:null
-			},
-			drop: {
-				x: utils.isDate(point.x) ? null : 0,
-				y: utils.isDate(point.y) ? null : 0
 			}
 		};
 		for(var u in point){
@@ -367,6 +376,9 @@ m.process = function(props){
  
 	// space = {dsx, dsy}
 	state.spaces = space.spaces(data,universe,borders,title);
+
+  // do not disturb space computation
+	state.series = _.map(state.series, (serie) => { return addDefaultDrop(serie);});
 
 	return state;
 
