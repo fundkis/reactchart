@@ -31,12 +31,13 @@ var computeTicks = function(first,last,minor,fac){
 	var curValue = start;
 	while(mgr.lowerThan(curValue,last)){
 		out.push({
-			where: curValue,
+			position: curValue,
 			offset: {
 				along: mgr.offset(majDist),
 				perp: 0
 			},
-			label: mgr.label(curValue,majDist,fac)
+			label: mgr.label(curValue,majDist,fac),
+			minor: false
 		});
 		// minor ticks
 		if(minor){
@@ -47,12 +48,13 @@ var computeTicks = function(first,last,minor,fac){
 					break;
 				}
 				out.push({
-					where: curminValue,
+					position: curminValue,
 					offset: {
 						along: mgr.offset(minDist),
 						perp: 0
 					},
-					label: mgr.label(curminValue,minDist,fac)
+					label: mgr.label(curminValue,minDist,fac),
+					minor: true
 				});
 				curminValue = mgr.add(curminValue,minDist);
 			}
@@ -71,7 +73,7 @@ m.ticks = function(start,length,labels,minor,fac){
 	if(!!labels && labels.length > 0){
 		return _.map(labels, (lab) => {
 			return {
-				where: lab.coord, 
+				position: lab.coord, 
 				label: lab.label, 
 				offset: {
 					x: 0,

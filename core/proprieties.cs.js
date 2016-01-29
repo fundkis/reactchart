@@ -107,20 +107,12 @@ m.Grid = {
 // that's a major
 m.Tick = {
 	show: true,
-	where: {
-		x: 0,
-		y: 0
-	},
-	labelDir: {
-		x: 0,
-		y: 1
-	},
 	width: 1,
 	length: 15,
-	out: 0.25, // proportion that is outside (-dir)
+	out: 0.25, // proportion that is outside
 	color: 'black',
-	labelOffset: 0,
-	labelize: null,
+	labelOffset: {x:0 y:0},
+	labelize: (val) => {return val.toFixed(1);},
 	label: '',
 	labelFSize: 10,
 	labelColor: 'black'
@@ -135,8 +127,7 @@ var axe = {
 			show: false,
 			length: 7,
 			out: 0,
-			color: 'gray',
-			labelOffset: 3.75,
+			color: 'gray'
 		})
 	},
 	grid: {
@@ -153,53 +144,30 @@ var axe = {
 	color:     'black',
 	width:      1,
 	label:      '',
-	labelOffset: {
-		x: 40,
-		y: 40
-	},
+	labelOffset: {x: 0, y: 0},
+	labelAnchor: 'middle',
 	labelFSize: 20,
+	labelColor: 'black',
 	ds:         {},
 	empty:      false,
 	CS:         'cart',
 	partner: 0,
-	// in c coordinate
-	origin: {
-		x: 0,
-		y: 0
-	},
 	// for ticklabel formatting
-	comFac: 1
+	factor: 1,
+	factorOffset: {x: 0, y: 0},
+	factorAnchor: 'middle',
+	factorFSize: 10
 };
 
 m.Axe = function(key){
 	switch(key){
 		case 'abs':
 			return _.extend({}, axe,{
-				placement: 'bottom',
-				// vector of axis
-				dir: {
-					x: 1,
-					y: 0
-				},
-				// in cs !! y is top to bottom
-				labelDir: {
-					x: 0,
-					y: 1
-				}
+				placement: 'bottom'
 			});
 		case 'ord':
 			return _.extend({}, axe,{
-				placement: 'left',
-				// vector of axis
-				dir: {
-					x: 0,
-					y: 1
-				},
-				// in cs !! y is top to bottom
-				labelDir: {
-					x: 1,
-					y: 0
-				}
+				placement: 'left'
 			});
 		default:
 			return axe;

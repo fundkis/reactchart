@@ -74,4 +74,25 @@ m.toValue = function(val){
 	return m.isDate(val) ? date.getValue(val) : val;
 };
 
+m.direction = function(line){
+		// line is AC
+		//
+		//             C
+		//            /|
+		//          /  |
+		//        /    |
+		//      /      |
+		//    /        |
+		//	A -------- B
+		//
+
+		var distSqr = (p1,p2) => {return (p2.x - p1.x) * (p2.x - p1.x) + (p2.y - p1.y) * (p2.y - p1.y);};
+		var B = {x: line.end.x, y: line.start.y};
+		var AB = distSqr(line.start,B);
+		var BC = distSqr(B,line.end);
+
+		return {x: AB, y: BC, line: distSqr(line.end,line.start)};
+
+};
+
 module.exports = m;
