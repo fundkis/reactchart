@@ -36,6 +36,7 @@ var computeTicks = function(first,last,minor,fac){
 				along: mgr.offset(majDist),
 				perp: 0
 			},
+			extra: false,
 			label: mgr.label(curValue,majDist,fac),
 			minor: false
 		});
@@ -53,6 +54,7 @@ var computeTicks = function(first,last,minor,fac){
 						along: mgr.offset(minDist),
 						perp: 0
 					},
+					extra: false,
 					label: mgr.label(curminValue,minDist,fac),
 					minor: true
 				});

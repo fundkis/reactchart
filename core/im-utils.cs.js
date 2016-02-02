@@ -29,15 +29,15 @@ var deepEqual = function(obj1,obj2){
 var m = {};
 
 m.mergeDeep = function(src,tgt){
-
 	return utils.deepCp(tgt,src);
+};
 
+m.isImm = function(obj){
+	return Object.isFrozen(obj);
 };
 
 m.immutable = function(obj){
-
-	return im.Map.isMap(obj) ? obj : im.fromJS(obj);
-
+	return m.isImm(obj) ? obj : im.fromJS(obj);
 };
 
 m.freeze = function(obj){
@@ -45,9 +45,9 @@ m.freeze = function(obj){
 };
 
 m.isEqual = function(obj1,obj2){
-	var immut = im.Map.isMap(obj1);
 
-	return immut === im.Map.isMap(obj2) ? immut ? obj1 === obj2 : deepEqual(obj1,obj2) : false;
+	var immut = m.isImm(obj1);
+	return immut === m.isImm(obj2) ? immut ? obj1 === obj2 : deepEqual(obj1,obj2) : false;
 
 };
 
