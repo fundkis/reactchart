@@ -309,6 +309,10 @@ m.spaces = function(datas,universe,borders,title){
 						return idx;
 					}
 					var val = point[dir];
+
+					// to go faster and a cleaner write, see point span
+					var haveSpan = false;
+
 					// modifiers are span, drop and offset
 					// offset changes the value
 					if(!utils.isNil(offset) && !utils.isNil(offset[dir])){
@@ -328,18 +332,30 @@ m.spaces = function(datas,universe,borders,title){
 					}
 
 					// span makes value into two values, in the other direction than drop
+					// we do it three, to keep the ref value
 					if(!utils.isNil(span) && !utils.isNil(point.drop) && utils.isNil(point.drop[dir])){
-						val = [val];
+						// beware, do we have a drop?
+						val = utils.isArray(val) ? val : [val];
 						var mm = utils.mgr(val[0]);
-						val[0] = mm.subtract(val[0],mm.divide(span,2));
-						val.push(mm.add(val[0],span));
+						val.push(mm.subtract(val[0],mm.divide(span,2)));
+						val.push(mm.add(val[0],mm.divide(span,2)));
+						haveSpan = true;
 					}
 
 					// span can be a point def
 					if(!utils.isNil(point.span) && !utils.isNil(point.drop) && utils.isNil(point.drop[dir])){
-						val = [val];
+						// beware, do we have a global span? What about a drop?
+						// it's always pushed, we don't care about the drop, 
+						// if global span, we pop out two values
+						// whatever happens, val[0] is always the original value
+						val = utils.isArray(val) ? val : [val];
 						var pmm = utils.mgr(val[0]);
-						val[0] = pmm.subtract(val[0],pmm.divide(point.span,2));
+						if(haveSpan){
+							val.pop();
+							val.pop();
+						}
+
+						val.push(pmm.subtract(val[0],pmm.divide(point.span,2)));
 						val.push(pmm.add(val[0],point.span));
 					}
 

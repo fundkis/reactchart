@@ -1,17 +1,45 @@
 var _ = require('underscore');
 var space = require('./space-mgr.cs.js');
 var utils = require('./utils.cs.js');
+var gProps = require('./proprieties.cs.js');
+var vm = require('./VMbuilder.cs.js');
+var im = require('./im-utils.cs.js');
 
-var m = {};
 
-var addDefaultDrop = function(serie){
+var defaultTheProps = function(props){
+	var data = gProps.defaults('data');
+
+	var fullprops = utils.deepCp({},gProps.Graph);
+	for(var ng = 0; ng < props.data.length; ng++){
+		var gprops = gProps.defaults(props.data.type || 'Plain');
+		fullprops.data[ng] = utils.deepCp({},data);
+		fullprops.graphProps[ng] = utils.deepCp({},gprops);
+	}
+	if(!!props.axisProps.abs){
+		for(var nabs = 0; nabs < props.axisProps.abs.length; nabs++){
+			fullprops.axisProps.abs[nabs] = utils.deepCp({},gProps.Axe('abs'));
+		}
+	}
+	if(!!props.axisProps.ord){
+		for(var nord = 0; nord < props.axisProps.ord.length; nord++){
+			fullprops.axisProps.ord[nord] = utils.deepCp({},gProps.Axe('ord'));
+		}
+	}
+
+	return utils.deepCp(fullprops,props);
+};
+
+var addDefaultDrop = function(serie, dir){
 	return _.map(serie, (point) => {
 		var raw = point;
-    if(utils.isNil(raw.drop)){
+		if(utils.isNil(raw.drop)){
 			raw.drop = {
-				x: utils.isDate(point.x) ? null : 0,
-				y: utils.isDate(point.y) ? null : 0
+				x: utils.isDate(point.x) ? {days: 0, total: 0} : 0,
+				y: utils.isDate(point.y) ? {days: 0, total: 0} : 0
 			};
+		}
+		if(!utils.isNil(dir)){
+			raw.drop[dir] = null;
 		}
 		return raw;
 	});
@@ -143,8 +171,6 @@ var preprocess = function(serie,preproc){
 				var mgr = utils.mgr(curref);
 				for(var j = start; j < ind; j++){
 					out[j].span = mgr.multiply(mgr.distance(curref,refBef),0.9);
-					out[j].offset = {}; 
-					out[j].offset[otherdir] = mgr.divide(out[j].span,- 2);
 				}
 			}
 			refBef = curref;
@@ -163,8 +189,6 @@ var preprocess = function(serie,preproc){
 				var m = utils.mgr(refBef);
 				for(var k = start; k < ind; k++){
 					out[k].span = m.multiply(m.distance(curref,refBef),0.9);
-					out[k].offset = {}; 
-					out[k].offset[otherdir] = m.divide(out[k].span, - 2);
 				}
 			}
 
@@ -177,6 +201,15 @@ var addOffset = function(series,stacked){
 	var xoffset = [];
 	var yoffset = [];
 	for(var i = 0 ; i < series.length; i++){
+
+		_.each(series[i],(point) => {
+			if(utils.isNil(point.offset)){
+				point.offset = {};
+			}
+			point.offset.x = point.offset.x || null;
+			point.offset.y = point.offset.y || null;
+		});
+
 		if(stacked[i]){ // stacked in direction 'stacked', 'x' and 'y' are accepted
 			switch(stacked[i]){
 				case 'x':
@@ -190,7 +223,7 @@ var addOffset = function(series,stacked){
 					}
 					// add, compute and update
 					for(var j = 0; j < xoffset.length; j++){
-						series[i][j].xOffset = xoffset[j];
+						series[i][j].offset.x = xoffset[j];
 						xoffset[j] += series[i][j].x;
 					}
 					break;
@@ -205,7 +238,7 @@ var addOffset = function(series,stacked){
 					}
 					// add, compute and update
 					for(var k = 0; k < yoffset.length; k++){
-						series[i][j].yOffset = yoffset[j];
+						series[i][j].offset.y = yoffset[j];
 						yoffset[j] += series[i][j].y;
 					}
 					break;
@@ -239,7 +272,7 @@ var makeSpan = function(series,data){
 			var dir = barType[0] === 'y' ? 'y' : 'x';
 			var othdir = dir === 'y' ? 'x' : 'y';
 	// start[s] = x - span * n / 2 + s * span => offset = (s *	span	- span * n / 2 ) = span * (s - n / 2 )
-			serie.offset[dir] = mgr.multiply(serie.span, s - n / 2 );
+			serie.offset[dir] = mgr.multiply(serie.span, s - (n - 1) / 2);
 			if(utils.isNil(serie.offset[othdir])){
 				serie.offset[othdir] = 0;
 			}
@@ -260,6 +293,9 @@ var makeSpan = function(series,data){
 
 	spanSer('Bars');
 	spanSer('yBars');
+
+	spanSer('bars');
+	spanSer('ybars');
 
 	return out;
 };
@@ -301,23 +337,32 @@ var offStairs = function(props,gprops){
 	return null;
 };
 
-m.process = function(props){
+var m = {};
+
+m.process = function(rawProps){
+
+	var props = defaultTheProps(utils.deepCp({},rawProps));
 
 	var raw = _.map(props.data,(dat) => {return dat.series;});
 
 	var state = {};
 	var spanOffset = [];
 	var lOffset = [];
+
+	// empty
 	if(!validate(raw)){
 
 		state.series = _.map(props.data, (/*ser*/) => {return [];});
 	
 	}else{
-
+			// data depening on serie, geographical data only
 		var preproc = _.map(props.graphProps, (gp) => {return (!!gp.process && !!gp.process.type)?gp.process:null;});
 		state.series = _.map(raw, (serie,idx) => { return (!!preproc[idx])?preprocess(serie,preproc[idx]):copySerie(serie);});
+			// offset from stacked
 		addOffset(state.series, _.map(props.data, (ser) => {return ser.stacked;}));
+			// span and offset from Bars || yBars
 		spanOffset = makeSpan(state.series, _.map(props.data, (ser,idx) => {return {type: ser.type, span: props.graphProps[idx].span};}));
+			// offset from Stairs
 		lOffset = _.map(props.data, (p,idx) => {return offStairs(p,props.graphProps[idx]);});
 
 	}
@@ -334,6 +379,7 @@ m.process = function(props){
 		return mar;
 	};
 
+		// axis data, min-max from series (computed in space-mgr)
 	var abs = (utils.isArray(props.axisProps.abs))?props.axisProps.abs:[props.axisProps.abs];
 	var ord = (utils.isArray(props.axisProps.ord))?props.axisProps.ord:[props.axisProps.ord];
 
@@ -378,9 +424,82 @@ m.process = function(props){
 	state.spaces = space.spaces(data,universe,borders,title);
 
   // do not disturb space computation
-	state.series = _.map(state.series, (serie) => { return addDefaultDrop(serie);});
+	state.series = _.map(state.series, (serie,idx) => {
+		var dir = null;
+		switch(props.data[idx].type){
+			case 'Bars':
+			case 'bars':
+				dir = 'x';
+				break;
+			case 'yBars':
+			case 'ybars':
+				dir = 'y';
+				break;
+			default:
+				break;
+		}
+		if(!!spanOffset[idx]){
+			_.each(serie,(point) => {
+				point.span = spanOffset[idx].span;
+				point.offset = spanOffset[idx].offset;
+			});
+		}
+		return addDefaultDrop(serie,dir);
+	});
 
-	return state;
+	//now to immutable VM
+	var imVM = {
+		width: props.width,
+		height: props.height
+	};
+
+	// 1 - cadre
+	imVM.cadre = {
+		cadre: props.cadre
+	};
+
+	// 2 - background
+	imVM.background = {
+		color: props.background || 'none',
+		spaceX:{
+			min: Math.min.apply(null,_.map(state.spaces.x,(ds) => {return !!ds ? ds.c.min : 1e6;})),
+			max: Math.max.apply(null,_.map(state.spaces.x,(ds) => {return !!ds ? ds.c.max : -1e6;}))
+		},
+		spaceY:{
+			min: Math.min.apply(null,_.map(state.spaces.y,(ds) => {return !!ds ? ds.c.min : 1e6;})),
+			max: Math.max.apply(null,_.map(state.spaces.y,(ds) => {return !!ds ? ds.c.max : -1e6;}))
+		}
+	};
+
+	// 3 - foreground
+	imVM.foreground = props.foreground || {};
+	imVM.foreground.cx = (imVM.background.spaceX.min + imVM.background.spaceX.max ) / 2;
+	imVM.foreground.cy = (imVM.background.spaceY.min + imVM.background.spaceY.max ) / 2;
+
+	// 4 - Title
+	imVM.title = {
+		title: props.title,
+		FSize: props.titleFSize,
+		width: props.width,
+		// as of now, it's not used
+		height: props.height,
+		placement: 'top'
+	};
+
+	// 5 - Axes
+	imVM.axes = {
+		abs: vm.abscissas(props,state),
+		ord: vm.ordinates(props,state)
+	};
+
+	// 6 - Curves
+	imVM.curves = {
+		curves: vm.curves(props,state)
+	};
+
+	imVM.preprocessed = true;
+
+	return im.freeze(imVM);
 
 };
 
