@@ -2,10 +2,79 @@
 	all the proprieties
 */
 var _ = require('underscore');
+var moment = require('moment');
+var utils = require('./utils.cs.js');
+
+// defaults for marks
+var marks = {};
+
+marks.dot = marks.Dot = () => {
+	return {
+		draw: false,
+		ds: {
+			x: {}, 
+			y:{}
+		},
+		position: {
+			x: 0,
+			y: 0
+		},
+		radius: 3,
+		color: 'black',
+		width: 0,
+		fill: undefined,
+		size: undefined,
+		shade: 1
+	};
+};
+
+marks.square = marks.Square = () => {
+	return {
+		draw: false,
+		ds: {
+			x: {},
+			y: {}
+		},
+		position:{
+			x: 0,
+			y: 0
+		},
+		color: 'black',
+		width: 0,
+		fill: undefined,
+		size: 0,
+		shade: 1
+	};
+};
+
+marks.bar = marks.Bar = () => {
+	return {
+		draw: false,
+		ds: {
+			x: {}, // see space-mgr for details
+			y: {}
+		}, // see space-mgr for details
+		position:{
+			x:0,
+			y:0
+		},
+		drop:{
+			x:null, 
+			y:0
+		},
+		width: 0,
+		span:0.5,
+		offset: {
+			x: 0,
+			y: 0
+		},
+		shade: 1
+	};
+};
 
 // defaults for graphs
 var graph = {};
-graph.common = function () {
+graph.common = () => {
 	return {
 		color: 'black',
 		width: 1,
@@ -24,19 +93,14 @@ graph.common = function () {
 		// i.e. specific things like radius
 		// for a dot, or anything.
 		markProps: {},
-		points: [],
-		dsx: {}, // see space-mgr for details
-		dsy: {},  // see space-mgr for details
 		shader: undefined, //playing with colors
 		process: undefined //playing with data {dir: x || y, type: 'histogram'}
 	};
 };
 
-graph.Bars = function() {
+graph.Bars = graph.bars = () => {
 
 	return {
-		dsx: {}, // see space-mgr for details
-		dsy: {}, // see space-mgr for details
 		color: 'none',
 		shade: 1,
 		width: 0,
@@ -46,7 +110,6 @@ graph.Bars = function() {
 		},
 		baseLine: {x: undefined, y: 0},
 		drop: {x: undefined, y: 0},
-		points: [],
 		markColor: undefined,
 		markType: 'bar',
 		markProps: {
@@ -62,31 +125,7 @@ graph.Bars = function() {
 };
 
 //graph.Bars = graph.common;
-graph.Plain = graph.Stairs = graph.common;
-
-/// coordinates systems
-
-var cartCS = {
-	start: {
-		x: 0,
-		y: 0
-	},
-	end: {
-		x: 0,
-		y: 0
-	}
-};
-
-var polarCS = {
-	radius: {
-		x: 0,
-		y: 0
-	},
-	center: {
-		x: 0,
-		y: 0
-	}
-};
+graph.Plain = graph.plain = graph.Stairs = graph.stairs = graph.common;
 
 ///////////
 // major / minor props
@@ -99,9 +138,7 @@ m.Grid = {
 	show: false,
 	color: 'LightGray',
 	width: 0.5,
-	length: 0,
-	cart: cartCS,
-	polar: polarCS
+	length: 0
 };
 
 // that's a major
@@ -111,8 +148,8 @@ m.Tick = {
 	length: 15,
 	out: 0.25, // proportion that is outside
 	color: 'black',
-	labelOffset: {x:0 y:0},
-	labelize: (val) => {return val.toFixed(1);},
+	labelOffset: {x:0, y:0},
+	labelize: (val) => {return utils.isNil(val) ? '' : val instanceof Date ? moment(val).format('YYYY') : val.toFixed(1);},
 	label: '',
 	labelFSize: 10,
 	labelColor: 'black'
@@ -127,7 +164,8 @@ var axe = {
 			show: false,
 			length: 7,
 			out: 0,
-			color: 'gray'
+			color: 'gray',
+			labelize: () => {return '';}
 		})
 	},
 	grid: {
@@ -148,7 +186,6 @@ var axe = {
 	labelAnchor: 'middle',
 	labelFSize: 20,
 	labelColor: 'black',
-	ds:         {},
 	empty:      false,
 	CS:         'cart',
 	partner: 0,
@@ -196,25 +233,12 @@ m.Graph = {
 	title: '',
 	titleFSize: 30,
 	axisOnTop: false,
+	// margins
+	axisMargin: {left: 10, bottom: 10, right: 10, top: 10}, // left, bottom, right, top
+	outerMargin: {}, // left, bottom, right, top
 	// data
-	data: [{
-		type: 'Plain', // Plain, Bars, yBars, Stairs
-		series:[], // x, y
-		phantomSeries:[], // added points to play on the world's limit
-		stacked: undefined, // x || y || null
-		coordSys: 'cart', // cart || polar
-		ord: {
-			axis: 'left', // 'left' || 'right'
-			type: 'number' // 'number' || 'date' || 'label'
-		},
-		abs: {
-			axis: 'bottom', // 'bottom' || 'top'
-			type: 'number' // 'number' || 'date' || 'label'
-		}
-	}],
-	graphProps: [
-		graph.common()
-	],
+	data: [],
+	graphProps: [],
 	// axis
 	axisProps: m.Axes,
 	axis: undefined,	// b = bottom, l = left, t = top, r = right, any combination; overrides xaxis and yaxis
@@ -228,13 +252,30 @@ m.Graph = {
 	// axis
 	xaxis: '',	// bottom || top
 	yaxis: '',		// left || right
-	// margins
-	axisMargin: {left: 10, bottom: 10, right: 10, top: 10}, // left, bottom, right, top
-	outerMargin: {} // left, bottom, right, top
+};
+
+var data = 	{
+	type: 'Plain', // Plain, Bars, yBars, Stairs
+	series:[], // x, y
+	phantomSeries:[], // added points to play on the world's limit
+	stacked: undefined, // x || y || null
+	coordSys: 'cart', // cart || polar
+	ord: {
+		axis: 'left', // 'left' || 'right'
+		type: 'number' // 'number' || 'date' || 'label'
+	},
+	abs: {
+		axis: 'bottom', // 'bottom' || 'top'
+		type: 'number' // 'number' || 'date' || 'label'
+	}
 };
 
 m.defaults = function(key){
-	return graph[key]();
+	return key === 'data' ? data : graph[key]();
+};
+
+m.marksDefault = function(key){
+	return marks[key]();
 };
 
 module.exports = m;
