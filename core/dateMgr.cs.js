@@ -23,15 +23,15 @@ var processPeriod = function(period){
 	}
 
 	for(var t in {years: true, months: true, weeks: true, days: true}){
-		if(!period[t]){
+		if(period[t] === null || period[t] === undefined){
 			period[t] = 0;
 		}
 	}
-	if(!period.total){
+	if(period.total === null || period.total === undefined){
 		period.total = moment.duration(period).asDays();
 	}
 
-	if(period.total > 7){
+	if(period.total > 7 && !period.offset){
 		period.offset = true;
 	}
 
@@ -432,40 +432,20 @@ m.extraTicks = function(step,start,end){
 		var dat = new Date(ye,0,1);
 		if(m.lowerThan(start,dat) && m.lowerThan(dat,end)){
 			out.push({
-				where: dat,
+				position: dat,
 				offset: {
 					along: 0,
 					perp: 0
 				},
+				label: '',
+				show: false,
 				extra: true,
 				grid: {
 					show: true,
 					color: 'LightGray',
-					width: 0.5,
-					length: 0
+					width: 0.5
 				}
 			});
-		}
-	}
-
-	// label for years if not present
-	if(m.lowerThan(step,makePeriod(moment.duration({years: 1})))){
-		var zeroPeriod = makePeriod(0);
-		for(var y = startYear; y <= lastYear; y++){
-			var date = new Date(y,6,1);
-			if(m.lowerThan(start,date) && m.lowerThan(date,end)){
-				out.push({
-					where: date,
-					offset: {
-						along: zeroPeriod,
-						perp: -0.98
-					},
-					label: '' + y,
-					labelColor: '#758D99', // grisFundKis '#3A83F1', // blueFundKis
-					labelFSize: 20,
-					extra: true
-				});
-			}
 		}
 	}
 	return out;

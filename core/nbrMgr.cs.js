@@ -165,7 +165,7 @@ m.max = function(values){
 };
 
 m.label = function(value, useless, fac){
-	var out = (value / fac).toFixed(2);
+	var out = (value / fac).toFixed(1);
 	return out;
 };
 
