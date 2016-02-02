@@ -1,5 +1,6 @@
 var React = require('react');
-var Axe = require('./Axe.cs.jsx');
+var Axe = require('./axis/Axe.cs.jsx');
+var imUtils = require('./core/im-utils.cs.js');
 var _ = require('underscore');
 
 /*
@@ -10,16 +11,17 @@ var _ = require('underscore');
 */
 
 var Axes = React.createClass({
+
 	shouldComponentUpdate: function(props){
-		return props !== this.props;
+		return !imUtils.isEqual(props,this.props);
 	},
 
 	abscissa: function(){
-		return _.map(this.props.abs, (p,idx) => {var key = 'a.' + idx; return <Axe key={key} {...p}/>;});
+		return _.map(this.props.abs, (p,idx) => {return p.show ? <Axe {...p}/> : null;});
 	},
 
 	ordinate: function(){
-		return _.map(this.props.ord, (p,idx) => {var key = 'o.' + idx; return <Axe key={key} {...p}/>;});
+		return _.map(this.props.ord, (p,idx) => {return p.show ? <Axe {...p}/> : null;});
 	},
 
 	render: function(){
