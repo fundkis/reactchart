@@ -2,7 +2,7 @@ var React = require('react');
 var Tick = require('./Tick.cs.jsx');
 var AxisLine = require('./AxisLine.cs.jsx');
 var _ = require('underscore');
-var imUtils = require('./core/im-utils.cs.js');
+var imUtils = require('../core/im-utils.cs.js');
 
 /*
 	{

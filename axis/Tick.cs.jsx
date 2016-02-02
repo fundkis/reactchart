@@ -2,7 +2,7 @@ var React = require('react');
 var Label = require('./Label.cs.jsx');
 
 var sp = require('../core/space-transf.cs.js');
-var imUtils = require('./core/im-utils.cs.js');
+var imUtils = require('../core/im-utils.cs.js');
 
 /*
 	{
