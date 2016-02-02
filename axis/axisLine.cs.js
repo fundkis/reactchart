@@ -64,10 +64,10 @@ m.VM = function(ds,props,partnerDs,dir){
 		// cart
 	line.start = {};
 	line.start[dir] = ds.c.min;
-	line.start[othdir] = partnerDs.c.min;
+	line.start[othdir] = props.placement === 'right' || props.placement === 'top' ?  partnerDs.c.max : partnerDs.c.min;
 	line.end = {};
 	line.end[dir] = ds.c.max;
-	line.end[othdir] = partnerDs.c.max;
+	line.end[othdir] = line.start[othdir];
 		// polar
 	line.origin = {};
 	line.origin[dir] = (ds.c.min + ds.c.max) / 2;
@@ -82,6 +82,8 @@ m.VM = function(ds,props,partnerDs,dir){
 
 /*
 		label: {
+			ds: {x:, y: },
+			position: {x: , y:},
 			label: '',
 			FSize: ,
 			offset: {x, y},
@@ -91,18 +93,65 @@ m.VM = function(ds,props,partnerDs,dir){
 		},
 */
 
+	var lineDir = utils.direction(line);
 	var label = {
 		label: props.label,
-		FSize: props.labeLFSize,
-		offset: props.labelOffset,
+		FSize: props.labelFSize,
 		anchor: props.labelAnchor,
 		color: props.labelColor,
-		dir: utils.direction(line)
+		dir: {
+			x: Math.sqrt(lineDir.x / lineDir.line),
+			y: Math.sqrt(lineDir.y / lineDir.line)
+		},
+		rotate: true,
+		transform: false
 	};
+
 	label.position = {
-		x: (line.end.x + line.start.x)/2 + label.dir.x * 40 + props.offset.x,
-		y: (line.end.y + line.start.y)/2 + label.dir.y * 40 + props.offset.y
+		x: (line.end.x + line.start.x)/2,
+		y: (line.end.y + line.start.y)/2
 	};
+
+	// & anchoring the text
+	var fd = 0.25 * label.FSize; // font depth, 25 %
+	var fh = 0.75 * label.FSize; // font height, 75 %
+	var defOff = 40;
+
+	var offsetLab = (() => {
+		switch(props.placement){
+			case 'top':
+				return {
+					x: 0,
+					y: - fd - defOff
+				};
+			case 'bottom':
+				return {
+					x: 0,
+					y: fh + defOff
+				};
+			case 'left':
+				return {
+					x: - fd - defOff,
+					y: 0
+				};
+			case 'right':
+				return {
+					x: fd + defOff,
+					y: 0
+				};
+			default:
+				throw new Error('Where is this axis: ' + props.placement);
+		}
+	})();
+
+	label.offset = {
+		x: offsetLab.x + props.labelOffset.x,
+		y: offsetLab.y + props.labelOffset.y
+	};
+
+	label.ds = {};
+	label.ds[dir] = ds;
+	label.ds[othdir] = partnerDs;
 
 /*
 		comFac: {

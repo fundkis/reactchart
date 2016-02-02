@@ -1,6 +1,7 @@
 var React = require('react');
 var Label = require('./Label.cs.jsx');
 var utils = require('../core/utils.cs.js');
+var imUtils = require('./core/im-utils.cs.js');
 
 /*
 	{
@@ -36,7 +37,7 @@ var utils = require('../core/utils.cs.js');
 
 var AxisLine = React.createClass({
 	shouldComponentUpdate: function(props){
-		return this.props !== props;
+		return !imUtils.isEqual(props,this.props);
 	},
 
 	axis: function(){

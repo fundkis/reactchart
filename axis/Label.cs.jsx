@@ -1,38 +1,26 @@
 var React = require('react');
 
+var space = require('../core/space-transf.cs.js');
+var imUtils = require('./core/im-utils.cs.js');
+
 /*
 	{
+		ds: {x: , y:},
+		position: {x: , y:},
 		label: '',
 		FSize: ,
 		offset: {x, y},
 		anchor: '',
 		color: '',
-		dir: {x, y}
+		dir: {x, y},
+		rotate: true || false,
+		transform: true || false
 	},
 */
 
 var Label = React.createClass({
 	shouldComponentUpdate: function(props){
-		return props !== this.props;
-	},
-
-	textOffset: function(fs,text,dir){
-
-		var fd = 0.25 * fs; // font depth, 25 %
-		var fh = 0.75 * fs; // font height, 75 %
-
-		// arbitrary values, from some font:
-		// width "m" = 40 px
-		// width "M" = 45 px => used
-		var labelWidthOff = - text.length * 22.5;
-		var labelHeightOff = (dir) => {
-			return dir > 0 ? fh : fd;
-		};
-
-		return {
-			x: this.props.dir.x !== 0 ? labelHeightOff(dir.x) : labelWidthOff ,
-			y: this.props.dir.y !== 0 ? labelHeightOff(dir.y) : labelWidthOff
-		};
+		return !imUtils.isEqual(props,this.props);
 	},
 
 	render: function(){
@@ -43,11 +31,10 @@ var Label = React.createClass({
 // label
 		// => theta = arctan(y/x) [-90,90]
 
-		var offset = this.textOffset(this.props.FSize,this.props.label,this.props.dir);
-		var xL = this.props.position.x + this.props.dir.x * offset.x;
-		var yL = this.props.position.y + this.props.dir.y * offset.y;
+		var xL = ( this.props.transform ? space.toC(this.props.ds.x,this.props.position.x) : this.props.position.x ) + this.props.offset.x;
+		var yL = ( this.props.transform ? space.toC(this.props.ds.y,this.props.position.y) : this.props.position.y ) + this.props.offset.y;
 
-		var theta = Math.floor( Math.atan( - Math.sqrt( this.props.dir.y / this.props.dir.x ) ) * 180 / Math.PI ); // in degrees
+		var theta = this.props.rotate ? Math.floor( Math.atan( - Math.sqrt( this.props.dir.y / this.props.dir.x ) ) * 180 / Math.PI ) : 0; // in degrees
 
 		var rotate = 'rotate(' + theta + ' ' + xL + ' ' + yL + ')';
 

@@ -2,7 +2,7 @@ var React = require('react');
 var Label = require('./Label.cs.jsx');
 
 var sp = require('../core/space-transf.cs.js');
-
+var imUtils = require('./core/im-utils.cs.js');
 
 /*
 	{
@@ -33,7 +33,7 @@ var sp = require('../core/space-transf.cs.js');
 
 var Tick = React.createClass({
 	shouldComponentUpdate: function(props){
-		return props !== this.props;
+		return !imUtils.isEqual(props,this.props);
 	},
 
 
@@ -68,14 +68,14 @@ var Tick = React.createClass({
 			return null;
 		}
 
-		var x1 = sp.toC(tprops.ds.x, tprops.position.x) + tprops.dir.x * tprops.length * tprops.out;
+		var x1 = sp.toC(tprops.ds.x, tprops.position.x) - tprops.dir.x * tprops.length * tprops.out;
 		var y1 = sp.toC(tprops.ds.y, tprops.position.y) + tprops.dir.y * tprops.length * tprops.out; // beware about y sign!!
-		var x2 = x1 - tprops.dir.x * tprops.length;
+		var x2 = x1 + tprops.dir.x * tprops.length;
 		var y2 = y1 - tprops.dir.y * tprops.length; // beware about y sign!!
 
 		return <g>
 			<line x1={x1} x2={x2} y1={y1} y2={y2} stroke={tprops.color} strokeWidth={tprops.width}/>
-			<Label {...this.props.label}>
+			<Label {...this.props.label}/>
 		</g>;
 	},
 
