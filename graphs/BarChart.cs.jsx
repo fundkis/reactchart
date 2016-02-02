@@ -1,57 +1,30 @@
 var React = require('react');
-var marker = require('../marks/marker.cs.jsx');
+var Bar = require('../marks/Bar.cs.jsx');
 var _ = require('underscore');
-var defProps = require('../core/proprieties.cs.js');
+var imUtils = require('../core/im-utils.cs.js');
+
+/*
+	{
+		markType: 'bar'
+		marks: [Bar]
+	}
+*/
 
 var BarChart = React.createClass({
-  getDefaultProps: function() {
-	 return defProps.defaults('Bars');
-  },
 
-	drop: function(dir){
-		var drop = 0;
-		if(!!this.props.drop){ 
-			drop = this.props.drop[dir] || drop;
-		}else if(!!this.props.baseLine){ 
-			drop = this.props.baseLine[dir] || drop;
-		}
-		return this.props.dir[dir] ? drop : undefined;
-	},
+  shouldComponentUpdate: function(props) {
+	 return !imUtils.isEqual(props,this.props);
+  },
 
   render : function() {
 
-	if(this.props.points.length === 0){
+	if(this.props.marks.length === 0){
 		return null;
 	}
 
-	var props = {
-		dsx:    this.props.dsx,
-		dsy:    this.props.dsy,
-		color:  this.props.markColor || this.props.color,
-		draw:   this.props.markProps.draw || false,
-		width:  this.props.width,
-		span:   this.props.span,
-		shade:  this.props.shade,
-		offset: this.props.offset,
-		drop:   {
-			x: this.drop('x'),
-			y: this.drop('y')
-		}
-	};
-
-	var datas = _.map(this.props.points,function(point){
-		return {
-			x: point.x, 
-			y: point.y
-		};
-	});
-	// marks
-	props.markprops = this.props.markProps;
-	
-	props.name = this.props.key + '.b';
-	var bars = marker.marks(datas,props,this.props.markType);
-
-	 return <g>{bars}</g>;
+	 return <g>
+		{_.map(this.props.marks,(bar) => {return <Bar {...bar}/>;})}
+		</g>;
   }
 });
 

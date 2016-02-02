@@ -4,41 +4,33 @@ var Stairs = require('./Stairs.cs.jsx');
 var BarChart = require('./BarChart.cs.jsx');
 
 var utils = require('../core/utils.cs.js');
-var defaults = require('../core/proprieties.cs.js').defaults;
 
 // the graphs function generator
 var graph = {};
 
-graph.Plain = function(points,props,keyid){
-		props.name += '.plain';
-		return <Plain key={props.name} {...props} points={points} />;
+graph.Plain = function(props){
+		return <Plain {...props} />;
 };
 
-graph.Stairs = function(points,props,keyid){
-	props.name += '.stairs';
-	return <Stairs key={props.name} {...props} points={points} />;
+graph.Stairs = function(props){
+	return <Stairs {...props} />;
 };
 
-graph.Bars = function(points,props){
-	props.name += '.bars';
-	return <BarChart key={props.name} {...props} dir={{x: false, y: true}} points={points} />;
+graph.Bars = function(props){
+	return <BarChart {...props} />;
 };
 
-graph.yBars = function(points,props){
-	props.name += '.ybars';
-	return <BarChart key={props.name} {...props} dir={{x: true, y: false}} points={points} />;
+graph.yBars = function(props){
+	return <BarChart {...props} />;
 };
 
-var m = {};
 
-m.grapher = function(key,points,props){
+var m = function(key,props){
 	if(utils.isNil(graph[key])){
 		throw new Error('Unknown graph type "' + key + '"');
 	}
 
-	var pr = utils.deepCp(utils.deepCp({},defaults(key)),props);
-
-	return graph[key](points,pr);
+	return graph[key](props);
 };
 
 module.exports = m;
