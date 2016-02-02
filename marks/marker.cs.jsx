@@ -4,51 +4,37 @@ var Bar = require('./Bar.cs.jsx');
 var Square = require('./Square.cs.jsx');
 var _ = require('underscore');
 
-
-// overwrite props if needed
-var p2P = function(props,point){
-	for(var p in point){
-		props[p] = point[p];
-	}
-};
-
 var marks = {};
 
-marks.square = function(data,props){
+marks.square = marks.Square = function(data){
 
 	return _.map(data, function(point){
-		var key = props.name + 'd' + point.x + ',' + point.y;
-		p2P(props,point);
-		return <Square key={key} name={key} {...props}/>;
+		return <Square key={point.key} {...point}/>;
 	});
 };
 
-marks.dot = function(data,props){
+marks.dot = marks.Dot = function(data){
 
-	return _.map(data, function(point,idx){
-		var key = props.name + 'd.' + idx + ':' + point.x + ',' + point.y;
-		p2P(props,point);
-		return <Dot key={key} name={key} {...props}/>;
+	return _.map(data, function(point){
+		return <Dot key={point.key} {...point}/>;
 	});
 };
 
-marks.bar = function(data,props){
-	return _.map(data, function(point,index){
-		var key = props.name + '-' + index;
-		p2P(props,point);
-		return <Bar {...props} key={key} name={key}/>;
+marks.bar = marks.Bar = function(data){
+	return _.map(data, function(point){
+		return <Bar key={point.key} {...point}/>;
 	});
 };
 
 var m = {};
 
-m.marks = function(data,props,key){
+m.marks = function(data,key){
 
 	if(!marks[key]){
 		throw new Error('unrecognized mark type: "' + key + '"');
 	}
 
-	return marks[key](data,props);
+	return data.length === 0 ? null : marks[key](data);
 };
 
 module.exports = m;
