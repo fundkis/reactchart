@@ -15,14 +15,16 @@ var defaultTheProps = function(props){
 		fullprops.data[ng] = utils.deepCp({},data);
 		fullprops.graphProps[ng] = utils.deepCp({},gprops);
 	}
-	if(!!props.axisProps.abs){
-		for(var nabs = 0; nabs < props.axisProps.abs.length; nabs++){
-			fullprops.axisProps.abs[nabs] = utils.deepCp({},gProps.Axe('abs'));
+	if (!!props.axisProps) {
+		if(!!props.axisProps.abs){
+			for(var nabs = 0; nabs < props.axisProps.abs.length; nabs++){
+				fullprops.axisProps.abs[nabs] = utils.deepCp({},gProps.Axe('abs'));
+			}
 		}
-	}
-	if(!!props.axisProps.ord){
-		for(var nord = 0; nord < props.axisProps.ord.length; nord++){
-			fullprops.axisProps.ord[nord] = utils.deepCp({},gProps.Axe('ord'));
+		if(!!props.axisProps.ord){
+			for(var nord = 0; nord < props.axisProps.ord.length; nord++){
+				fullprops.axisProps.ord[nord] = utils.deepCp({},gProps.Axe('ord'));
+			}
 		}
 	}
 
@@ -50,8 +52,8 @@ var copySerie = function(serie){
 		var xstr = utils.isString(point.x);
 		var ystr = utils.isString(point.y);
 		var raw = {
-			x: (xstr)?idx:point.x, 
-			y: (ystr)?idx:point.y, 
+			x: (xstr)?idx:point.x,
+			y: (ystr)?idx:point.y,
 			label: {
 				x: (xstr)?point.x:null,
 				y: (ystr)?point.y:null
@@ -353,7 +355,7 @@ m.process = function(rawProps){
 	if(!validate(raw)){
 
 		state.series = _.map(props.data, (/*ser*/) => {return [];});
-	
+
 	}else{
 			// data depening on serie, geographical data only
 		var preproc = _.map(props.graphProps, (gp) => {return (!!gp.process && !!gp.process.type)?gp.process:null;});
@@ -384,9 +386,9 @@ m.process = function(rawProps){
 	var ord = (utils.isArray(props.axisProps.ord))?props.axisProps.ord:[props.axisProps.ord];
 
 	var borders = {
-		ord: ord, 
+		ord: ord,
 		abs: abs,
-		marginsO: marginalize(props.outerMargin), 
+		marginsO: marginalize(props.outerMargin),
 		marginsI: marginalize(props.axisMargin)
 	};
 
@@ -419,7 +421,7 @@ m.process = function(rawProps){
 			limitOffset: (!!lOffset[idx]) ? lOffset[idx] : null,
 		};
 	});
- 
+
 	// space = {dsx, dsy}
 	state.spaces = space.spaces(data,universe,borders,title);
 
