@@ -13,15 +13,15 @@ var _ = require('underscore');
 var Axes = React.createClass({
 
 	shouldComponentUpdate: function(props){
-		return !imUtils.isEqual(props,this.props);
+		return !imUtils.isEqual(props.state,this.props.state);
 	},
 
 	abscissa: function(){
-		return _.map(this.props.abs, (p,idx) => {return p.show ? <Axe {...p}/> : null;});
+		return _.map(this.props.state.abs, (p) => {return p.show ? <Axe key={p.key} state={p}/> : null;});
 	},
 
 	ordinate: function(){
-		return _.map(this.props.ord, (p,idx) => {return p.show ? <Axe {...p}/> : null;});
+		return _.map(this.props.state.ord, (p) => {return p.show ? <Axe key={p.key} state={p}/> : null;});
 	},
 
 	render: function(){

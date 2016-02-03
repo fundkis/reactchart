@@ -26,6 +26,13 @@ var deepEqual = function(obj1,obj2){
 	return true;
 };
 
+var noFreeze = function(obj){
+	return {
+		object: obj,
+		get: () => {obj = utils.deepCp({},obj); return obj;}
+	};
+};
+
 var m = {};
 
 m.mergeDeep = function(src,tgt){
@@ -40,15 +47,15 @@ m.immutable = function(obj){
 	return m.isImm(obj) ? obj : im.fromJS(obj);
 };
 
-m.freeze = function(obj){
-	return new im(obj).get();
+m.freeze = function(obj,type){
+	return type === 'no' ? noFreeze(obj) : new im(obj);
 };
 
 m.isEqual = function(obj1,obj2){
 
-	var immut = m.isImm(obj1);
-	return immut === m.isImm(obj2) ? immut ? obj1 === obj2 : deepEqual(obj1,obj2) : false;
-
+	var immut1 = m.isImm(obj1);
+	var immut2 = m.isImm(obj2);
+	return immut1 === immut2 ? immut1 ? obj1 === obj2 : deepEqual(obj1,obj2) : false;
 };
 
 module.exports = m;

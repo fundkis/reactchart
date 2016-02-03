@@ -7,9 +7,9 @@ var Graph = React.createClass({
 
 	render: function(){
 
-		var props = this.props.preprocessed === true ? this.props : core.process(this.props) ;
+		var props = this.props.preprocessed === true ? this.props : core.process(this.props).get() ;
 
-		return <Drawer {...props} />;
+		return <Drawer state={props} />;
 	}
 });
 

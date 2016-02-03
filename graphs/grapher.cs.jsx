@@ -9,21 +9,16 @@ var utils = require('../core/utils.cs.js');
 var graph = {};
 
 graph.Plain = function(props){
-		return <Plain {...props} />;
+		return <Plain key={props.key} state={props}/>;
 };
 
 graph.Stairs = function(props){
-	return <Stairs {...props} />;
+	return <Stairs key={props.key} state={props}/>;
 };
 
-graph.Bars = function(props){
-	return <BarChart {...props} />;
+graph.Bars = graph.yBars = function(props){
+	return <BarChart key={props.key} state={props}/>;
 };
-
-graph.yBars = function(props){
-	return <BarChart {...props} />;
-};
-
 
 var m = function(key,props){
 	if(utils.isNil(graph[key])){

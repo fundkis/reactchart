@@ -24,28 +24,28 @@ var imUtils = require('./core/im-utils.cs.js');
 var Graph = React.createClass({
 
 	shouldComponentUpdate: function(props){
-		return !imUtils.isEqual(props,this.props);
+		return !imUtils.isEqual(props.state,this.props.state);
 	},
 
 	orderAG: function(){
 		return this.props.axisOnTop === true ? <g>
-			<Curves {...this.props.curves} />
-			<Axes {...this.props.axes}/>
+			<Curves state={this.props.state.curves} />
+			<Axes state={this.props.state.axes}/>
 		</g> : <g>
-			<Axes {...this.props.axes}/>
-			<Curves {...this.props.curves} />
+			<Axes state={this.props.state.axes}/>
+			<Curves state={this.props.state.curves} />
 		</g>;
 					
 	},
 
 	render: function(){
-
-		return <svg width={this.props.width} height={this.props.height}>
-			<Cadre cadre={this.props.cadre}/>
-			<Background {...this.props.background}/>
-			<Title {...this.props.title} />
+		var state = this.props.state;
+		return <svg width={state.width} height={state.height}>
+			<Cadre cadre={state.cadre}/>
+			<Background state={state.background}/>
+			<Title state={state.title} />
 					{this.orderAG()}
-			<Foreground {...this.props.foreground} />
+			<Foreground state={state.foreground} />
 			</svg>;
 
 	}

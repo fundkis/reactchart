@@ -501,7 +501,7 @@ m.process = function(rawProps){
 
 	imVM.preprocessed = true;
 
-	return im.freeze(imVM);
+	return im.freeze(imVM,props.freeze);
 
 };
 

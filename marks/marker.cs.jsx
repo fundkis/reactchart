@@ -9,20 +9,20 @@ var marks = {};
 marks.square = marks.Square = function(data){
 
 	return _.map(data, function(point){
-		return <Square key={point.key} {...point}/>;
+		return <Square key={point.key} state={point} />;
 	});
 };
 
 marks.dot = marks.Dot = function(data){
 
 	return _.map(data, function(point){
-		return <Dot key={point.key} {...point}/>;
+		return <Dot key={point.key} state={point} />;
 	});
 };
 
 marks.bar = marks.Bar = function(data){
 	return _.map(data, function(point){
-		return <Bar key={point.key} {...point}/>;
+		return <Bar key={point.key} state={point} />;
 	});
 };
 

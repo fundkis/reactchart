@@ -24,15 +24,17 @@ var imUtils = require('../core/im-utils.cs.js');
 var SquareMark = React.createClass({
 
 	shouldComponentUpdate: function(props){
-		return !imUtils.isEqual(props,this.props);
+		return !imUtils.isEqual(props.state,this.props.state);
 	},
 
 	render: function(){
-		var x = dataScale.toC(this.props.ds.x,this.props.position.x) - this.props.size / 2;
-		var y = dataScale.toC(this.props.ds.y,this.props.position.y) + this.props.size / 2;
-		var f = this.props.fill || this.props.color;
+		var state = this.props.state;
 
-		return <rect x={x} y={y} width={this.props.size} height={this.props.size} fill={f} opacity={this.props.shade} stroke={this.props.color} strokeWidth={this.props.width}/>;
+		var x = dataScale.toC(state.ds.x,state.position.x) - state.size / 2;
+		var y = dataScale.toC(state.ds.y,state.position.y) + state.size / 2;
+		var f = state.fill || state.color;
+
+		return <rect x={x} y={y} width={state.size} height={state.size} fill={f} opacity={state.shade} stroke={state.color} strokeWidth={state.width}/>;
 	}
 });
 

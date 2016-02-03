@@ -1,7 +1,6 @@
 var React = require('react');
 
 var imUtils = require('./core/im-utils.cs.js');
-var utils = require('./core/utils.cs.js');
 
 /*
 	{
@@ -22,19 +21,15 @@ var utils = require('./core/utils.cs.js');
 var Background = React.createClass({
 
 	shouldComponentUpdate: function(props){
-		return !imUtils.isEqual(props,this.props);
+		return !imUtils.isEqual(props.state,this.props.state);
 	},
 
 	render: function(){
-		if(utils.isNil(this.props.background)){
-			return null;
-		}
-
-		var x = this.props.spaceX.min;
-		var y = this.props.spaceY.max;
-		var width = this.props.spaceX.max - this.props.spaceX.min;
-		var height = this.props.spaceY.min - this.props.spaceY.max;
-		return this.props.color === 'none' ? null : <rect width={width} height={height} strokeWidth='0' fill={this.props.color} x={x} y={y}/>;
+		var x = this.props.state.spaceX.min;
+		var y = this.props.state.spaceY.max;
+		var width = this.props.state.spaceX.max - this.props.state.spaceX.min;
+		var height = this.props.state.spaceY.min - this.props.state.spaceY.max;
+		return this.props.state.color === 'none' ? null : <rect width={width} height={height} strokeWidth='0' fill={this.props.state.color} x={x} y={y}/>;
 
 	}
 });

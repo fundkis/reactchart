@@ -17,11 +17,11 @@ var imUtils = require('./core/im-utils.cs.js');
 var Curves = React.createClass({
 	
 	shouldComponentUpdate: function(props){
-		return !imUtils.isEqual(props,this.props);
+		return !imUtils.isEqual(props.state,this.props.state);
 	},
 
 	render: function(){
-		return <g>{_.map(this.props.curves, (curve) => {return grapher(curve.type,curve);})}</g>;
+		return <g>{_.map(this.props.state.curves, (curve) => {return grapher(curve.type,curve);})}</g>;
 	}
 
 });

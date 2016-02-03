@@ -14,14 +14,14 @@ var imUtils = require('../core/im-utils.cs.js');
 var PlainChart = React.createClass({
 
 	shouldComponentUpdate: function(props) {
-		return !imUtils.isEqual(props,this.props);
+		return !imUtils.isEqual(props.state,this.props.state);
 	},
 
 	render: function(){
 
 		return <g>
-			<Path {...this.props.path}/>
-			{marker.marks(this.props.marks,this.props.markType)}
+			<Path state={this.props.state.path}/>
+			{marker.marks(this.props.state.marks,this.props.state.markType)}
 			</g>;
 }
 });

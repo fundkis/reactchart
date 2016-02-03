@@ -25,16 +25,18 @@ var imUtils = require('../core/im-utils.cs.js');
 var DotMark = React.createClass({
 
 	shouldComponentUpdate: function(props){
-		return !imUtils.isEqual(props,this.props);
+		return !imUtils.isEqual(props.state,this.props.state);
 	},
 
 	render: function(){
-		var x = dataScale.toC(this.props.ds.x,this.props.position.x);
-		var y = dataScale.toC(this.props.ds.y,this.props.position.y);
-		var r = this.props.radius || this.props.size;
-		var f = this.props.fill || this.props.color;
+		var state = this.props.state;
 
-		return <circle cx={x} cy={y} r={r} fill={f} opacity={this.props.shade} stroke={this.props.color} strokeWidth={this.props.width}/>;
+		var x = dataScale.toC(state.ds.x,state.position.x);
+		var y = dataScale.toC(state.ds.y,state.position.y);
+		var r = state.radius || state.size;
+		var f = state.fill || state.color;
+
+		return <circle cx={x} cy={y} r={r} fill={f} opacity={state.shade} stroke={state.color} strokeWidth={state.width}/>;
 	}
 });
 

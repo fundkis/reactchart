@@ -28,25 +28,27 @@ var utils = require('../core/utils.cs.js');
 var Bins = React.createClass({
 	
   shouldComponentUpdate: function(props) {
-	 return !imUtils.isEqual(props,this.props);
+	 return !imUtils.isEqual(props.state,this.props.state);
   },
 
 	bin: function(point,drop,delta,idx){
 
+		var state = this.props.state;
+
 		var p = {
-			x: space.toC(this.props.ds.x,point.x),
-			y: space.toC(this.props.ds.y,point.y),
+			x: space.toC(state.ds.x,point.x),
+			y: space.toC(state.ds.y,point.y),
 		};
 
 		var d = {
-			x: space.toC(this.props.ds.x,drop.x),
-			y: space.toC(this.props.ds.y,drop.y),
+			x: space.toC(state.ds.x,drop.x),
+			y: space.toC(state.ds.y,drop.y),
 		};
 
-		var del = space.toCwidth(this.props.ds.x,delta);
+		var del = space.toCwidth(state.ds.x,delta);
 
 		var path = '';
-		switch(this.props.stairs){
+		switch(state.stairs){
 			case 'right':
 				var pr1 = p.x + ' ' + d.y;
 				var pr2 = p.x + ' ' + p.y;
@@ -63,17 +65,18 @@ var Bins = React.createClass({
 				break;
 		}
 
-		var color = point.fill || this.props.fill;
-		var shade = this.props.shade || 1;
+		var color = point.fill || state.fill;
+		var shade = state.shade || 1;
 
 		return <path key={idx} d={path} strokeWidth={0} fill={color} opacity={shade}/>;
 	},
 
 	path: function(){
 
-		var positions = this.props.positions;
-		var ds = this.props.ds;
-		var drops = this.props.drops;
+		var state = this.props.state;
+		var positions = state.positions;
+		var ds = state.ds;
+		var drops = state.drops;
 
 		var coord = (idx,idy) => {
 			idy = utils.isNil(idy) ? idx : idy;
@@ -88,19 +91,19 @@ var Bins = React.createClass({
 			return space.toC(ds.x,drops[idx].x) + ',' + space.toC(ds.y,positions[idx].y);
 		};
 
-		var Nd = this.props.positions.length;
+		var Nd = state.positions.length;
 		var data = '';
-		var delta = this.props.positions.length > 1 ? space.toCwidth(ds.x,positions[1].x -  positions[0].x) : 10;
-		switch(this.props.stairs){
+		var delta = state.positions.length > 1 ? space.toCwidth(ds.x,positions[1].x -  positions[0].x) : 10;
+		switch(state.stairs){
 			case 'right':
 			// right stairs
 				data = dropy(0) + ' ' + coord(0) + ' ';
 				for(var i = 1; i < Nd; i++){
 					data += coord(i,i-1) + ' ' + coord(i) + ' ';
-					if(this.props.dropLine.y){
+					if(state.dropLine.y){
 						data += dropy(i) + ' ' + coord(i) + ' ';
 					}
-					if(this.props.dropLine.x){
+					if(state.dropLine.x){
 						data += dropx(i) + ' ' + coord(i) + ' ';
 					}
 				}
@@ -113,10 +116,10 @@ var Bins = React.createClass({
 				data += ' ' + (space.toC(ds.x,positions[0].x) - delta) + ',' + space.toC(ds.y,positions[0].y); // point
 				data += coord(0);
 				for(i = 1; i < Nd; i++){
-					if(this.props.dropLine.x){
+					if(state.dropLine.x){
 						data += dropx(i - 1) + ' ' + coord(i-1) + ' ';
 					}
-					if(this.props.dropLine.y){
+					if(state.dropLine.y){
 						data += dropy(i - 1) + ' ' + coord(i-1) + ' ';
 					}
 					data +=  coord(i-1,i) + ' ' + coord(i) + ' ';
@@ -127,17 +130,18 @@ var Bins = React.createClass({
 					throw 'Stairs are either right or left';
 		}
 
-		return <polyline points={data} stroke={this.props.color} strokeWidth={this.props.width} fill='none'/>;
+		return <polyline points={data} stroke={state.color} strokeWidth={state.width} fill='none'/>;
 
 	},
 
 	render: function(){
 
-		var delta = this.props.positions.length > 1 ? this.props.positions[1].x -  this.props.positions[0].x : 1;
+		var state = this.props.state;
+		var delta = state.positions.length > 1 ? state.positions[1].x -  state.positions[0].x : 1;
 		var me = this;
 
 		return <g>
-			{_.map(this.props.positions,(pos,idx) => {return me.bin(pos,me.props.drops[idx],delta,idx);})}
+			{_.map(state.positions,(pos,idx) => {return me.bin(pos,state.drops[idx],delta,idx);})}
 			{this.path()}
 		</g>;
 	}

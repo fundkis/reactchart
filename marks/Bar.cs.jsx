@@ -29,28 +29,30 @@ var imUtils = require('../core/im-utils.cs.js');
 var BarMark = React.createClass({
 
 	shouldComponentUpdate: function(props){
-		return !imUtils.isEqual(props,this.props);
+		return !imUtils.isEqual(props.state,this.props.state);
 	},
 
   render : function() {
 
+	var state = this.props.state;
+
 	var mgr = {
-		x: utils.mgr(this.props.position.x),
-		y: utils.mgr(this.props.position.y)
+		x: utils.mgr(state.position.x),
+		y: utils.mgr(state.position.y)
 	};
 
-	var ds = this.props.ds;
+	var ds = state.ds;
 
-	var position = this.props.position;
+	var position = state.position;
 
 	var span = {
-		x: utils.isNil(this.props.drop.y) ? 0 : this.props.span,
-		y: utils.isNil(this.props.drop.x) ? 0 : this.props.span 
+		x: utils.isNil(state.drop.y) ? 0 : state.span,
+		y: utils.isNil(state.drop.x) ? 0 : state.span 
 	};
 
 	var drop = {
-		x: utils.isNil(this.props.drop.x) ? this.props.position.x : this.props.drop.x,
-		y: utils.isNil(this.props.drop.y) ? this.props.position.y : this.props.drop.y 
+		x: utils.isNil(state.drop.x) ? state.position.x : state.drop.x,
+		y: utils.isNil(state.drop.y) ? state.position.y : state.drop.y 
 	};
 
 	var toC = (dir) => {
@@ -70,15 +72,15 @@ var BarMark = React.createClass({
 		y -= height;
 	}
 
-	var color = this.props.color || this.props.fill || 'none';
-	var stroke = this.props.draw ? color : null;
-	if(drop.y > this.props.y){
+	var color = state.color || state.fill || 'none';
+	var stroke = state.draw ? color : null;
+	if(drop.y > state.y){
 		y -= height;
 	}
 
 	 return <rect x={x} y={y} height={height} width={width}
-			stroke={stroke} strokeWidth={this.props.strokeWidth} 
-			fill={color} opacity={this.props.shade}/>;
+			stroke={stroke} strokeWidth={state.strokeWidth} 
+			fill={color} opacity={state.shade}/>;
   }
 });
 

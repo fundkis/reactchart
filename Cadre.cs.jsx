@@ -5,7 +5,7 @@ var utils = require('./core/utils.cs.js');
 var Cadre = React.createClass({
 
 	shouldComponentUpdate: function(props){
-		return !imUtils.isEqual(props,this.props);
+		return !imUtils.isEqual(props.cadre,this.props.cadre);
 	},
 
 	render: function(){

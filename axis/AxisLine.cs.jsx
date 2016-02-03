@@ -37,11 +37,11 @@ var imUtils = require('../core/im-utils.cs.js');
 
 var AxisLine = React.createClass({
 	shouldComponentUpdate: function(props){
-		return !imUtils.isEqual(props,this.props);
+		return !imUtils.isEqual(props.state,this.props.state);
 	},
 
 	axis: function(){
-		var lprops = this.props.line;
+		var lprops = this.props.state.line;
 
 		switch(lprops.CS){
 			case 'cart':
@@ -52,7 +52,7 @@ var AxisLine = React.createClass({
 				return <ellipse cx={lprops.origin.x} cy={lprops.origin.y} rx={lprops.radius.x} ry={lprops.radius.y}
 					stroke={lprops.color} strokeWidth={lprops.width}/>;
 			default:
-				throw new Error('Unknown coordinate system: "' + this.props.CS + '"' );
+				throw new Error('Unknown coordinate system: "' + this.props.state.CS + '"' );
 		}
 	},
 
@@ -76,20 +76,20 @@ var AxisLine = React.createClass({
 	},
 
 	factor: function(){
-		var props = this.props.comFac;
+		var props = this.props.state.comFac;
 		if(utils.isNil(props.factor) || props.factor === 1){
 			return null;
 		}
 
-		var dir = utils.direction(this.props.line);
+		var dir = utils.direction(this.props.state.line);
 		dir.x = Math.sqrt(dir.x / dir.axe);
 		dir.y = Math.sqrt(dir.y / dir.axe);
 
 		var offset = this.textOffset(props.FSize,'10-10',dir); // if more than that, there are questions to be asked...
 
 		var fac = {
-			x:   props.offset.x + this.props.line.end.x + dir.y * ( offset.x + 10 ),
-			y: - props.offset.y + this.props.line.end.y + dir.x * ( offset.y + 10 )
+			x:   props.offset.x + this.props.state.line.end.x + dir.y * ( offset.x + 10 ),
+			y: - props.offset.y + this.props.state.line.end.y + dir.x * ( offset.y + 10 )
 		};
 
 		var mgr = utils.mgr(props.factor);
@@ -101,9 +101,9 @@ var AxisLine = React.createClass({
 
 	render: function(){
 
-		return this.props.show === false ? null : <g>
+		return this.props.state.show === false ? null : <g>
 			{this.axis()}
-			<Label {...this.props.label}/>
+			<Label state={this.props.state.label}/>
 			{this.factor()}
 		</g>;
 	}

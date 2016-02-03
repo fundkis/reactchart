@@ -13,16 +13,16 @@ var imUtils = require('../core/im-utils.cs.js');
 
 var Axe = React.createClass({
 	shouldComponentUpdate: function(props){
-		return !imUtils.isEqual(props,this.props);
+		return !imUtils.isEqual(props.state,this.props.state);
 	},
 
 	render: function(){
 
 		return <g>
-			{_.map(this.props.ticks, (tick) => {
-				return <Tick {...tick}/>;
+			{_.map(this.props.state.ticks, (tick) => {
+				return <Tick key={tick.key} state={tick}/>;
 			})}
-			<AxisLine {...this.props.axisLine}/>
+			<AxisLine state={this.props.state.axisLine}/>
 		</g>;
 }
 });
