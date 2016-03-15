@@ -95,4 +95,7 @@ m.direction = function(line){
 
 };
 
+// to make proper period objects
+m.makePeriod = date.makePeriod;
+
 module.exports = m;

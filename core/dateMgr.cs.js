@@ -455,4 +455,8 @@ m.smallestStep = function(){
 	return makePeriod(moment.duration({days: 1}));
 };
 
+m.makePeriod = function(per){
+	return processPeriod(per);
+};
+
 module.exports = m;

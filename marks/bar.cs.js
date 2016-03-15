@@ -4,7 +4,7 @@ var m = {};
 m.VM = function(position,props,ds,key){
 
 	var dir = utils.isNil(position.drop.x) ? 'x' : 'y';
-	var defSpan = utils.isDate(position[dir]) ? {months: 3} : 0.5;
+	var defSpan = utils.isDate(position[dir]) ? utils.makePeriod({months: 3}) : 0.5;
 
 	var draw = props.markProps.draw || position.draw || false;
 	var color = position.color || props.markProps.color || props.markColor || props.color || 'black';
