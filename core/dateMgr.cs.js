@@ -91,15 +91,15 @@ var roundDownPeriod = function(p){
 	var out = {};
 	if(p.years > 2){
 		out = make('years',max(floor(p.years)/10,1));
-	}else if(p.months >= 6){
+	}else if(p.total >= moment.duration({months: 6}).asDays()){
 		out = make('months', 6);
-	}else if(p.months >= 3){
+	}else if(p.total >= moment.duration({months: 3}).asDays()){
 		out = make('months', 3);
-	}else if(p.months >= 1){
+	}else if(p.total >= moment.duration({months: 1}).asDays()){
 		out = make('months', 1);
-	}else if(p.weeks >= 2){
+	}else if(p.total >= moment.duration({weeks: 2}).asDays()){
 		out = make('weeks', 2);
-	}else if(p.weeks >= 1){
+	}else if(p.total >= moment.duration({weeks: 1}).asDays()){
 		out = make('weeks', 1);
 	}else{
 		out = make('days', 1);
@@ -141,7 +141,15 @@ var roundUpPeriod = function(p){
 
 // round period of sale order of magnitude
 // down by default
-var roundPeriod = function(p,type){
+var roundPeriod = function(per,type){
+
+  var p = {
+    years: per.years,
+    months: per.months,
+    weeks: per.weeks,
+    days: per.days,
+    total: per.total
+  };
 
 	type = type || 'down';
 

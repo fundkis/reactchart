@@ -12,11 +12,8 @@ var computeTicks = function(first,last,minor,fac){
 	// distance min criteria 1
 	// 10 ticks max
 	var dec = mgr.divide(length,10);
-	var minDist = mgr.roundUp(dec);
-	var majDist = mgr.roundUp(minDist);
-	if(!minor){
-		majDist = utils.deepCp({},minDist);
-	}
+	var majDist = mgr.roundUp(dec);
+	var minDist = mgr.roundDown(majDist);
 
 // redefine start to have the biggest rounded value
 	var biggestRounded = mgr.orderMagValue(last,first);
