@@ -31,7 +31,7 @@ var processPeriod = function(period){
 		period.total = moment.duration(period).asDays();
 	}
 
-	if(period.total > 7 && !period.offset){
+	if(period.total > 15 && !period.offset){
 		period.offset = true;
 	}
 
@@ -73,8 +73,8 @@ var fetchFormat = function(p){
 		};
 	}else if(p.weeks !== 0){
 		return {
-			string: 'WW/YY',
-			pref: 'Sem. '
+			string: 'DD/MM/YY',
+			pref: ''
 		};
 	}else{
 		return {
