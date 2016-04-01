@@ -58,18 +58,23 @@ var fetchFormat = function(p){
 		};
 	}else if(p.months >= 6){
 		return {
-			string: 'S',
+			string: 'S/YY', // ce format n'existe pas, il est géré par la fonction qui appelle
 			pref: 'S'
 		};
 	}else if(p.months >= 3){
 		return {
-			string: 'Q',
+			string: 'Q/YY',
 			pref: 'T'
+		};
+	}else if(p.months !== 0){
+		return {
+			string: 'MM/YY',
+			pref: ''
 		};
 	}else if(p.weeks !== 0){
 		return {
-			string: 'E/MM/YY',
-			pref: ''
+			string: 'WW/YY',
+			pref: 'Sem. '
 		};
 	}else{
 		return {
@@ -374,7 +379,8 @@ m.label = function(date,period){
 	var format = fetchFormat(period);
 	var out = '';
 	if(format.pref === 'S'){
-		out = (date.getMonth() > 5)? '2' : '1';
+		out = (date.getMonth() > 5)? '2/' : '1/';
+		out += moment(date).format('YY');
 	}else{
 		out = moment(date).format(format.string);
 	}
