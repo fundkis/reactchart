@@ -2,8 +2,6 @@
 	all the proprieties
 */
 var _ = require('underscore');
-var moment = require('moment');
-var utils = require('./utils.cs.js');
 
 // defaults for marks
 var marks = {};
@@ -149,7 +147,7 @@ m.Tick = {
 	out: 0.25, // proportion that is outside
 	color: 'black',
 	labelOffset: {x:0, y:0},
-	labelize: (val) => {return utils.isNil(val) ? '' : val instanceof Date ? moment(val).format('YYYY') : val.toFixed(1);},
+	labelize: () => {return false;}, //utils.isNil(val) ? '' : val instanceof Date ? moment(val).format('YYYY') : val.toFixed(1);},
 	label: '',
 	labelFSize: 10,
 	labelColor: 'black'

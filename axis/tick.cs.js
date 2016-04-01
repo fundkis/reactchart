@@ -122,7 +122,7 @@ m.VM = function(ds,partner, bounds, dir, locProps, comFac, axisKey){
 
 		var labelProps = {
 			ds: ds,
-			label:  utils.isNil(p.labelize) ? tick.label : p.labelize(tick.position),
+			label:  p.labelize(tick.position) === false ? tick.label : p.labelize(tick.position),
 			FSize:  p.labelFSize || 15,
 			color:  p.labelColor,
 			rotate: false,
