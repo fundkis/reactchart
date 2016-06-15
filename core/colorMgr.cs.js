@@ -1,6 +1,17 @@
 var _ = require('underscore');
 var utils = require('./utils.cs.js');
 
+var palette = [ "#3A83F1", "#DC3FF1", "#F2693F", "#8AF23F", "#758d99",
+	"#F1DC41", "#AC310C", "#40C8F2", "#980DAB", "#F6799B", "#9679F6", "#EE2038",
+	"#00994D", "#758D99", "#F141AD", "#0C86AC", "#C729C7", "#D26F13", "#092508",
+	"#FFBACD", "#7CB603", "#4088EC", "#46002C", "#FF5478", "#43859E", "#72680F",
+	"#97E6EC", "#F777BE", "#AE241F", "#35457B", "#CCA9EF", "#4A0202", "#DDDF14",
+	"#870062", "#B573F2", "#08B83C", "#F59288", "#056EFC", "#2D1B19", "#3AA676",
+	"#2E5045", "#AFE9AA", "#F3D6C2", "#69F393", "#BFFA57", "#FA2C4B", "#355801",
+	"#258B85", "#845100", "#14546B", "#034A29", "#B81288", "#F64BB2", "#D1C2EC",
+	"#83A3F0", "#FEBCA3", "#362463", "#FDB2EA", "#FD981F", "#49F9DF", "#2490C0",
+	"#282807", "#26C186", "#8D54CE", "#6D1662", "#57F2BD"];
+
 var shader = {};
 shader.color = function(options,f){
 
@@ -53,6 +64,10 @@ var fun = function(shade,points){
 
 	if(utils.isNil(shade)){
 		return;
+	}
+
+	if(utils.isNil(points) && typeof shade === 'number'){
+		return palette[shade];
 	}
 
 	var mgr = _.extend({},shade);
