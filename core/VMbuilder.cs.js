@@ -6,6 +6,7 @@ var ticks = require('../axis/tick.cs.js');
 var plainVM = require('../graphs/plain.cs.js');
 var barChartVM = require('../graphs/barChart.cs.js');
 var stairsVM = require('../graphs/stairs.cs.js');
+var pieVM = require('../graphs/pie.cs.js');
 var dotVM = require('../marks/dot.cs.js');
 var squareVM = require('../marks/square.cs.js');
 var barVM = require('../marks/bar.cs.js');
@@ -16,6 +17,7 @@ graphVM.plain = graphVM.Plain = plainVM.VM;
 graphVM.bars = graphVM.Bars = barChartVM.VM;
 graphVM.ybars = graphVM.yBars = barChartVM.VM;
 graphVM.stairs = graphVM.Stairs = stairsVM.VM;
+graphVM.pie = graphVM.Pie = pieVM.VM;
 
 // marks
 var marksVM = {};
