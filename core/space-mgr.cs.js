@@ -143,6 +143,9 @@ var space = function(datas,universe,borders,title){
 
 		// fetch the margin (label + ticks + default) for an axis
 		var margin = function(axis){
+			if(!axis.show){
+				return defaults.axis.min;
+			}
 			var marg = defaults.axis.label[axis.placement];
 			if(!axis.empty){
 				marg += defaults.axis.ticks[axis.placement];
@@ -160,7 +163,7 @@ var space = function(datas,universe,borders,title){
 		}
 
 		// title is at the top
-		if(!!margins.top && !!title){
+		if(!utils.isNil(margins.top) && !!title){
 			margins.top += (title.length !== 0)?title.titleFSize + defaults.title:0;
 		}
 
@@ -212,17 +215,17 @@ var space = function(datas,universe,borders,title){
 
 	// either data defined or explicitely defined
 		var minVals = (vals) => {
-      if(vals.length === 0){
-        return null;
-      }
+			if(vals.length === 0){
+				return null;
+			}
 
 			return mgr.min(vals);
 		};
 
 		var maxVals = (vals) => {
-      if(vals.length === 0){
-        return null;
-      }
+			if(vals.length === 0){
+				return null;
+			}
 
 			return mgr.max(vals);
 		};
