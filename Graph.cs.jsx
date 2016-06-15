@@ -23,13 +23,13 @@ Graph.Legend = React.createClass({
 	},
 
 	line: function(line,idx){
-		return <li key={idx}>{line.icon}&nbsp;{line.label}</li>;
+		return <tr key={idx}><td>{line.icon}</td><td>{line.label}</td></tr>;
 	},
 
 	legend: function(tab){
-		return <ul>
+		return <table>
 			{_.map(tab, (line,idx) => this.line(line,idx))}
-		</ul>;
+		</table>;
 	},
 
 	render: function(){
