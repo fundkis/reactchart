@@ -122,6 +122,19 @@ graph.Bars = graph.bars = () => {
 	};
 };
 
+graph.Pie = graph.pie = () => {
+	return {
+		pie: 'disc', // tore
+		showPieLabel: false,
+		pieOrigin: {x: 0, y:0}, // offset from center
+		pieRadius: null, // 2/3 of world
+		pieToreRadius: 0, // no hole
+		piePinRadius: 0.75, // 3/4 of pie size
+		piePinHook: 10,
+		process: {type: 'pie'}
+	};
+};
+
 //graph.Bars = graph.common;
 graph.Plain = graph.plain = graph.Stairs = graph.stairs = graph.common;
 
@@ -226,6 +239,13 @@ m.Graph = {
 	name: 'G',
 	height: 400,	// defines the universe's height
 	width:	800,	// defines the universe's width
+	legend: {
+		iconWidth: 30,
+		iconHeight: 20,
+		iconHMargin: 3,
+		iconVMargin: 0,
+		iconUnit: 'px'
+	},
 	foreground: undefined,
 	background: undefined,
 	title: '',

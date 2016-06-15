@@ -4,17 +4,27 @@ var utils = require('./utils.cs.js');
 var gProps = require('./proprieties.cs.js');
 var vm = require('./VMbuilder.cs.js');
 var im = require('./im-utils.cs.js');
-
+var legender = require('./legendBuilder.cs.js');
+var color = require('../core/colorMgr.cs.js');
 
 var defaultTheProps = function(props){
 	var data = gProps.defaults('data');
 
 	var fullprops = utils.deepCp({},gProps.Graph);
 	for(var ng = 0; ng < props.data.length; ng++){
-		var gprops = gProps.defaults(props.data.type || 'Plain');
+		var gprops = gProps.defaults(props.data[ng].type || 'Plain');
 		fullprops.data[ng] = utils.deepCp({},data);
 		fullprops.graphProps[ng] = utils.deepCp({},gprops);
 	}
+
+	var stripAxis = (idx) => {
+		fullprops.axisProps.abs[idx].show = false;
+		fullprops.axisProps.ord[idx].show = false;
+	};
+
+	_.each(props.data, (data,idx) => data.type === 'Pie' ? stripAxis(idx) : null);
+
+
 	if (!!props.axisProps) {
 		if(!!props.axisProps.abs){
 			for(var nabs = 0; nabs < props.axisProps.abs.length; nabs++){
@@ -70,6 +80,32 @@ var copySerie = function(serie){
 	});
 };
 
+var pie = function(serie){
+	var sum = _.reduce(serie, (memo,point) => memo + point.value, 0);
+	return _.map(serie, (point,idx) => {
+		var raw = {
+			x: 0,
+			y: 0,
+			label: {
+				x: null,
+				y: null
+			},
+			tag: (point.value / sum * 100).toFixed(0) + '%',
+			legend: point.label
+		};
+		for(var u in point){
+			if(u !== 'x' &&
+				u !== 'y'  &&
+				u !== 'label'){
+				raw[u] = point[u];
+			}
+		}
+		raw.color = raw.color || color(idx);
+		return raw;
+	});
+};
+
+
 var validate = function(series){
 
 	var serTest = (ser) => {
@@ -102,8 +138,12 @@ var validate = function(series){
 
 var preprocess = function(serie,preproc){
 
-		if(preproc.type !== 'histogram'){
-			throw new Error('Only "histogram" is known as a preprocessing: "' + preproc.type);
+		if(preproc.type !== 'histogram' && preproc.type !== 'pie'){
+			throw new Error('Only "histogram" or "pie" are known as a preprocessing: "' + preproc.type);
+		}
+
+		if(preproc.type === 'pie'){
+			return pie(serie);
 		}
 
 		var equal = function(p1,p2){
@@ -345,7 +385,7 @@ m.process = function(rawProps){
 
 	var props = defaultTheProps(utils.deepCp({},rawProps));
 
-	var raw = _.map(props.data,(dat) => {return dat.series;});
+	var raw = _.map(props.data,(dat) => dat.series );
 
 	var state = {};
 	var spanOffset = [];
@@ -354,18 +394,18 @@ m.process = function(rawProps){
 	// empty
 	if(!validate(raw)){
 
-		state.series = _.map(props.data, (/*ser*/) => {return [];});
+		state.series = _.map(props.data, (/*ser*/) => [] );
 
 	}else{
 			// data depening on serie, geographical data only
-		var preproc = _.map(props.graphProps, (gp) => {return (!!gp.process && !!gp.process.type)?gp.process:null;});
-		state.series = _.map(raw, (serie,idx) => { return (!!preproc[idx])?preprocess(serie,preproc[idx]):copySerie(serie);});
+		var preproc = _.map(props.graphProps, (gp) => !!gp.process && !!gp.process.type ? gp.process : null );
+		state.series = _.map(raw, (serie,idx) =>  !!preproc[idx] ? preprocess(serie,preproc[idx]) : copySerie(serie) );
 			// offset from stacked
-		addOffset(state.series, _.map(props.data, (ser) => {return ser.stacked;}));
+		addOffset(state.series, _.map(props.data, (ser) => ser.stacked ));
 			// span and offset from Bars || yBars
 		spanOffset = makeSpan(state.series, _.map(props.data, (ser,idx) => {return {type: ser.type, span: props.graphProps[idx].span};}));
 			// offset from Stairs
-		lOffset = _.map(props.data, (p,idx) => {return offStairs(p,props.graphProps[idx]);});
+		lOffset = _.map(props.data, (p,idx) => offStairs(p,props.graphProps[idx]) );
 
 	}
 	state.spanOffset = spanOffset;
@@ -382,8 +422,8 @@ m.process = function(rawProps){
 	};
 
 		// axis data, min-max from series (computed in space-mgr)
-	var abs = (utils.isArray(props.axisProps.abs))?props.axisProps.abs:[props.axisProps.abs];
-	var ord = (utils.isArray(props.axisProps.ord))?props.axisProps.ord:[props.axisProps.ord];
+	var abs = utils.isArray(props.axisProps.abs) ? props.axisProps.abs : [props.axisProps.abs];
+	var ord = utils.isArray(props.axisProps.ord) ? props.axisProps.ord : [props.axisProps.ord];
 
 	var borders = {
 		ord: ord,
@@ -456,9 +496,7 @@ m.process = function(rawProps){
 	};
 
 	// 1 - cadre
-	imVM.cadre = {
-		cadre: props.cadre
-	};
+	imVM.cadre = props.cadre;
 
 	// 2 - background
 	imVM.background = {
@@ -501,8 +539,25 @@ m.process = function(rawProps){
 
 	imVM.preprocessed = true;
 
+	var le = legender(props);
+	imVM.legend = () => le;
+
 	return im.freeze(imVM,props.freeze);
 
+};
+
+m.processLegend = function(rawProps){
+	var props = defaultTheProps(utils.deepCp({},rawProps));
+	// data depening on serie, geographical data only
+	var preproc = _.map(props.graphProps, (gp) => !!gp.process && !!gp.process.type ? gp.process : null );
+	props.data = _.map(props.data, (dat,idx) =>  {
+		return {
+		type: rawProps.data[idx].type,
+		series: !!preproc[idx] ? preprocess(dat.series,preproc[idx]) : copySerie(dat.series)
+		};
+	});
+
+	return legender(props);
 };
 
 module.exports = m;

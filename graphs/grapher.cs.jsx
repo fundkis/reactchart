@@ -2,6 +2,7 @@ var React = require('react');
 var Plain = require('./Plain.cs.jsx');
 var Stairs = require('./Stairs.cs.jsx');
 var BarChart = require('./BarChart.cs.jsx');
+var Pie = require('./Pie.cs.jsx');
 
 var utils = require('../core/utils.cs.js');
 
@@ -18,6 +19,10 @@ graph.Stairs = function(props){
 
 graph.Bars = graph.yBars = function(props){
 	return <BarChart key={props.key} state={props}/>;
+};
+
+graph.Pie = function(props){
+	return <Pie key={props.key} state={props}/>;
 };
 
 var m = function(key,props){
