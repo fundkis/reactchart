@@ -22,14 +22,30 @@ Graph.Legend = React.createClass({
 		};
 	},
 
-	line: function(line,idx){
-		return <tr key={idx}><td>{line.icon}</td><td>{line.label}</td></tr>;
+	table: function(tab){
+
+		var tabline = (line,idx) => {
+			var icon = {
+				width: line.icon.props.width
+			};
+			return <tr key={idx}><td style={icon}>{line.icon}</td><td>{line.label}</td></tr>;
+		}
+
+		return <table {...this.props}>
+			<tbody>{_.map(tab, (line,idx) => tabline(line,idx))}</tbody>
+		</table>;
 	},
 
-	legend: function(tab){
-		return <table>
-			{_.map(tab, (line,idx) => this.line(line,idx))}
-		</table>;
+	line: function(leg){
+		var print = (l,idx) => {
+			return <span key={idx}>{l.icon}{l.label}</span>;
+		};
+
+		return <div {...this.props}>{_.map(leg, (l, idx) => print(l,idx) )}</div>;
+	},
+
+	legend: function(leg){
+		return !!this.props.line ? this.line(leg) : this.table(leg);
 	},
 
 	render: function(){

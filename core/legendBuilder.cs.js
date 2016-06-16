@@ -37,15 +37,22 @@ var process = function(props){
 			hMargin: ichm, 
 			vMargin: icvm
 		};
-		return data.type === "Pie" ?  _.map(data.series, (point,piedx) => {
-				iconProps.color = point.color;
-				return {
+		var perPoint = [];
+		for(var p = 0; p < data.series.length; p++){
+			if(!!data.series[p].legend){
+				var point = data.series[p];
+				var typeMark = gprops.markType || data.type;
+				iconProps.color = point.color || color(p);
+				perPoint.push({
 					icon: <svg width={icW} height={icH}>
-							{iconer.icon(iconProps, 'pie')}
+							{iconer.icon(iconProps, typeMark)}
 						</svg>,
-					label: point.legend || 'pie #' + piedx
-				};
-			}) : 
+					label: point.legend || 'data #' + idx
+				});
+			}
+		}
+
+		return perPoint.length !== 0 ? perPoint : 
 			{
 				icon: <svg width={icW} height={icH}>
 						{gprops.onlyMarks ? null : <line x={icx} y={icy} x1={icx1} y1={icy} stroke={icc} strokeWidth={ics}/>}
