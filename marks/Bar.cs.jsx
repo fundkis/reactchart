@@ -56,7 +56,8 @@ var BarMark = React.createClass({
 	};
 
 	var toC = (dir) => {
-		return dataScale.toC(ds[dir], mgr[dir].subtract(position[dir],mgr[dir].divide(span[dir],2))); // all in dataSpace
+		var op = dir === 'y' ? 'add' : 'subtract';
+		return dataScale.toC(ds[dir], mgr[dir][op](position[dir],mgr[dir].divide(span[dir],2))); // all in dataSpace
 	};
 
 	var x = toC('x');
@@ -70,6 +71,9 @@ var BarMark = React.createClass({
 	var width  = toCwidth('x');
 	if(mgr.y.lowerThan(position.y,drop.y)){
 		y -= height;
+	}
+	if(mgr.x.greaterThan(position.x,drop.x)){
+		x -= width;
 	}
 
 	var color = state.color || state.fill || 'none';
