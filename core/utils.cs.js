@@ -45,6 +45,8 @@ m.deepCp = function(tgt,thing){
 				tgt = [];
 			}else if(thing instanceof Date){
 				tgt = new Date(thing.getTime());
+			}else if(thing === null){
+				return null;
 			}else{
 				tgt = {};
 			}
