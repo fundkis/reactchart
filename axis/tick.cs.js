@@ -59,7 +59,7 @@ m.VM = function(ds,partner, bounds, dir, locProps, comFac, axisKey){
 	var minGrid = locProps.grid.minor;
 
 	// do we have labels? Only majorTicks
-	var ticksLabel = locProps.ticksLabel;
+	var ticksLabel = locProps.tickLabels;
 	// do we want the minor ticks to be computed?
 	// do we want the minor grid?
 	var minor = (minProps.show === true || locProps.grid.minor.show === true);

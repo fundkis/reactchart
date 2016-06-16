@@ -75,8 +75,8 @@ m.ticks = function(start,length,labels,minor,fac){
 				position: lab.coord, 
 				label: lab.label, 
 				offset: {
-					x: 0,
-					y: 0
+					along: 0,
+					perp: 0
 				}
 			};
 		});

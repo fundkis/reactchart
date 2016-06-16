@@ -138,7 +138,7 @@ var space = function(datas,universe,borders,title){
 		// margins between borders and axis
 		var margins = {};
 		for(p  = 0; p < places.length; p++){
-			margins[places[p]] = 0;
+			margins[places[p]] = defaults.min;
 		}
 
 		// fetch the margin (label + ticks + default) for an axis
@@ -163,8 +163,8 @@ var space = function(datas,universe,borders,title){
 		}
 
 		// title is at the top
-		if(!utils.isNil(margins.top) && !!title){
-			margins.top += (title.length !== 0)?title.titleFSize + defaults.title:0;
+		if(!utils.isNil(margins.top) && !utils.isNil(title)){
+			margins.top += title.title.length !== 0 ? title.titleFSize + defaults.title : 0;
 		}
 
 		// more suppleness, but less
@@ -304,6 +304,7 @@ m.spaces = function(datas,universe,borders,title){
 			// global characteristics
 			var offset = serie.offset;
 			var span = serie.span;
+			var spanDir = serie.spanDir;
 			var loff = serie.limitOffset;
 			var limOfIdx = utils.isNil(loff) ? -1 : loff > 0 ? serie.series.length - 1: 0;
 			return _.map(serie.series, (point,idx) => {
@@ -370,6 +371,15 @@ m.spaces = function(datas,universe,borders,title){
 							val += loff;
 						}
 					}
+
+					// having a span only changes both boundaries
+					if(!haveSpan && !utils.isNil(span) && dir === spanDir){
+						val = utils.isArray(val) ? val : [val];
+						var ms = utils.mgr(val[0]);
+						val.push(ms.subtract(val[0],ms.divide(span,2)));
+						val.push(ms.add(val[0],ms.divide(span,2)));
+					}
+
 					return val;
 				}).concat(_.map(serie.phantomSeries,(p) => {return p[dir];}));
 			});
