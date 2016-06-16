@@ -13,7 +13,9 @@ var Pie = React.createClass({
 		var labels = this.props.state.path.labels;
 		var positions = this.props.state.path.positions;
 		var pinRad = this.props.state.path.pinRadius;
+		var pinLen = this.props.state.path.pinLength;
 		var pinOff = this.props.state.path.pinHook;
+		var pinDraw = this.props.state.path.pinDraw;
 		//var ds = state.ds;
 
 		var abs = function(ang,rad,or){
@@ -56,10 +58,10 @@ var Pie = React.createClass({
 				var curAng = theta / 2 + oldT;
 				var offset = curAng === 90 || curAng === 270 ? 0 : 
 					curAng > 90 && curAng < 270 ? - pinOff : pinOff;
-				var xc1 = abs(curAng, r * pinRad, ori);
-				var yc1 = coo(curAng, r * pinRad, ori);
-				var xc2 = abs(curAng, r + 10, ori);
-				var yc2 = coo(curAng, r + 10, ori);
+				var xc1 = abs(curAng, pinRad, ori);
+				var yc1 = coo(curAng, pinRad, ori);
+				var xc2 = abs(curAng, pinRad + pinLen, ori);
+				var yc2 = coo(curAng, pinRad + pinLen, ori);
 				var xc3 = xc2 + offset;
 				var yc3 = yc2;
 				var xc = xc3 + offset / 2;
@@ -68,9 +70,10 @@ var Pie = React.createClass({
 					textAnchor: curAng === 90 || curAng === 270 ? 'center' : 
 							curAng > 90 && curAng < 270 ? 'end' : 'start'
 				};
-				var lpath = 'M' + xc1 + ',' + yc1 +  ' L' + xc2 + ',' + yc2 +  ' L' + xc3 + ',' + yc3;
-
-				out.push(<path key={p + '.ll'} strokeWidth='1' stroke='black' fill='none' d={lpath}/>);
+				if(pinDraw){
+					var lpath = 'M' + xc1 + ',' + yc1 +  ' L' + xc2 + ',' + yc2 +  ' L' + xc3 + ',' + yc3;
+					out.push(<path key={p + '.ll'} strokeWidth='1' stroke='black' fill='none' d={lpath}/>);
+				}
 				out.push(<text key={p + '.l'} x={xc} y={yc} style={lstyle}>{label}</text>);
 			}
 			x = x2;

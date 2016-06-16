@@ -2,6 +2,7 @@
 	all the proprieties
 */
 var _ = require('underscore');
+var utils = require('./utils.cs.js');
 
 // defaults for marks
 var marks = {};
@@ -92,47 +93,62 @@ graph.common = () => {
 		// for a dot, or anything.
 		markProps: {},
 		shader: undefined, //playing with colors
-		process: undefined //playing with data {dir: x || y, type: 'histogram'}
+		process: undefined, //playing with data {dir: x || y, type: 'histogram'}
+		tag: {
+			show: false, // show the tag
+			print: (t) => t + '',
+			pin: false, // show the pin
+			pinLength: 10 // 10 px as pin length
+		}
 	};
 };
 
 graph.Bars = graph.bars = () => {
 
-	return {
+	return _.extend(utils.deepCp({},graph.common()), {
 		color: 'none',
-		shade: 1,
 		width: 0,
 		dir: {
 			x: false,
 			y: true
 		},
-		baseLine: {x: undefined, y: 0},
 		drop: {x: undefined, y: 0},
-		markColor: undefined,
 		markType: 'bar',
 		markProps: {
 			width: 0,
 			draw: false
 		},
 		// Number or {}
-		span: 0.5, // in dataSpace
-		offset: {x: 0, y: 0},
-		shader: undefined, //playing with colors
-		process: undefined//playing with data {dir: x || y, type: 'histogram'}
-	};
+		span: undefined, // auto compute
+		offset: {x: 0, y: 0}
+	});
+};
+
+graph.yBars = graph.ybars = () => {
+
+	return _.extend(utils.deepCp({},graph.Bars()),{
+		dir: {
+			x: true,
+			y: false
+		},
+	});
 };
 
 graph.Pie = graph.pie = () => {
-	return {
+	return _.extend(utils.deepCp({},graph.common()),{
 		pie: 'disc', // tore
-		showPieLabel: false,
 		pieOrigin: {x: 0, y:0}, // offset from center
-		pieRadius: null, // 2/3 of world
+		pieRadius: undefined, // 2/3 of world
 		pieToreRadius: 0, // no hole
-		piePinRadius: 0.75, // 3/4 of pie size
-		piePinHook: 10,
-		process: {type: 'pie'}
-	};
+		tag: {
+			show: false, // show the tag
+			print: (t) => t + '',
+			pin: false, // show the pin
+			pinLength: 0.35, // 10 px as pin length
+			pinRadius: 0.75, // 3/4 of pie size
+			pinHook: 10 // absolute length
+		}
+	});
 };
 
 //graph.Bars = graph.common;

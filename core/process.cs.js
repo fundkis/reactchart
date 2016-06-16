@@ -5,7 +5,6 @@ var gProps = require('./proprieties.cs.js');
 var vm = require('./VMbuilder.cs.js');
 var im = require('./im-utils.cs.js');
 var legender = require('./legendBuilder.cs.js');
-var color = require('../core/colorMgr.cs.js');
 
 var defaultTheProps = function(props){
 	var data = gProps.defaults('data');
@@ -22,10 +21,10 @@ var defaultTheProps = function(props){
 		fullprops.axisProps.ord[idx].show = false;
 	};
 
-	_.each(props.data, (data,idx) => data.type === 'Pie' ? stripAxis(idx) : null);
+	_.each(props.data, (data,idx) => data.type === 'Pie' ? stripAxis(idx) : undefined);
 
 
-	if (!!props.axisProps) {
+	if(!!props.axisProps){
 		if(!!props.axisProps.abs){
 			for(var nabs = 0; nabs < props.axisProps.abs.length; nabs++){
 				fullprops.axisProps.abs[nabs] = utils.deepCp({},gProps.Axe('abs'));
@@ -51,7 +50,7 @@ var addDefaultDrop = function(serie, dir){
 			};
 		}
 		if(!utils.isNil(dir)){
-			raw.drop[dir] = null;
+			raw.drop[dir] = undefined;
 		}
 		return raw;
 	});
@@ -62,36 +61,17 @@ var copySerie = function(serie){
 		var xstr = utils.isString(point.x);
 		var ystr = utils.isString(point.y);
 		var raw = {
-			x: (xstr)?idx:point.x,
-			y: (ystr)?idx:point.y,
+			x: xstr ? idx : point.x,
+			y: ystr ? idx : point.y,
 			label: {
-				x: (xstr)?point.x:null,
-				y: (ystr)?point.y:null
-			}
-		};
-		for(var u in point){
-			if(u !== 'x' &&
-				u !== 'y'  &&
-				u !== 'label'){
-				raw[u] = point[u];
-			}
-		}
-		return raw;
-	});
-};
-
-var pie = function(serie){
-	var sum = _.reduce(serie, (memo,point) => memo + point.value, 0);
-	return _.map(serie, (point,idx) => {
-		var raw = {
-			x: 0,
-			y: 0,
-			label: {
-				x: null,
-				y: null
+				x: xstr ? point.x : undefined,
+				y: ystr ? point.y : undefined
 			},
-			tag: (point.value / sum * 100).toFixed(0) + '%',
-			legend: point.label
+			drop: {
+				x: ystr ? 0 : undefined,
+				y: xstr ? 0 : undefined
+			},
+			tag: point.value + ''
 		};
 		for(var u in point){
 			if(u !== 'x' &&
@@ -100,11 +80,9 @@ var pie = function(serie){
 				raw[u] = point[u];
 			}
 		}
-		raw.color = raw.color || color(idx);
 		return raw;
 	});
 };
-
 
 var validate = function(series){
 
@@ -138,12 +116,8 @@ var validate = function(series){
 
 var preprocess = function(serie,preproc){
 
-		if(preproc.type !== 'histogram' && preproc.type !== 'pie'){
+		if(preproc.type !== 'histogram'){
 			throw new Error('Only "histogram" or "pie" are known as a preprocessing: "' + preproc.type);
-		}
-
-		if(preproc.type === 'pie'){
-			return pie(serie);
 		}
 
 		var equal = function(p1,p2){
@@ -168,7 +142,7 @@ var preprocess = function(serie,preproc){
 		var otherdir = (dir === 'x')?'y':'x';
 		var ind = 0;
 		var curref = serie[0][otherdir];
-		var refBef = null;
+		var refBef = undefined;
 
 		var notComplete = true;
 		var u = 0;
@@ -248,8 +222,8 @@ var addOffset = function(series,stacked){
 			if(utils.isNil(point.offset)){
 				point.offset = {};
 			}
-			point.offset.x = point.offset.x || null;
-			point.offset.y = point.offset.y || null;
+			point.offset.x = point.offset.x || undefined;
+			point.offset.y = point.offset.y || undefined;
 		});
 
 		if(stacked[i]){ // stacked in direction 'stacked', 'x' and 'y' are accepted
@@ -315,6 +289,7 @@ var makeSpan = function(series,data){
 			var othdir = dir === 'y' ? 'x' : 'y';
 	// start[s] = x - span * n / 2 + s * span => offset = (s *	span	- span * n / 2 ) = span * (s - n / 2 )
 			serie.offset[dir] = mgr.multiply(serie.span, s - (n - 1) / 2);
+			serie.spanDir = dir;
 			if(utils.isNil(serie.offset[othdir])){
 				serie.offset[othdir] = 0;
 			}
@@ -345,13 +320,13 @@ var makeSpan = function(series,data){
 var spanify = function(serie,data){
 	var out = {};
 	if(utils.isNil(data.span) || data.span === 0){
-		var d = null;
+		var d = undefined;
 		var dir = (data.type[0] === 'y')?'y':'x';
 
 		var mgr = utils.mgr(serie[0][dir]);
 		for(var i = 1; i < serie.length; i++){
 			var dd = mgr.distance(serie[i][dir],serie[i - 1][dir]);
-			if(d === null || mgr.lowerThan(dd, d)){
+			if(d === undefined || mgr.lowerThan(dd, d)){
 				d = dd;
 			}
 		}
@@ -373,10 +348,10 @@ var offStairs = function(props,gprops){
 		}else if(gprops.stairs === 'left'){
 			return props.series[0].x - props.series[1].x;
 		}else{
-			return null;
+			return undefined;
 		}
 	}
-	return null;
+	return undefined;
 };
 
 var m = {};
@@ -398,7 +373,7 @@ m.process = function(rawProps){
 
 	}else{
 			// data depening on serie, geographical data only
-		var preproc = _.map(props.graphProps, (gp) => !!gp.process && !!gp.process.type ? gp.process : null );
+		var preproc = _.map(props.graphProps, (gp) => !!gp.process && !!gp.process.type ? gp.process : undefined );
 		state.series = _.map(raw, (serie,idx) =>  !!preproc[idx] ? preprocess(serie,preproc[idx]) : copySerie(serie) );
 			// offset from stacked
 		addOffset(state.series, _.map(props.data, (ser) => ser.stacked ));
@@ -414,7 +389,7 @@ m.process = function(rawProps){
 	var marginalize = (mar) => {
 		for(var m in {left: true, right: true, bottom: true, top: true}){
 			if(!mar[m]){
-				mar[m] = null;
+				mar[m] = undefined;
 			}
 		}
 
@@ -424,6 +399,22 @@ m.process = function(rawProps){
 		// axis data, min-max from series (computed in space-mgr)
 	var abs = utils.isArray(props.axisProps.abs) ? props.axisProps.abs : [props.axisProps.abs];
 	var ord = utils.isArray(props.axisProps.ord) ? props.axisProps.ord : [props.axisProps.ord];
+
+	// let's look for labels given in the data
+	_.each(props.data, (dat,idx) => {
+		var locObDir = {x: 'abs', y: 'ord'};
+		var ser = state.series[idx];
+		for(var u in locObDir){
+				var dir = locObDir[u];
+				var locAxis = _.find(props.axisProps[dir], (ax) => ax.placement === dat[dir].axis);
+				for(var p = 0; p < ser.length; p++){
+					var point = ser[p];
+					if(!!point.label[u]){  
+						locAxis.tickLabels.push({coord: point[u], label: point.label[u]});
+					}
+				}
+		}
+	});
 
 	var borders = {
 		ord: ord,
@@ -456,9 +447,10 @@ m.process = function(rawProps){
 			stacked: props.data[idx].stacked,
 			abs: props.data[idx].abs,
 			ord: props.data[idx].ord,
-			offset: (!!spanOffset[idx]) ? spanOffset[idx].offset : null,
-			span: (!!spanOffset[idx]) ? spanOffset[idx].span : null,
-			limitOffset: (!!lOffset[idx]) ? lOffset[idx] : null,
+			offset: (!!spanOffset[idx]) ? spanOffset[idx].offset : undefined,
+			span: (!!spanOffset[idx]) ? spanOffset[idx].span : undefined,
+			spanDir: (!!spanOffset[idx]) ? spanOffset[idx].spanDir : undefined,
+			limitOffset: (!!lOffset[idx]) ? lOffset[idx] : undefined,
 		};
 	});
 
@@ -467,7 +459,7 @@ m.process = function(rawProps){
 
   // do not disturb space computation
 	state.series = _.map(state.series, (serie,idx) => {
-		var dir = null;
+		var dir = undefined;
 		switch(props.data[idx].type){
 			case 'Bars':
 			case 'bars':
@@ -549,7 +541,7 @@ m.process = function(rawProps){
 m.processLegend = function(rawProps){
 	var props = defaultTheProps(utils.deepCp({},rawProps));
 	// data depening on serie, geographical data only
-	var preproc = _.map(props.graphProps, (gp) => !!gp.process && !!gp.process.type ? gp.process : null );
+	var preproc = _.map(props.graphProps, (gp) => !!gp.process && !!gp.process.type ? gp.process : undefined );
 	props.data = _.map(props.data, (dat,idx) =>  {
 		return {
 		type: rawProps.data[idx].type,
