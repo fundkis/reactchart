@@ -97,8 +97,10 @@ graph.common = () => {
 		tag: {
 			show: false, // show the tag
 			print: (t) => t + '',
+			fontSize: 10,
 			pin: false, // show the pin
-			pinLength: 10 // 10 px as pin length
+			pinLength: 10, // 10 px as pin length
+			pinAngle: 90 // direction fo pin
 		}
 	};
 };

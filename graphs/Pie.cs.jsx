@@ -16,6 +16,7 @@ var Pie = React.createClass({
 		var pinLen = this.props.state.path.pinLength;
 		var pinOff = this.props.state.path.pinHook;
 		var pinDraw = this.props.state.path.pinDraw;
+		var pfs = this.props.state.path.pinFontSize;
 		//var ds = state.ds;
 
 		var abs = function(ang,rad,or){
@@ -74,7 +75,7 @@ var Pie = React.createClass({
 					var lpath = 'M' + xc1 + ',' + yc1 +  ' L' + xc2 + ',' + yc2 +  ' L' + xc3 + ',' + yc3;
 					out.push(<path key={p + '.ll'} strokeWidth='1' stroke='black' fill='none' d={lpath}/>);
 				}
-				out.push(<text key={p + '.l'} x={xc} y={yc} style={lstyle}>{label}</text>);
+				out.push(<text fontSize={pfs} key={p + '.l'} x={xc} y={yc} style={lstyle}>{label}</text>);
 			}
 			x = x2;
 			y = y2;

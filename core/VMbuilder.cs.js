@@ -10,6 +10,8 @@ var pieVM = require('../graphs/pie.cs.js');
 var dotVM = require('../marks/dot.cs.js');
 var squareVM = require('../marks/square.cs.js');
 var barVM = require('../marks/bar.cs.js');
+// pin
+var pinMgr = require('../marks/pin.cs.js');
 
 // graph
 var graphVM = {};
@@ -124,7 +126,7 @@ var curve = function(spaces,serie,data,props,idx){
 			var mtype = isBar(gtype) ? 'bar' : props.markType || 'dot';
 			var mprops = props.mark ? _.map(positions,(pos,idx) => {
 				var markKey = graphKey + '.' + mtype[0] + '.' + idx;
-				return marksVM[mtype](pos,props,ds,markKey);
+				return marksVM[mtype](pos,props,ds,markKey,pinMgr(pos,props.tag,ds));
 			}) : [];
 
 			return {

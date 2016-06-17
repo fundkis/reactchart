@@ -1,8 +1,9 @@
 var React = require('react');
 var Bins = require('./Bins.cs.jsx');
+var Mark = require('../marks/Mark.cs.jsx');
+var _ = require('underscore');
 
 var imUtils = require('../core/im-utils.cs.js');
-var marker = require('../marks/marker.cs.jsx');
 
 /*
 	{
@@ -19,12 +20,12 @@ var StairsChart = React.createClass({
   },
 
 	render: function(){
-
-		return this.props.state.path.positions.length === 0 ? null : <g>
-					<Bins state={this.props.state.path} />
-					{marker.marks(this.props.state.marks,this.props.state.markType)}
-				</g>;
-}
+		var marks = this.props.state.marks;
+		return marks.length === 0 ? <Bins state={this.props.state.path} /> : <g>
+			<Bins state={this.props.state.path} />
+			{_.map(marks, (point) => <Mark key={point.key} state={point} type={this.props.state.markType}/>)}
+			</g>;
+	}
 });
 
 module.exports = StairsChart;

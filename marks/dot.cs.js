@@ -1,6 +1,6 @@
 var m = {};
 
-m.VM = function(position,props,ds,key){
+m.VM = function(position,props,ds,key,pin){
 
 	var draw = props.markProps.draw || position.draw || false;
 	var color = position.color || props.markProps.color || props.markColor || props.color || 'black';
@@ -23,7 +23,8 @@ m.VM = function(position,props,ds,key){
 		width: width,
 		fill: fill,
 		size: size,
-		shade: shade
+		shade: shade,
+		pin: pin
 	};
 
 };

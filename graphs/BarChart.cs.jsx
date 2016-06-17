@@ -1,5 +1,5 @@
 var React = require('react');
-var Bar = require('../marks/Bar.cs.jsx');
+var Mark = require('../marks/Mark.cs.jsx');
 var _ = require('underscore');
 var imUtils = require('../core/im-utils.cs.js');
 
@@ -23,7 +23,7 @@ var BarChart = React.createClass({
 	}
 
 	 return <g>
-		{_.map(this.props.state.marks,(bar) => {return <Bar key={bar.key} state={bar}/>;})}
+		{_.map(this.props.state.marks,(bar) => <Mark key={bar.key} state={bar} type='bar'/>)}
 		</g>;
   }
 });

@@ -1,7 +1,8 @@
 var React = require('react');
 var Path = require('./Path.cs.jsx');
+var Mark = require('../marks/Mark.cs.jsx');
+var _ = require('underscore');
 
-var marker = require('../marks/marker.cs.jsx');
 var imUtils = require('../core/im-utils.cs.js');
 
 /*
@@ -18,10 +19,10 @@ var PlainChart = React.createClass({
 	},
 
 	render: function(){
-
-		return <g>
+		var marks = this.props.state.marks;
+		return marks.length === 0 ? <Path state={this.props.state.path}/> : <g>
 			<Path state={this.props.state.path}/>
-			{marker.marks(this.props.state.marks,this.props.state.markType)}
+			{_.map(marks, (point) => <Mark key={point.key} state={point} type={this.props.state.markType}/>)}
 			</g>;
 }
 });

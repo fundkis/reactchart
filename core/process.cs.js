@@ -57,6 +57,7 @@ var addDefaultDrop = function(serie, dir){
 };
 
 var copySerie = function(serie){
+
 	return _.map(serie, (point,idx) => {
 		var xstr = utils.isString(point.x);
 		var ystr = utils.isString(point.y);
@@ -71,7 +72,9 @@ var copySerie = function(serie){
 				x: ystr ? 0 : undefined,
 				y: xstr ? 0 : undefined
 			},
-			tag: point.value + ''
+			tag: !utils.isNil(point.value) ? point.value + '' : // explicitely defined
+				xstr ? xstr : ystr ? ystr : // it's a label
+					'(' + point.x + ',' + point.y + ')' // the (x,y) coordinates
 		};
 		for(var u in point){
 			if(u !== 'x' &&
@@ -142,7 +145,7 @@ var preprocess = function(serie,preproc){
 		var otherdir = (dir === 'x')?'y':'x';
 		var ind = 0;
 		var curref = serie[0][otherdir];
-		var refBef = undefined;
+		var refBef;
 
 		var notComplete = true;
 		var u = 0;
@@ -320,7 +323,7 @@ var makeSpan = function(series,data){
 var spanify = function(serie,data){
 	var out = {};
 	if(utils.isNil(data.span) || data.span === 0){
-		var d = undefined;
+		var d;
 		var dir = (data.type[0] === 'y')?'y':'x';
 
 		var mgr = utils.mgr(serie[0][dir]);
@@ -459,7 +462,7 @@ m.process = function(rawProps){
 
   // do not disturb space computation
 	state.series = _.map(state.series, (serie,idx) => {
-		var dir = undefined;
+		var dir;
 		switch(props.data[idx].type){
 			case 'Bars':
 			case 'bars':

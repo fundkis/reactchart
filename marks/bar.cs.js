@@ -1,7 +1,7 @@
 var utils = require('../core/utils.cs.js');
 var m = {};
 
-m.VM = function(position,props,ds,key){
+m.VM = function(position,props,ds,key,pin){
 
 	var dir = utils.isNil(position.drop.x) ? 'x' : 'y';
 	var defSpan = utils.isDate(position[dir]) ? utils.makePeriod({months: 3}) : 0.5;
@@ -29,7 +29,8 @@ m.VM = function(position,props,ds,key){
 		color: color,
 		width: width,
 		fill: fill,
-		shade: shade
+		shade: shade,
+		pin: pin
 	};
 
 };

@@ -38,7 +38,8 @@ var m = {
 			pinRadius: props.tag.pinRadius * radius,
 			pinLength: props.tag.pinLength * radius,
 			pinHook: props.tag.pinHook,
-			pinDraw: props.tag.pin
+			pinDraw: props.tag.pin,
+			pinFontSize: props.tag.fontSize
 		};
 	}
 };
