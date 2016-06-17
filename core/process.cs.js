@@ -223,7 +223,7 @@ var preprocess = function(serie,preproc){
 
 		}
 
-		return out;
+		return copySerie(out);
 };
 
 var addOffset = function(series,stacked){
