@@ -446,6 +446,16 @@ m.process = function(rawProps){
 	// getting dsx and dsy
 	var universe = {width: props.width, height: props.height};
 
+	// span and offet pointwise
+	_.each(state.series, (serie,idx) => {
+		if(!!spanOffset[idx]){
+			_.each(serie,(point) => {
+				point.span = spanOffset[idx].span;
+				point.offset = spanOffset[idx].offset;
+			});
+		}
+	});
+
 	var data = _.map(state.series,(ser,idx) => {
 		return {
 			series: ser,
@@ -453,8 +463,8 @@ m.process = function(rawProps){
 			stacked: props.data[idx].stacked,
 			abs: props.data[idx].abs,
 			ord: props.data[idx].ord,
-			offset: (!!spanOffset[idx]) ? spanOffset[idx].offset : undefined,
-			span: (!!spanOffset[idx]) ? spanOffset[idx].span : undefined,
+		//	offset: (!!spanOffset[idx]) ? spanOffset[idx].offset : undefined,
+		//	span: (!!spanOffset[idx]) ? spanOffset[idx].span : undefined,
 			spanDir: (!!spanOffset[idx]) ? spanOffset[idx].spanDir : undefined,
 			limitOffset: (!!lOffset[idx]) ? lOffset[idx] : undefined,
 		};
@@ -463,7 +473,7 @@ m.process = function(rawProps){
 	// space = {dsx, dsy}
 	state.spaces = space.spaces(data,universe,borders,title);
 
-  // do not disturb space computation
+	// defaut drops for those that don't have them
 	state.series = _.map(state.series, (serie,idx) => {
 		var dir;
 		switch(props.data[idx].type){

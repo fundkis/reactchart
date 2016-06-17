@@ -21,14 +21,14 @@ var process = function(props){
 	var getALegend = (data,gprops,idx) => {
 		var icc = gprops.color;
 		var sha = gprops.shader;
-		if(!!sha){
+		/*if(!!sha){
 			sha.computation = 'explicit';
 			sha.type = 'color';
 			sha.factor = [0.5];
 			var col = {};
 			color(sha,[col]);
 			icc = col.color;
-		}
+		}*/
 		var ics = gprops.width;
 		var iconProps = {
 			color: icc, 
