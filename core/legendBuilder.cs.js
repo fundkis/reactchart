@@ -41,7 +41,7 @@ var process = function(props){
 		for(var p = 0; p < data.series.length; p++){
 			if(!!data.series[p].legend){
 				var point = data.series[p];
-				var typeMark = gprops.markType || data.type;
+				var typeMark = gprops.markType;
 				iconProps.color = point.color || color(p);
 				perPoint.push({
 					icon: <svg width={icW} height={icH}>

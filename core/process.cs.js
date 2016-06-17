@@ -16,12 +16,15 @@ var defaultTheProps = function(props){
 		fullprops.graphProps[ng] = utils.deepCp({},gprops);
 	}
 
-	var stripAxis = (idx) => {
+	// default for pie !!!bad coding!!!
+	var stripAxisNMark = (idx) => {
 		fullprops.axisProps.abs[idx].show = false;
 		fullprops.axisProps.ord[idx].show = false;
+		fullprops.graphProps[idx].markType = 'pie';
+		fullprops.graphProps[idx].mark = false;
 	};
 
-	_.each(props.data, (data,idx) => data.type === 'Pie' ? stripAxis(idx) : undefined);
+	_.each(props.data, (data,idx) => data.type === 'Pie' ? stripAxisNMark(idx) : undefined);
 
 
 	if(!!props.axisProps){
