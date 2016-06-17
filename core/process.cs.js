@@ -43,19 +43,26 @@ var defaultTheProps = function(props){
 	return utils.deepCp(fullprops,props);
 };
 
-var addDefaultDrop = function(serie, dir){
-	return _.map(serie, (point) => {
+var addDefaultDrop = function(serie, dir, all){
+
+	var def = (point) => {
 		var raw = point;
-		if(utils.isNil(raw.drop)){
-			raw.drop = {
-				x: utils.isDate(point.x) ? {days: 0, total: 0} : 0,
-				y: utils.isDate(point.y) ? {days: 0, total: 0} : 0
-			};
-		}
+		raw.drop = {
+			x: utils.isNil(raw.drop.x) ? utils.isDate(point.x) ? {days: 0, total: 0} : 0 : raw.drop.x,
+			y: utils.isNil(raw.drop.y) ? utils.isDate(point.y) ? {days: 0, total: 0} : 0 : raw.drop.y,
+		};
 		if(!utils.isNil(dir)){
 			raw.drop[dir] = undefined;
 		}
 		return raw;
+	};
+
+	var cus = (p) => p;
+
+	var comp = !!all || !!dir ? def : cus ;
+
+	return _.map(serie, (point) => {
+		return comp(point);
 	});
 };
 
@@ -447,6 +454,7 @@ m.process = function(rawProps){
 	var universe = {width: props.width, height: props.height};
 
 	// span and offet pointwise
+	// drops if required and not given (default value)
 	_.each(state.series, (serie,idx) => {
 		if(!!spanOffset[idx]){
 			_.each(serie,(point) => {
@@ -454,6 +462,20 @@ m.process = function(rawProps){
 				point.offset = spanOffset[idx].offset;
 			});
 		}
+		var dir;
+		switch(props.data[idx].type){
+			case 'Bars':
+			case 'bars':
+				dir = 'x';
+				break;
+			case 'yBars':
+			case 'ybars':
+				dir = 'y';
+				break;
+			default:
+				break;
+		}
+		addDefaultDrop(serie,dir,false);
 	});
 
 	var data = _.map(state.series,(ser,idx) => {
@@ -488,13 +510,7 @@ m.process = function(rawProps){
 			default:
 				break;
 		}
-		if(!!spanOffset[idx]){
-			_.each(serie,(point) => {
-				point.span = spanOffset[idx].span;
-				point.offset = spanOffset[idx].offset;
-			});
-		}
-		return addDefaultDrop(serie,dir);
+		return addDefaultDrop(serie,dir,true);
 	});
 
 	//now to immutable VM
