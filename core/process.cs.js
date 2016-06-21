@@ -130,7 +130,7 @@ var validate = function(series){
 var preprocess = function(serie,preproc){
 
 		if(preproc.type !== 'histogram'){
-			throw new Error('Only "histogram" or "pie" are known as a preprocessing: "' + preproc.type);
+			throw new Error('Only "histogram" is known as a preprocessing: "' + preproc.type);
 		}
 
 		var equal = function(p1,p2){
@@ -281,13 +281,6 @@ var makeSpan = function(series,data){
 	var out = [];
 
 	var spanSer = (barType) => {
-		var n = 0;
-		_.each(series, (serie,idx) => {
-			if(data[idx].type === barType){
-				out[idx] = spanify(serie, data[idx]);
-				n++;
-			}
-		});
 
 		var makeOffset = (serie,n,s) => {
 			if(utils.isNil(serie.Span)){
@@ -318,7 +311,32 @@ var makeSpan = function(series,data){
 			makeOffset(serie,n,idx);
 		};
 
+		var n = 0;
+		_.each(series, (serie,idx) => {
+			if(data[idx].type === barType){
+				out[idx] = spanify(serie, data[idx]);
+				n++;
+			}
+		});
+
 		_.each(out, (serie,idx) => spanDiv(serie,n,idx));
+	};
+
+	var checkProc = (serie,idx) => {
+		var o = false;
+		var sd;
+		_.each(serie, (point) => {
+			if(o){return;}
+			if(!!point.span && ( !utils.isNil(point.drop) && ( utils.isNil(point.drop.x) || utils.isNil(point.drop.y) ) ) ){
+				sd = utils.isNil(point.drop.x) ? 'x' : 'y' ;
+			}
+			o = true;
+		});
+		if(!!sd){
+			out[idx] = out[idx] || {};
+			out[idx].spanDir = sd;
+			out[idx].offset = out[idx].offset || {x: undefined, y: undefined};
+		}
 	};
 
 	spanSer('Bars');
@@ -326,6 +344,8 @@ var makeSpan = function(series,data){
 
 	spanSer('bars');
 	spanSer('ybars');
+
+	_.each(series, (ser,idx) => checkProc(ser,idx));
 
 	return out;
 };
@@ -456,12 +476,6 @@ m.process = function(rawProps){
 	// span and offet pointwise
 	// drops if required and not given (default value)
 	_.each(state.series, (serie,idx) => {
-		if(!!spanOffset[idx]){
-			_.each(serie,(point) => {
-				point.span = spanOffset[idx].span;
-				point.offset = spanOffset[idx].offset;
-			});
-		}
 		var dir;
 		switch(props.data[idx].type){
 			case 'Bars':
@@ -485,8 +499,6 @@ m.process = function(rawProps){
 			stacked: props.data[idx].stacked,
 			abs: props.data[idx].abs,
 			ord: props.data[idx].ord,
-		//	offset: (!!spanOffset[idx]) ? spanOffset[idx].offset : undefined,
-		//	span: (!!spanOffset[idx]) ? spanOffset[idx].span : undefined,
 			spanDir: (!!spanOffset[idx]) ? spanOffset[idx].spanDir : undefined,
 			limitOffset: (!!lOffset[idx]) ? lOffset[idx] : undefined,
 		};
@@ -510,6 +522,10 @@ m.process = function(rawProps){
 			default:
 				break;
 		}
+		if(!dir && !!props.graphProps[idx].process){
+			dir = props.graphProps[idx].process.dir;
+		}
+		dir = !!dir ? dir === 'x' ? 'y' : 'x' : dir;
 		return addDefaultDrop(serie,dir,true);
 	});
 

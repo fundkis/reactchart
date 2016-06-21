@@ -1,5 +1,6 @@
 var moment = require('moment');
 var _ = require('underscore');
+var im = require('./im-utils.cs.js');
 
 var pow   = Math.pow;
 var floor = Math.floor;
@@ -17,6 +18,8 @@ var LN10  = Math.LN10;
 //  total: *nb days*
 // }
 var processPeriod = function(period){
+
+  if(im.isImm(period)){return period;}
 
 	if(typeof period === 'number'){ // ms
 		period = makePeriod(moment.duration(period));
