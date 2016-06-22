@@ -30,7 +30,7 @@ m.isNil = function(v){
 };
 
 m.isValidNumber = function(r){
-	return !isNaN(r) && isFinite(r);
+	return !m.isNil(r) && !isNaN(r) && isFinite(r);
 };
 
 m.isValidParam = function(p){

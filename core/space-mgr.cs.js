@@ -237,10 +237,10 @@ var space = function(datas,universe,borders,title){
 		};
 		// empty graph
 		if(!isFinite(bounds.min)){
-			bounds.min = 0;
+			bounds.min = mgr.value(0);
 		}
 		if(!isFinite(bounds.max)){
-			bounds.max = 4;
+			bounds.max = mgr.value(4);
 		}
 
 		// on augmente la distance totale
@@ -302,7 +302,6 @@ m.spaces = function(datas,universe,borders,title){
 	var filter = (datas,dir) => {
 		return _.map(datas, (serie) => {
 			// global characteristics
-			var spanDir = serie.spanDir;
 			var loff = serie.limitOffset;
 			var limOfIdx = utils.isNil(loff) ? -1 : loff > 0 ? serie.series.length - 1: 0;
 			return _.map(serie.series, (point,idx) => {
@@ -311,9 +310,6 @@ m.spaces = function(datas,universe,borders,title){
 						return idx;
 					}
 					var val = point[dir];
-
-					// to go faster and a cleaner write, see point span
-					var haveSpan = false;
 
 					// modifiers are span, drop and offset
 					// offset changes the value
@@ -329,13 +325,12 @@ m.spaces = function(datas,universe,borders,title){
 
 					// span makes value into two values,
 					// we do it three, to keep the ref value
-					if(!utils.isNil(point.span) && spanDir === dir){
+					if(!utils.isNil(point.span) && !utils.isNil(point.span[dir])){
 						// beware, do we have a drop?
 						val = utils.isArray(val) ? val : [val];
 						var mm = utils.mgr(val[0]);
-						val.push(mm.subtract(val[0],mm.divide(point.span,2)));
-						val.push(mm.add(val[0],mm.divide(point.span,2)));
-						haveSpan = true;
+						val.push(mm.subtract(val[0],mm.divide(point.span[dir],2)));
+						val.push(mm.add(val[0],mm.divide(point.span[dir],2)));
 					}
 
 					// limitOffset changes only one boundary

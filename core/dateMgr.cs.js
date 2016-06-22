@@ -476,4 +476,14 @@ m.makePeriod = function(per){
 	return processPeriod(per);
 };
 
+// in years
+m.value = function(num){
+	return new Date(num * 1000 * 3600 * 24 * 365);
+};
+
+// in years
+m.step = function(num){
+	return makePeriod({years: num});
+};
+
 module.exports = m;

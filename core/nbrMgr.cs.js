@@ -196,7 +196,7 @@ m.extraTicks = function(){
 	return [];
 };
 
-m.getValue = function(v){
+m.getValue = m.value = m.step = function(v){
 	return v;
 };
 

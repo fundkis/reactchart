@@ -46,8 +46,8 @@ var BarMark = React.createClass({
 	var position = state.position;
 
 	var span = {
-		x: utils.isNil(state.drop.y) ? 0 : state.span,
-		y: utils.isNil(state.drop.x) ? 0 : state.span 
+		x: utils.isNil(state.span.x) ? 0 : state.span.x,
+		y: utils.isNil(state.span.y) ? 0 : state.span.y 
 	};
 
 	var drop = {
