@@ -1,6 +1,8 @@
 var moment = require('moment');
 var _ = require('underscore');
-var im = require('./im-utils.cs.js');
+var im = {
+	isImm: (p) => typeof p === 'object' ? Object.isFrozen(p) : true
+};
 
 var pow   = Math.pow;
 var floor = Math.floor;
