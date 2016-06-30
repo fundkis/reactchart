@@ -17,11 +17,13 @@ var Axes = React.createClass({
 	},
 
 	abscissa: function(){
-		return _.map(this.props.state.abs, (p) => {return p.show ? <Axe key={p.key} state={p}/> : null;});
+    var css = this.props.state.css;
+		return _.map(this.props.state.abs, (p) => {return p.show ? <Axe className='xAxis' key={p.key} css={css} state={p}/> : null;});
 	},
 
 	ordinate: function(){
-		return _.map(this.props.state.ord, (p) => {return p.show ? <Axe key={p.key} state={p}/> : null;});
+    var css = this.props.state.css;
+		return _.map(this.props.state.ord, (p) => {return p.show ? <Axe className='yAxis' key={p.key} css={css} state={p}/> : null;});
 	},
 
 	render: function(){

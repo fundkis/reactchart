@@ -254,6 +254,7 @@ m.Axes = {
 ///
 m.Graph = {
 	// general
+  css: false,
 	name: 'G',
 	height: 400,	// defines the universe's height
 	width:	800,	// defines the universe's width
