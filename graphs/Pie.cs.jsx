@@ -36,7 +36,7 @@ var Pie = React.createClass({
 		for(var p = 0; p < positions.length; p++){
 
 			var color = positions[p].color;
-			var theta = positions[p].value;
+			var theta = Math.min(positions[p].value, 359.9640);// more than 99.99% is a circle (not supported by arc anyway)
 			var label = !!labels[p] ? labels[p] : null;
 			var x1 = abs(oldT,rin,ori);
 			var y1 = coo(oldT,rin,ori);
@@ -47,14 +47,14 @@ var Pie = React.createClass({
 			var x4 = abs(theta + oldT,rin,ori);
 			var y4 = coo(theta + oldT,rin,ori);
 
-			// if(Math.floor(theta) === 360){
-			// 	out.push(<circle key={p} cx={ori.x} cy={ori.y} r={r} fill={color} strokeWidth='0'/>);
-			// }else{
+			// large-arc-flag, true if theta > 180
+			var laf = theta > 180 ? 1 : 0;
 			var path = 'M' + x1 + ',' + y1 + 
-				' L' + x2 + ',' + y2 + ' A' + r   + ',' + r   + ' 0 0,0 ' + x3 + ',' + y3 +
-				' L '+ x4 + ',' + y4 + ' A' + rin + ',' + rin + ' 0 0,1 ' + x1 + ',' + y1;
+				' L' + x2 + ',' + y2 + ' A' + r   + ',' + r   + ' 0 ' + laf + ',0 ' + x3 + ',' + y3 +
+				' L '+ x4 + ',' + y4 + ' A' + rin + ',' + rin + ' 0 ' + laf + ',1 ' + x1 + ',' + y1;
+
 			out.push(<path key={p} fill={color} stroke='none' strokeWidth='0' d={path}/>);
-			// }
+
 			if(!!label){
 				var curAng = theta / 2 + oldT;
 				var offset = curAng === 90 || curAng === 270 ? 0 :
