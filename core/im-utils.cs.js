@@ -40,7 +40,7 @@ m.mergeDeep = function(src,tgt){
 };
 
 m.isImm = function(obj){
-	return Object.isFrozen(obj);
+	return (typeof(obj)  !== 'object') ||  Object.isFrozen(obj);
 };
 
 m.immutable = function(obj){
