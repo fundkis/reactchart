@@ -40,7 +40,13 @@ var Label = React.createClass({
 
 		var rotate = 'rotate(' + theta + ' ' + xL + ' ' + yL + ')';
 
-		return <text fill={state.color} x={xL} y={yL} transform={rotate} textAnchor={state.anchor} fontSize={state.FSize}>
+    var labProps = this.props.css ? null :
+			{
+				fill: state.color,
+				fontSize: state.FSize
+			};
+
+		return <text className={this.props.className} x={xL} y={yL} transform={rotate} textAnchor={state.anchor} {...labProps}>
 			{state.label}
 		</text>;
 	}

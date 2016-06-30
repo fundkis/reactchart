@@ -56,8 +56,14 @@ var Tick = React.createClass({
 			y: start.y - this.props.state.tick.dir.y * sp.toCwidth(this.props.state.tick.ds.y,gprops.length)
 		};
 
-		return <line x1={start.x} x2={end.x} y1={start.y} y2={end.y} 
-			stroke={gprops.color} strokeWidth={gprops.width}/>;
+		var gridName = this.props.className + 'Grid';
+		var tickProps = this.props.css ? null : {
+			stroke: gprops.color, 
+			strokeWidth: gprops.width
+		};
+
+
+		return <line className={gridName} x1={start.x} x2={end.x} y1={start.y} y2={end.y} {...tickProps} />;
 	},
 
 	tick: function(){
@@ -73,9 +79,15 @@ var Tick = React.createClass({
 		var x2 = x1 + tprops.dir.x * tprops.length;
 		var y2 = y1 - tprops.dir.y * tprops.length; // beware about y sign!!
 
+		var labelName = this.props.className + 'Label';
+		var linePar = this.props.css ? null : {
+			stroke: tprops.color, 
+			strokeWidth: tprops.width
+		};
+
 		return <g>
-			<line x1={x1} x2={x2} y1={y1} y2={y2} stroke={tprops.color} strokeWidth={tprops.width}/>
-			<Label state={this.props.state.label}/>
+			<line className={this.props.className} x1={x1} x2={x2} y1={y1} y2={y2} {...linePar}/>
+			<Label className={labelName} css={this.props.css} state={this.props.state.label}/>
 		</g>;
 	},
 

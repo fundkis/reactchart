@@ -33,7 +33,7 @@ var m = {
 			positions: positions,
 			origin: origin,
 			radius: radius,
-			toreRadius: props.pieToreRadius,
+			toreRadius: props.pieToreRadius * radius,
 			labels: labels,
 			pinRadius: props.tag.pinRadius * radius,
 			pinLength: props.tag.pinLength * radius,

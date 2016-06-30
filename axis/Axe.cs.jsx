@@ -18,11 +18,14 @@ var Axe = React.createClass({
 
 	render: function(){
 
+    var axisName = this.props.className + 'Line';
+    var tickName = this.props.className + 'Tick';
+
 		return <g>
 			{_.map(this.props.state.ticks, (tick) => {
-				return <Tick key={tick.key} state={tick}/>;
+				return <Tick className={tickName} css={this.props.css} key={tick.key} state={tick}/>;
 			})}
-			<AxisLine state={this.props.state.axisLine}/>
+			<AxisLine className={axisName} css={this.props.css} state={this.props.state.axisLine}/>
 		</g>;
 }
 });

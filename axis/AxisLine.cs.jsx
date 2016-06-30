@@ -43,14 +43,18 @@ var AxisLine = React.createClass({
 	axis: function(){
 		var lprops = this.props.state.line;
 
+		var lp = this.props.css ? null: {
+			stroke: lprops.color,
+			strokeWidth: lprops.width
+		};
+
 		switch(lprops.CS){
 			case 'cart':
-				return <line 
-					x1={lprops.start.x} x2={lprops.end.x} y1={lprops.start.y} y2={lprops.end.y} 
-					stroke={lprops.color} strokeWidth={lprops.width} />;
+				return <line className={this.props.className} {...lp}
+					x1={lprops.start.x} x2={lprops.end.x} y1={lprops.start.y} y2={lprops.end.y}/>;
 			case 'polar':
-				return <ellipse cx={lprops.origin.x} cy={lprops.origin.y} rx={lprops.radius.x} ry={lprops.radius.y}
-					stroke={lprops.color} strokeWidth={lprops.width}/>;
+				return <ellipse className={this.props.className} {...lp}
+					cx={lprops.origin.x} cy={lprops.origin.y} rx={lprops.radius.x} ry={lprops.radius.y}/>;
 			default:
 				throw new Error('Unknown coordinate system: "' + this.props.state.CS + '"' );
 		}
@@ -101,9 +105,11 @@ var AxisLine = React.createClass({
 
 	render: function(){
 
+    var labName = this.props.className + 'Label';
+
 		return this.props.state.show === false ? null : <g>
 			{this.axis()}
-			<Label state={this.props.state.label}/>
+			<Label className={labName} css={this.props.css} state={this.props.state.label}/>
 			{this.factor()}
 		</g>;
 	}

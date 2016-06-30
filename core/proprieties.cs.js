@@ -11,7 +11,7 @@ marks.dot = marks.Dot = () => {
 	return {
 		draw: false,
 		ds: {
-			x: {}, 
+			x: {},
 			y:{}
 		},
 		position: {
@@ -58,7 +58,7 @@ marks.bar = marks.Bar = () => {
 			y:0
 		},
 		drop:{
-			x:null, 
+			x:null,
 			y:0
 		},
 		width: 0,
@@ -141,7 +141,7 @@ graph.Pie = graph.pie = () => {
 		pie: 'disc', // tore
 		pieOrigin: {x: 0, y:0}, // offset from center
 		pieRadius: undefined, // 2/3 of world
-		pieToreRadius: 0, // no hole
+		pieToreRadius: 0, // 0: no hole, 1 : no border!
 		tag: {
 			show: false, // show the tag
 			print: (t) => t + '',
@@ -254,6 +254,7 @@ m.Axes = {
 ///
 m.Graph = {
 	// general
+  css: false,
 	name: 'G',
 	height: 400,	// defines the universe's height
 	width:	800,	// defines the universe's width

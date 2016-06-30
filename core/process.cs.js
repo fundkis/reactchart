@@ -562,6 +562,7 @@ m.process = function(rawProps){
 
 	// 5 - Axes
 	imVM.axes = {
+    css: props.css,
 		abs: vm.abscissas(props,state),
 		ord: vm.ordinates(props,state)
 	};
