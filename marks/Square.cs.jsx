@@ -30,11 +30,11 @@ var SquareMark = React.createClass({
 	render: function(){
 		var state = this.props.state;
 
-		var x = dataScale.toC(state.ds.x,state.position.x) - state.size / 2;
-		var y = dataScale.toC(state.ds.y,state.position.y) + state.size / 2;
+		var x = dataScale.toC(state.ds.x,state.position.x) - state.size;
+		var y = dataScale.toC(state.ds.y,state.position.y) - state.size;
 		var f = state.fill || state.color;
 
-		return <rect x={x} y={y} width={state.size} height={state.size} fill={f} opacity={state.shade} stroke={state.color} strokeWidth={state.width}/>;
+		return <rect x={x} y={y} width={2 * state.size} height={2 * state.size} fill={f} opacity={state.shade} stroke={state.color} strokeWidth={state.width}/>;
 	}
 });
 
