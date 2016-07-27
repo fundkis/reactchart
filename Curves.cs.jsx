@@ -21,7 +21,7 @@ var Curves = React.createClass({
 	},
 
 	render: function(){
-		return <g>{_.map(this.props.state.curves, (curve) => {return grapher(curve.type,curve);})}</g>;
+		return <g>{_.map(this.props.state, (curve) => {return grapher(curve.type,curve);})}</g>;
 	}
 
 });

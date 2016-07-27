@@ -561,9 +561,7 @@ m.process = function(rawProps){
 	};
 
 	// 6 - Curves
-	imVM.curves = {
-		curves: vm.curves(props,state)
-	};
+	imVM.curves = vm.curves(props,state);
 
 	imVM.preprocessed = true;
 
