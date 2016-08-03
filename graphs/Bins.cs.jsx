@@ -74,6 +74,9 @@ var Bins = React.createClass({
 	path: function(){
 
 		var state = this.props.state;
+    if(state.positions.length === 0){
+      return null;
+    }
 		var positions = state.positions;
 		var ds = state.ds;
 		var drops = state.drops;

@@ -12,6 +12,9 @@ var Pie = React.createClass({
 
 		var labels = this.props.state.path.labels;
 		var positions = this.props.state.path.positions;
+    if(positions.length === 0){
+      return null;
+    }
 		var pinRad = this.props.state.path.pinRadius;
 		var pinLen = this.props.state.path.pinLength;
 		var pinOff = this.props.state.path.pinHook;
