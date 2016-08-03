@@ -106,29 +106,22 @@ var copySerie = function(serie){
 	});
 };
 
-var validate = function(series){
+var validate = function(series,discard){
 
-	var serTest = (ser) => {
-		if(utils.isNil(ser[0])){
-			return true;
+	for(var se = 0; se < series.length; se++){
+		if(utils.isNil(series[se])){
+			series[se] = [];
 		}
-		for(var i = 0; i < ser.length; i++){
-			if(!utils.isValidParam(ser[i])){
-				return false;
+		for(var p = 0; p < series[se].length; p++){
+			var px = series[se][p].x;
+			var py = series[se][p].y;
+			if(!utils.isValidParam(px) || !utils.isValidParam(py)){
+				if(!discard){
+					return false;
+				}
+				series[se].splice(p,1);
+				p--;
 			}
-		}
-		return true;
-	};
-
-	var testSerie = (serie) => {
-		var vx	= serTest(_.map(serie, (p) => {return p.x;}),'x');
-		var vy	= serTest(_.map(serie, (p) => {return p.y;}),'y');
-		return vx && vy;
-	};
-
-	for(var s = 0; s < series.length; s++){
-		if(utils.isNil(series[s]) || series[s].length === 0 || !testSerie(series[s])){
-			return false;
 		}
 	}
 
@@ -397,7 +390,7 @@ m.process = function(rawProps){
 	var lOffset = [];
 
 	// empty
-	if(!validate(raw)){
+	if(!validate(raw,props.discard)){
 
 		state.series = _.map(props.data, (/*ser*/) => [] );
 

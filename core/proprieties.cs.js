@@ -289,6 +289,8 @@ m.Graph = {
 	// axis
 	xaxis: '',	// bottom || top
 	yaxis: '',		// left || right
+	// data process
+	discard: true
 };
 
 var data = 	{
