@@ -79,20 +79,21 @@ var Tick = React.createClass({
 		var x2 = x1 + tprops.dir.x * tprops.length;
 		var y2 = y1 - tprops.dir.y * tprops.length; // beware about y sign!!
 
-		var labelName = this.props.className + 'Label';
 		var linePar = this.props.css ? null : {
 			stroke: tprops.color, 
 			strokeWidth: tprops.width
 		};
 
-		return <g>
-			<line className={this.props.className} x1={x1} x2={x2} y1={y1} y2={y2} {...linePar}/>
-			<Label className={labelName} css={this.props.css} state={this.props.state.label}/>
-		</g>;
+		return <line className={this.props.className} x1={x1} x2={x2} y1={y1} y2={y2} {...linePar}/>;
+	},
+
+	label: function(){
+		var labelName = this.props.className + 'Label';
+		return <Label className={labelName} css={this.props.css} state={this.props.state.label}/>;
 	},
 
 	noShow: function(){
-		return !(this.props.state.tick.show || this.props.state.grid.show);
+		return !(this.props.state.tick.show || this.props.state.grid.show || this.props.state.label.length !== 0);
 	},
 
 	render: function(){
@@ -100,6 +101,7 @@ var Tick = React.createClass({
 		return this.noShow() ? null : <g>
 				{this.grid()}
 				{this.tick()}
+				{this.label()}
 		</g>;
 	}
 });
