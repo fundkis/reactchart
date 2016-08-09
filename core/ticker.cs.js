@@ -23,10 +23,28 @@ var computeTicks = function(first,last,minor,fac){
 	}
 	start = mgr.add(start,majDist);
 	length = mgr.distance(start,last);
+	var llength = mgr.multiply(majDist,mgr.labelF);
 
 	var out = [];
 	var curValue = start;
+	// if a date, might want a first label with no tick
+	if(mgr.type === 'date'){
+		var pos = mgr.subtract(curValue,majDist);
+		if(mgr.greaterThan(mgr.distance(first,curValue),llength)){
+			out.push({
+				position: pos,
+				offset: {
+					along: mgr.offset(majDist),
+					perp: 0
+				},
+				label: mgr.label(pos,majDist,fac),
+				show: false
+			});
+		}
+	}
+
 	while(mgr.lowerThan(curValue,last)){
+		var lte = mgr.distance(curValue,last);
 		out.push({
 			position: curValue,
 			offset: {
@@ -34,7 +52,7 @@ var computeTicks = function(first,last,minor,fac){
 				perp: 0
 			},
 			extra: false,
-			label: mgr.label(curValue,majDist,fac),
+			label: mgr.type === 'date' && mgr.greaterThan(lte, llength) ? mgr.label(curValue,majDist,fac) : '',
 			minor: false
 		});
 		// minor ticks

@@ -488,4 +488,8 @@ m.step = function(num){
 	return makePeriod({years: num});
 };
 
+m.labelF = 0.75;
+
+m.type = 'date';
+
 module.exports = m;

@@ -204,4 +204,8 @@ m.smallestStep = function(){
 	return 1;
 };
 
+m.labelF = 0.75;
+
+m.type = 'number';
+
 module.exports = m;
