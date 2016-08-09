@@ -87,7 +87,7 @@ m.VM = function(ds,partner, bounds, dir, locProps, comFac, axisKey){
 		};
 
 		for(var u in tmp){
-			ticksProps[u] = p[u];
+			ticksProps[u] = utils.isNil(tick[u]) ? p[u] : tick[u];
 		}
 		ticksProps.position = {};
 		ticksProps.position[dir] = tick.position;
