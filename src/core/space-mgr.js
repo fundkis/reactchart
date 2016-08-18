@@ -4,7 +4,7 @@
  * ds is { c : {min, max}, d: {min,max}}
  */
 var _ = require('underscore');
-var utils = require('./utils.cs.js');
+var utils = require('./utils.js');
 
 /* If no marginsO are defined, here are the rules:
  *  - ticks and ticks labels are 20 px in the y dir (height of text),

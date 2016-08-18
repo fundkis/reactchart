@@ -1,10 +1,10 @@
 var React = require('react');
-var Plain = require('./Plain.cs.jsx');
-var Stairs = require('./Stairs.cs.jsx');
-var BarChart = require('./BarChart.cs.jsx');
-var Pie = require('./Pie.cs.jsx');
+var Plain = require('./Plain.jsx');
+var Stairs = require('./Stairs.jsx');
+var BarChart = require('./BarChart.jsx');
+var Pie = require('./Pie.jsx');
 
-var utils = require('../core/utils.cs.js');
+var utils = require('../core/utils.js');
 
 // the graphs function generator
 var graph = {};

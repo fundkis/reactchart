@@ -1,6 +1,6 @@
 var _ = require('underscore');
-var utils = require('../core/utils.cs.js');
-var ticker = require('../core/ticker.cs.js');
+var utils = require('../core/utils.js');
+var ticker = require('../core/ticker.js');
 
 /*
 	{

@@ -1,8 +1,8 @@
 var React = require('react');
 var _ = require('underscore');
 
-var iconer = require('../icons/iconer.cs.js');
-var color = require('./colorMgr.cs.js');
+var iconer = require('../icons/iconer.js');
+var color = require('./colorMgr.js');
 
 var process = function(props){
 

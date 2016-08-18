@@ -1,17 +1,17 @@
 var _ = require('underscore');
-var utils = require('./utils.cs.js');
-var shader = require('./colorMgr.cs.js');
-var axisLine = require('../axis/axisLine.cs.js');
-var ticks = require('../axis/tick.cs.js');
-var plainVM = require('../graphs/plain.cs.js');
-var barChartVM = require('../graphs/barChart.cs.js');
-var stairsVM = require('../graphs/stairs.cs.js');
-var pieVM = require('../graphs/pie.cs.js');
-var dotVM = require('../marks/dot.cs.js');
-var squareVM = require('../marks/square.cs.js');
-var barVM = require('../marks/bar.cs.js');
+var utils = require('./utils.js');
+var shader = require('./colorMgr.js');
+var axisLine = require('../axis/axisLine.js');
+var ticks = require('../axis/tick.js');
+var plainVM = require('../graphs/plain.js');
+var barChartVM = require('../graphs/barChart.js');
+var stairsVM = require('../graphs/stairs.js');
+var pieVM = require('../graphs/pie.js');
+var dotVM = require('../marks/dot.js');
+var squareVM = require('../marks/square.js');
+var barVM = require('../marks/bar.js');
 // pin
-var pinMgr = require('../marks/pin.cs.js');
+var pinMgr = require('../marks/pin.js');
 
 // graph
 var graphVM = {};

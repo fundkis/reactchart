@@ -2,7 +2,7 @@
 	all the proprieties
 */
 var _ = require('underscore');
-var utils = require('./utils.cs.js');
+var utils = require('./utils.js');
 
 // defaults for marks
 var marks = {};

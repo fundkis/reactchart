@@ -1,9 +1,9 @@
-var utils = require('../core/utils.cs.js');
+var utils = require('../core/utils.js');
 var _ = require('underscore');
 
 /*
  * beware of distance (period) versus
- * values (date), see {date,nbr}Mgr.cs.js
+ * values (date), see {date,nbr}Mgr.js
 */
 var computeTicks = function(first,last,minor,fac){
 	var mgr = utils.mgr(first);

@@ -1,5 +1,5 @@
 var _ = require('underscore');
-var utils = require('./utils.cs.js');
+var utils = require('./utils.js');
 
 var palette = [ "#3A83F1", "#DC3FF1", "#F2693F", "#8AF23F", "#758d99",
 	"#F1DC41", "#AC310C", "#40C8F2", "#980DAB", "#F6799B", "#9679F6", "#EE2038",

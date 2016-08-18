@@ -8,7 +8,7 @@
  *  - polar
  */
 
-var utils = require('./utils.cs.js');
+var utils = require('./utils.js');
 
 /**
  * ds is { c : {min, max}, d: {min,max}, c2d , d2c}

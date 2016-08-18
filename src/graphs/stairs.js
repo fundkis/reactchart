@@ -1,6 +1,6 @@
-var utils = require('../core/utils.cs.js');
+var utils = require('../core/utils.js');
 var _ = require('underscore');
-var shader = require('../core/colorMgr.cs.js');
+var shader = require('../core/colorMgr.js');
 
 var m ={};
 

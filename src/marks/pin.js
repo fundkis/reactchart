@@ -1,4 +1,4 @@
-var space = require('../core/space-transf.cs.js');
+var space = require('../core/space-transf.js');
 
 var angle = (deg) => {
 

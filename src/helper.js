@@ -1,6 +1,6 @@
-var core = require('./core/process.cs.js');
-var utils = require('./core/utils.cs.js');
-var space = require('./core/space-transf.cs.js');
+var core = require('./core/process.js');
+var utils = require('./core/utils.js');
+var space = require('./core/space-transf.js');
 
 var m = {};
 

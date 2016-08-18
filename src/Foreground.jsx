@@ -1,6 +1,6 @@
 var React = require('react');
-var utils = require('./core/utils.cs.js');
-var imUtils = require('./core/im-utils.cs.js');
+var utils = require('./core/utils.js');
+var imUtils = require('./core/im-utils.js');
 
 var Foreground = React.createClass({
 

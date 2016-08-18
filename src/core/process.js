@@ -1,10 +1,10 @@
 var _ = require('underscore');
-var space = require('./space-mgr.cs.js');
-var utils = require('./utils.cs.js');
-var gProps = require('./proprieties.cs.js');
-var vm = require('./VMbuilder.cs.js');
-var im = require('./im-utils.cs.js');
-var legender = require('./legendBuilder.cs.js');
+var space = require('./space-mgr.js');
+var utils = require('./utils.js');
+var gProps = require('./proprieties.js');
+var vm = require('./VMbuilder.js');
+var im = require('./im-utils.js');
+var legender = require('./legendBuilder.js');
 
 var defaultTheProps = function(props){
 	var data = gProps.defaults('data');

@@ -1,6 +1,6 @@
 var React = require('react');
-var Axe = require('./axis/Axe.cs.jsx');
-var imUtils = require('./core/im-utils.cs.js');
+var Axe = require('./axis/Axe.jsx');
+var imUtils = require('./core/im-utils.js');
 var _ = require('underscore');
 
 /*

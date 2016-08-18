@@ -1,9 +1,9 @@
 var React = require('react');
-var Bins = require('./Bins.cs.jsx');
-var Mark = require('../marks/Mark.cs.jsx');
+var Bins = require('./Bins.jsx');
+var Mark = require('../marks/Mark.jsx');
 var _ = require('underscore');
 
-var imUtils = require('../core/im-utils.cs.js');
+var imUtils = require('../core/im-utils.js');
 
 /*
 	{

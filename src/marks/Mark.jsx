@@ -1,10 +1,10 @@
 var React = require('react');
 
-var Dot = require('./Dot.cs.jsx');
-var Bar = require('./Bar.cs.jsx');
-var Square = require('./Square.cs.jsx');
+var Dot = require('./Dot.jsx');
+var Bar = require('./Bar.jsx');
+var Square = require('./Square.jsx');
 
-var imUtils = require('../core/im-utils.cs.js');
+var imUtils = require('../core/im-utils.js');
 
 var Mark = React.createClass({
 

@@ -1,5 +1,5 @@
-var date = require('./dateMgr.cs.js');
-var nbr  = require('./nbrMgr.cs.js');
+var date = require('./dateMgr.js');
+var nbr  = require('./nbrMgr.js');
 
 var m ={};
 
@@ -11,7 +11,7 @@ var isPeriod = function(v){
 	return out;
 };
 
-m.math = require('./mathMgr.cs.js');
+m.math = require('./mathMgr.js');
 
 m.isDate = function(v){
 	return !!v && (v instanceof Date || isPeriod(v));

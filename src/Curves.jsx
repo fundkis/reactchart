@@ -1,7 +1,7 @@
 var React = require('react');
 var _ = require('underscore');
-var grapher = require('./graphs/grapher.cs.jsx');
-var imUtils = require('./core/im-utils.cs.js');
+var grapher = require('./graphs/grapher.jsx');
+var imUtils = require('./core/im-utils.js');
 
 /*
 	{

@@ -1,4 +1,4 @@
-var utils = require('../core/utils.cs.js');
+var utils = require('../core/utils.js');
 var m = {};
 
 m.VM = function(position,props,ds,key,pin){

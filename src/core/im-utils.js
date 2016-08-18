@@ -1,4 +1,4 @@
-var utils = require('./utils.cs.js');
+var utils = require('./utils.js');
 var im = require('freezer-js');
 
 var deepEqual = function(obj1,obj2){

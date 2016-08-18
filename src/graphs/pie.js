@@ -1,7 +1,7 @@
 var _ = require('underscore');
-var space = require('../core/space-transf.cs.js');
-var utils = require('../core/utils.cs.js');
-var color = require('../core/colorMgr.cs.js');
+var space = require('../core/space-transf.js');
+var utils = require('../core/utils.js');
+var color = require('../core/colorMgr.js');
 
 var m = {
 

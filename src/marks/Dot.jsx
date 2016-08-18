@@ -1,6 +1,6 @@
 var React = require('react');
-var dataScale = require('../core/space-transf.cs.js');
-var imUtils = require('../core/im-utils.cs.js');
+var dataScale = require('../core/space-transf.js');
+var imUtils = require('../core/im-utils.js');
 
 /*
 	{

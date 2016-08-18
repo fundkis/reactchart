@@ -1,7 +1,7 @@
 var React = require('react');
-var Drawer = require('./Drawer.cs.jsx');
+var Drawer = require('./Drawer.jsx');
 
-var core = require('./core/process.cs.js');
+var core = require('./core/process.js');
 var _ = require('underscore');
 
 var Graph = React.createClass({

@@ -1,5 +1,5 @@
 var React = require('react');
-var imUtils = require('./core/im-utils.cs.js');
+var imUtils = require('./core/im-utils.js');
 
 var Cadre = React.createClass({
 

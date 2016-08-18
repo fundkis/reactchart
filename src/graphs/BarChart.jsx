@@ -1,7 +1,7 @@
 var React = require('react');
-var Mark = require('../marks/Mark.cs.jsx');
+var Mark = require('../marks/Mark.jsx');
 var _ = require('underscore');
-var imUtils = require('../core/im-utils.cs.js');
+var imUtils = require('../core/im-utils.js');
 
 /*
 	{

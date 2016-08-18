@@ -1,12 +1,12 @@
 var React = require('react');
-var Axes = require('./Axes.cs.jsx');
-var Curves = require('./Curves.cs.jsx');
-var Cadre = require('./Cadre.cs.jsx');
-var Background = require('./Background.cs.jsx');
-var Foreground = require('./Foreground.cs.jsx');
-var Title = require('./Title.cs.jsx');
+var Axes = require('./Axes.jsx');
+var Curves = require('./Curves.jsx');
+var Cadre = require('./Cadre.jsx');
+var Background = require('./Background.jsx');
+var Foreground = require('./Foreground.jsx');
+var Title = require('./Title.jsx');
 
-var imUtils = require('./core/im-utils.cs.js');
+var imUtils = require('./core/im-utils.js');
 
 /*
 	{
