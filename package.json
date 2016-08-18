@@ -9,7 +9,8 @@
         "gamma": "^1.0.0",
         "moment": "2.11.x",
         "freezer-js": "^0.9.6",
-        "babel-preset-es2015": "^6.5.0"
+        "babel-preset-es2015": "^6.5.0",
+        "babel-preset-react": "^6.5.0"
     },
     "devDependencies": {
         "fk-build-cs-transform": "git+ssh://git@github.com/fk-dev/fk-build-cs-transform.git#master",
@@ -18,5 +19,5 @@
     "browserify": {
         "transform": ["babelify", "fk-build-cs-transform"]
     },
-    "main": "./fk-graph.js"
+    "main": "./lib/fk-graph.js"
 }
