@@ -19,5 +19,5 @@
     "browserify": {
         "transform": ["babelify", "fk-build-cs-transform"]
     },
-    "main": "./lib/fk-graph.js"
+    "main": "fk-graph.js"
 }
