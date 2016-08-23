@@ -113,8 +113,8 @@ var validate = function(series,discard){
 			series[se] = [];
 		}
 		for(var p = 0; p < series[se].length; p++){
-			var px = series[se][p].x;
-			var py = series[se][p].y;
+			var px = series[se][p].x || series[se][p].value;
+			var py = series[se][p].y || series[se][p].label || series[se][p].legend;
 			if(!utils.isValidParam(px) || !utils.isValidParam(py)){
 				if(!discard){
 					return false;
