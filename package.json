@@ -13,7 +13,6 @@
         "babel-preset-react": "^6.5.0"
     },
     "devDependencies": {
-        "fk-build-cs-transform": "git+ssh://git@github.com/fk-dev/fk-build-cs-transform.git#master",
         "babelify": "^7.2.0"
     },
     "browserify": {
