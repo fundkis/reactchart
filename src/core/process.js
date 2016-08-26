@@ -113,8 +113,8 @@ var validate = function(series,discard){
 			series[se] = [];
 		}
 		for(var p = 0; p < series[se].length; p++){
-			var px = series[se][p].x || series[se][p].value;
-			var py = series[se][p].y || series[se][p].label || series[se][p].legend;
+			var px = utils.isValidNumber(series[se][p].x) ? series[se][p].x : series[se][p].value;
+			var py = utils.isValidNumber(series[se][p].y) ? series[se][p].y : series[se][p].label || series[se][p].legend;
 			if(!utils.isValidParam(px) || !utils.isValidParam(py)){
 				if(!discard){
 					return false;
@@ -165,8 +165,8 @@ var preprocess = function(serie,preproc){
 		directionProps[dir] = 1;
 		directionProps[otherdir] = 0;
 		while(notComplete){
-			var data = _.map( _.filter(serie, (point) => {return equal(point[otherdir],curref);}),
-				(point) => {return point[dir];}
+			var data = _.map( _.filter(serie, (point) => equal(point[otherdir],curref)),
+				(point) => point[dir]
 			);
 			var hist = utils.math.histo.opt_histo(data);
 // drop -> bin
