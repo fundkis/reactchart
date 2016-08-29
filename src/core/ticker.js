@@ -52,7 +52,7 @@ var computeTicks = function(first,last,minor,fac){
 				perp: 0
 			},
 			extra: false,
-			label: mgr.type === 'date' && mgr.greaterThan(lte, llength) ? mgr.label(curValue,majDist,fac) : '',
+			label: mgr.type !== 'date' || mgr.greaterThan(lte, llength) ? mgr.label(curValue,majDist,fac) : '',
 			minor: false
 		});
 		// minor ticks
