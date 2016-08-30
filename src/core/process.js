@@ -555,8 +555,14 @@ m.process = function(rawProps){
 
 	// 3 - foreground
 	imVM.foreground = props.foreground || {};
-	imVM.foreground.cx = (imVM.background.spaceX.min + imVM.background.spaceX.max ) / 2;
-	imVM.foreground.cy = (imVM.background.spaceY.min + imVM.background.spaceY.max ) / 2;
+	imVM.foreground.cx     = imVM.foreground.cx     || 0;
+	imVM.foreground.cy     = imVM.foreground.cy     || 0;
+	imVM.foreground.width  = imVM.foreground.width  || 0;
+	imVM.foreground.height = imVM.foreground.height || 0;
+	imVM.foreground.ds     = {
+		x: state.spaces.x.bottom,
+		y: state.spaces.y.left
+	};
 
 	// 4 - Title
 	imVM.title = {

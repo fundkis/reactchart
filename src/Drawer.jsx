@@ -45,7 +45,7 @@ var Graph = React.createClass({
 			<Background state={state.background}/>
 			<Title state={state.title} />
 					{this.orderAG()}
-			<Foreground state={state.foreground} />
+			<Foreground state={state.foreground} pWidth={state.width} pHeight={state.height}/>
 			</svg>;
 
 	}
