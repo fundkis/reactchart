@@ -88,12 +88,15 @@ var Tick = React.createClass({
 	},
 
 	label: function(){
+		if(this.props.state.tick.show === false){
+			return null;
+		}
 		var labelName = this.props.className + 'Label';
 		return <Label className={labelName} css={this.props.css} state={this.props.state.label}/>;
 	},
 
 	noShow: function(){
-		return !(this.props.state.tick.show || this.props.state.grid.show || this.props.state.label.length !== 0);
+		return !(this.props.state.tick.show || this.props.state.grid.show);
 	},
 
 	render: function(){
