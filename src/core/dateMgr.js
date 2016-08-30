@@ -239,6 +239,10 @@ var dateLT = function(d1,d2){
 	return d1.getTime() < d2.getTime();
 };
 
+var dateEQ = function(d1,d2){
+	return d1.getTime() === d2.getTime();
+};
+
 var periodGT = function(p1,p2){
 	return p1.total > p2.total;
 };
@@ -247,12 +251,20 @@ var periodLT = function(p1,p2){
 	return p1.total < p2.total;
 };
 
+var periodEQ = function(p1,p2){
+	return p1.total === p2.total;
+};
+
 var greaterThan = function(v1,v2,type){
-	return (type === 'date')?dateGT(v1,v2):periodGT(v1,v2);
+	return type === 'date' ? dateGT(v1,v2) : periodGT(v1,v2);
 };
 
 var lowerThan = function(v1,v2,type){
-	return (type === 'date')?dateLT(v1,v2):periodLT(v1,v2);
+	return type === 'date' ? dateLT(v1,v2) : periodLT(v1,v2);
+};
+
+var equal = function(v1,v2, type){
+	return type === 'date' ? dateEQ(v1,v2) : periodEQ(v1,v2);
 };
 
 var addPer = function(p1,p2){
@@ -435,6 +447,14 @@ m.lowerThan = function(dop1,dop2){
 		throw 'Error in dateMgr: trying to compare a Date with a Period';
 	}
 	return lowerThan(dop1,dop2,sd);
+};
+
+m.equal = function(dop1,dop2){
+	var sd = sameDoP(dop1,dop2);
+	if(sd === null){
+		throw 'Error in dateMgr: trying to compare a Date with a Period';
+	}
+	return equal(dop1,dop2,sd);
 };
 
 // managements

@@ -17,33 +17,30 @@ var firstDigit = function(r){
 };
 
 var roundMe = function(min,max){
-	var valOrder = m.orderMag(max);
-	var val = firstDigit(max) * pow(10,valOrder);
-	var distOrd = m.orderMag(m.distance(max - min));
+	let valOrder = m.orderMag(max);
+	let val = firstDigit(max) * pow(10,valOrder);
+	let distOrd = m.orderMag(m.distance(max,min));
 
-	var valid = (cand) => {
+	let valid = (cand) => {
 		return cand >= min && cand <= max;
 	};
 
 	if(!valid(val)){
-		var cand = val;
 		if(distOrd < valOrder){
-			var newOrder = valOrder;
-			var prev = Math.floor(val * pow(10,-newOrder)) * pow(10,newOrder);
-			while(!valid(cand)){
+			let newOrder = valOrder;
+			val = Math.floor(val * pow(10,-newOrder)) * pow(10,newOrder);
+			while(!valid(val)){
 				newOrder--;
-				cand = prev;
-				var step = pow(10,newOrder);
-				while(!valid(cand)){
-					cand -= step;
-					if(cand < prev){
+				let step = pow(10,newOrder);
+				while(!valid(val)){
+					val = val <= min ? val + step : val - step;
+					if(val < min || val >= max){
 						break;
 					}
 				}
-				prev = cand;
 			}
-		}else{ // distOrd === valOrder ???
-			return null;
+		}else{ // distOrd === valOrder
+			return min;
 		}
 	}
 	return val;
@@ -188,6 +185,10 @@ m.greaterThan = function(v1,v2){
 
 m.lowerThan = function(v1,v2){
 	return v1 < v2;
+};
+
+m.equal = function(v1,v2){
+	return v1 === v2;
 };
 
 // some management

@@ -492,6 +492,21 @@ m.process = function(rawProps){
 		};
 	});
 
+	// empty
+	if(data.length === 0){
+		data[0] = {
+			series: [{x: 42, y: 42}],
+			abs: {
+				axis: 'bottom',
+				type: 'number'
+			},
+			ord: {
+				axis: 'left',
+				type: 'number'
+			},
+		};
+	}
+
 	// space = {dsx, dsy}
 	state.spaces = space.spaces(data,universe,borders,title);
 

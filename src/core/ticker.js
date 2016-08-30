@@ -18,7 +18,7 @@ var computeTicks = function(first,last,minor,fac){
 // redefine start to have the biggest rounded value
 	var biggestRounded = mgr.orderMagValue(last,first);
 	start = utils.isNil(biggestRounded) ? start : biggestRounded;
-	while(mgr.greaterThan(start,first)){
+	while(mgr.greaterThan(start,first) || mgr.equal(start,first)){
 		start = mgr.subtract(start,majDist);
 	}
 	start = mgr.add(start,majDist);
