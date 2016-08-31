@@ -225,72 +225,57 @@ var axe = {
 	factorFSize: 10
 };
 
-m.Axe = function(key){
-	switch(key){
-		case 'abs':
-			return _.extend({}, axe,{
-				placement: 'bottom'
-			});
-		case 'ord':
-			return _.extend({}, axe,{
-				placement: 'left'
-			});
-		default:
-			return axe;
-	}
-};
-
-m.Axes = {
-	abs: [
-		m.Axe('abs')
-	],
-	ord: [
-		m.Axe('ord')
-	],
-	CS: 'cart'
+m.Axes = (axis) => {
+	return {
+		abs: _.map(axis.abs, (p) => _.extend({placement: p}, axe)),
+		ord: _.map(axis.ord, (p) => _.extend({placement: p}, axe)),
+		CS: 'cart'
+	};
 };
 
 
 ///
-m.Graph = {
-	// general
-  css: false,
-	name: 'G',
-	height: 400,	// defines the universe's height
-	width:	800,	// defines the universe's width
-	legend: {
-		iconWidth: 30,
-		iconHeight: 20,
-		iconHMargin: 3,
-		iconVMargin: 0,
-		iconUnit: 'px'
-	},
-	foreground: undefined,
-	background: undefined,
-	title: '',
-	titleFSize: 30,
-	axisOnTop: false,
-	// margins
-	axisMargin: {left: 10, bottom: 10, right: 10, top: 10}, // left, bottom, right, top
-	outerMargin: {}, // left, bottom, right, top
-	// data
-	data: [],
-	graphProps: [],
-	// axis
-	axisProps: m.Axes,
-	axis: undefined,	// b = bottom, l = left, t = top, r = right, any combination; overrides xaxis and yaxis
-	// shorcuts for easyness of use, overrides
-	// settings in axisProps
-	// label of axis
-	xLabel: '',
-	yLabel: '',
-	xLabelFSize: null,
-	yLabelFSize: null,
-	// axis
-	xaxis: '',	// bottom || top
-	yaxis: '',		// left || right
-	// data process
-	discard: true
+m.Graph = (axis) => {
+	return {
+		// general
+ 	 css: false,
+		name: 'G',
+		height: 400,	// defines the universe's height
+		width:	800,	// defines the universe's width
+		legend: {
+			iconWidth: 30,
+			iconHeight: 20,
+			iconHMargin: 3,
+			iconVMargin: 0,
+			iconUnit: 'px'
+		},
+		foreground: undefined,
+		background: undefined,
+		title: '',
+		titleFSize: 30,
+		axisOnTop: false,
+		// margins
+		axisMargin: {left: 10, bottom: 10, right: 10, top: 10}, // left, bottom, right, top
+		outerMargin: {}, // left, bottom, right, top
+		// data
+		data: [],
+		graphProps: [],
+		// axis
+		axisProps: m.Axes(axis),
+		axis: undefined,	// b = bottom, l = left, t = top, r = right, any combination; overrides xaxis and yaxis
+		// shorcuts for easyness of use, overrides
+		// settings in axisProps
+		// label of axis
+		xLabel: '',
+		yLabel: '',
+		xLabelFSize: null,
+		yLabelFSize: null,
+		// axis
+		xaxis: '',	// bottom || top
+		yaxis: '',		// left || right
+		// data process
+		discard: true
+	};
 };
 
 var data = 	{

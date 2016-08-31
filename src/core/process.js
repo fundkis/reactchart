@@ -7,40 +7,46 @@ var im = require('./im-utils.js');
 var legender = require('./legendBuilder.js');
 
 var defaultTheProps = function(props){
-	var data = gProps.defaults('data');
 
-	var fullprops = utils.deepCp({},gProps.Graph);
-	for(var ng = 0; ng < props.data.length; ng++){
-		var gprops = gProps.defaults(props.data[ng].type || 'Plain');
-		fullprops.data[ng] = utils.deepCp({},data);
-		fullprops.graphProps[ng] = utils.deepCp({},gprops);
+	// axis depends on data,
+	// where are they?
+	let axis = {
+		abs: _.uniq(_.map(_.pluck(props.data, 'abs'), (e) => utils.isNil(e) ? 'bottom'   : e.axis || 'bottom')),
+		ord: _.uniq(_.map(_.pluck(props.data, 'ord'), (e) => utils.isNil(e) ? 'left' : e.axis || 'left')),
+	};
+
+	// empty graph
+	if(axis.abs.length === 0){
+		axis.abs.push('bottom');
+	}
+	if(axis.ord.length === 0){
+		axis.ord.push('left');
 	}
 
-	// default for pie !!!bad coding!!!
-	var stripAxisNMark = (idx) => {
-		fullprops.axisProps.abs[idx].show = false;
-		fullprops.axisProps.ord[idx].show = false;
+	// fill by default
+	let fullprops = utils.deepCp(utils.deepCp({},gProps.Graph(axis)), props);
+
+	// default for pie !!!bad coding!!!, Pie should do it (how?)
+	let noMark = (idx) => {
 		fullprops.graphProps[idx].markType = 'pie';
 		fullprops.graphProps[idx].mark = false;
 	};
 
-	_.each(props.data, (data,idx) => data.type === 'Pie' ? stripAxisNMark(idx) : undefined);
-
-
-	if(!!props.axisProps){
-		if(!!props.axisProps.abs){
-			for(var nabs = 0; nabs < props.axisProps.abs.length; nabs++){
-				fullprops.axisProps.abs[nabs] = utils.deepCp({},gProps.Axe('abs'));
-			}
-		}
-		if(!!props.axisProps.ord){
-			for(var nord = 0; nord < props.axisProps.ord.length; nord++){
-				fullprops.axisProps.ord[nord] = utils.deepCp({},gProps.Axe('ord'));
-			}
-		}
+	if(!!_.find(props.data, (data) => data.type === 'Pie')){
+		_.each(fullprops.axisProps.abs, (ax) => {ax.show = false;});
+		_.each(fullprops.axisProps.ord, (ax) => {ax.show = false;});
+		_.each(props.data, (d,idx) => d.type === 'Pie' ? noMark(idx) : null);
 	}
 
-	return utils.deepCp(fullprops,props);
+	// data & graphProps
+	let data = gProps.defaults('data');
+	for(let ng = 0; ng < fullprops.data.length; ng++){
+		let gprops = gProps.defaults(props.data[ng].type || 'Plain');
+		fullprops.data[ng] = utils.deepCp(utils.deepCp({},data), props.data[ng]);
+		fullprops.graphProps[ng] = utils.deepCp(utils.deepCp({},gprops), props.graphProps[ng]);
+	}
+
+	return fullprops;
 };
 
 var addDefaultDrop = function(serie, dir, ds){
