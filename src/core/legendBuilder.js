@@ -31,28 +31,30 @@ var process = function(props){
 		}
 		var ics = gprops.width;
 		var iconProps = {
-			color: icc, 
-			width: icw, 
-			height: ich, 
-			hMargin: ichm, 
+			color: icc,
+			width: icw,
+			height: ich,
+			hMargin: ichm,
 			vMargin: icvm
 		};
 		var perPoint = [];
-		for(var p = 0; p < data.series.length; p++){
-			if(!!data.series[p].legend){
-				var point = data.series[p];
-				var typeMark = gprops.markType;
-				iconProps.color = point.color || color(p);
-				perPoint.push({
-					icon: <svg width={icW} height={icH}>
-							{iconer.icon(iconProps, typeMark)}
-						</svg>,
-					label: point.legend || 'data #' + idx
-				});
+		if (data.series) {
+			for(var p = 0; p < data.series.length; p++){
+				if(!!data.series[p].legend){
+					var point = data.series[p];
+					var typeMark = gprops.markType;
+					iconProps.color = point.color || color(p);
+					perPoint.push({
+						icon: <svg width={icW} height={icH}>
+								{iconer.icon(iconProps, typeMark)}
+							</svg>,
+						label: point.legend || 'data #' + idx
+					});
+				}
 			}
 		}
 
-		return perPoint.length !== 0 ? perPoint : 
+		return perPoint.length !== 0 ? perPoint :
 			{
 				icon: <svg width={icW} height={icH}>
 						{gprops.onlyMarks ? null : <line x={icx} y={icy} x1={icx1} y1={icy} stroke={icc} strokeWidth={ics}/>}
