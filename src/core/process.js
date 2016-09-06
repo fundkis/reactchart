@@ -331,7 +331,7 @@ var makeSpan = function(series,data){
 		var out = [];
 		_.each(series, (serie,idx) => {
 			if(data[idx].type === barType){
-				out[idx] = spanify(serie, data[idx]);
+				out[idx] = serie.length ? spanify(serie, data[idx]) : {};
 				n++;
 			}
 		});
