@@ -372,6 +372,9 @@ var spanify = function(serie,data){
 // if stairs, we need an offset
 // at one boundary value
 var offStairs = function(props,gprops){
+  if(props.series.length === 0){
+    return undefined;
+  }
 	if(props.type ==='Stairs'){
 		if(gprops.stairs === 'right'){
 			return props.series[props.series.length - 1].x - props.series[props.series.length - 2].x;
