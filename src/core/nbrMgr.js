@@ -1,44 +1,25 @@
-var pow   = Math.pow;
-var floor = Math.floor;
-var log   = Math.log;
-var min   = Math.min;
-var max   = Math.max;
-var abs   = Math.abs;
-var LN10  = Math.LN10;
+let { pow, floor, log, min, max, abs, LN10 } = Math;
 
+let m = {};
 
-var m = {};
-
-var firstDigit = function(r){
-	var res = r * pow(10,-m.orderMag(r));
-	var str = '' + res;
-	var out = str[0] || 0;
+let firstDigit = function(r){
+	let res = r * pow(10,-m.orderMag(r));
+	let str = '' + res;
+	let out = str[0] || 0;
 	return Number(out);
 };
 
-var roundMe = function(min,max){
+let roundMe = function(min,max){
 	let valOrder = m.orderMag(max);
-	let val = firstDigit(max) * pow(10,valOrder);
 	let distOrd = m.orderMag(m.distance(max,min));
 
-	let valid = (cand) => {
-		return cand >= min && cand <= max;
-	};
+	let valid = (cand) => cand >= min && cand <= max;
 
+	let val = firstDigit(max) * pow(10,valOrder);
 	if(!valid(val)){
 		if(distOrd < valOrder){
-			let newOrder = valOrder;
-			val = Math.floor(val * pow(10,-newOrder)) * pow(10,newOrder);
-			while(!valid(val)){
-				newOrder--;
-				let step = pow(10,newOrder);
-				while(!valid(val)){
-					val = val <= min ? val + step : val - step;
-					if(val < min || val >= max){
-						break;
-					}
-				}
-			}
+			let step = pow(10,distOrd);
+			return floor(min / step) * step + step;
 		}else{ // distOrd === valOrder
 			return min;
 		}
@@ -60,14 +41,14 @@ m.orderMagValue = m.orderMagDist = function(max,min){
 	if(min * max < 0){
 		return 0;
 	}
-	var absMin = max < 0 ? Math.abs(max) : min;
-	var absMax = max < 0 ? Math.abs(min) : max;
-	var fac = max < 0 ? -1 : 1;
+	let absMin = max < 0 ? Math.abs(max) : min;
+	let absMax = max < 0 ? Math.abs(min) : max;
+	let fac = max < 0 ? -1 : 1;
 	return fac * roundMe(absMin,absMax);
 };
 
 m.roundUp = function(r){
-	var step = (val) => {
+	let step = (val) => {
 		switch(firstDigit(val)){
 			case 2:
 				return 5 * pow(10,m.orderMag(cand));
@@ -76,12 +57,12 @@ m.roundUp = function(r){
 		}
 		
 	};
-	var cand = pow(10,m.orderMag(r));
+	let cand = pow(10,m.orderMag(r));
 	while(cand <= r){
 		cand = step(cand);
 	}
 
-	var test = cand * pow(10,-m.orderMag(cand)); // between 0 and 1
+	let test = cand * pow(10,-m.orderMag(cand)); // between 0 and 1
 	if(test > 6){
 		cand = pow(10,m.orderMag(cand) + 1);
 	}
@@ -89,8 +70,8 @@ m.roundUp = function(r){
 };
 
 m.roundDown = function(r){
-	var step = 5 * pow(10,m.orderMag(r) - 1);
-	var cand = firstDigit(r) * pow(10,m.orderMag(r));
+	let step = 5 * pow(10,m.orderMag(r) - 1);
+	let cand = firstDigit(r) * pow(10,m.orderMag(r));
 	while(cand >= r){cand -= step;}
 	return cand;
 };
@@ -118,8 +99,8 @@ m.closestRoundUp = function(ref,dist){
 		return - m.closestRoundDown(-ref,dist);
 	}
 
-	var refOm = m.orderMag(ref);
-	var start = pow(10,refOm) * firstDigit(ref);
+	let refOm = m.orderMag(ref);
+	let start = pow(10,refOm) * firstDigit(ref);
 	while(start <= ref){
 		start += dist;
 	}
@@ -128,14 +109,14 @@ m.closestRoundUp = function(ref,dist){
 
 m.closestRoundDown = function(ref,dist){
 
-	var om = m.orderMag(dist);
+	let om = m.orderMag(dist);
 
 	if(ref < 0){
 		return - m.closestRoundUp(-ref,om);
 	}
 
-	var refOm = m.orderMag(ref);
-	var start = pow(10,refOm) * firstDigit(ref);
+	let refOm = m.orderMag(ref);
+	let start = pow(10,refOm) * firstDigit(ref);
 	if(refOm !== om){
 		while(start < ref){
 			start += dist;
@@ -162,7 +143,7 @@ m.max = function(values){
 };
 
 m.label = function(value, useless, fac){
-	var out = (value / fac).toFixed(1);
+	let out = (value / fac).toFixed(1);
 	return out;
 };
 
