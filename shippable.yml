@@ -1,0 +1,17 @@
+language: node_js
+
+build:
+
+  ci:
+    - sed -i -e "s/#master/#$BRANCH/g" package.json
+    - npm install
+    - npm test
+
+integrations:
+  notifications:
+    - integrationName: slack
+      type: slack
+      recipients:
+        - "#fk-builds"
+      on_success: always
+      on_failure: always
