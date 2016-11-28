@@ -1,6 +1,9 @@
 language: node_js
 
 build:
+  cache: true
+  cache_dir_list:
+    - $SHIPPABLE_BUILD_DIR/node_modules
 
   ci:
     - sed -i -e "s/#master/#$BRANCH/g" package.json
