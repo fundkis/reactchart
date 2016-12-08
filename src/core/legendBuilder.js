@@ -8,9 +8,6 @@ var process = function(props){
 
 	var icW = props.legend.iconWidth + props.legend.iconUnit;
 	var icH = props.legend.iconHeight + props.legend.iconUnit;
-	var icx = props.legend.iconHMargin + props.legend.iconUnit;
-	var icx1 = (props.legend.iconWidth - props.legend.iconHMargin) + props.legend.iconUnit;
-	var icy = (props.legend.iconHeight/2) + props.legend.iconUnit;
 
 	// for icon, just to help reading
 	var icw  = props.legend.iconWidth  - 2 * props.legend.iconHMargin;
@@ -29,13 +26,14 @@ var process = function(props){
 			color(sha,[col]);
 			icc = col.color;
 		}
-		var ics = gprops.width;
+		var ics = gprops.width < 2 ? gprops.width * 1.5 : gprops.width; // slightly more bold, if needed
 		var iconProps = {
 			color: icc,
 			width: icw,
 			height: ich,
 			hMargin: ichm,
-			vMargin: icvm
+			vMargin: icvm,
+      strokeWidth: ics
 		};
 		var perPoint = [];
 		if (data.series) {
@@ -57,7 +55,7 @@ var process = function(props){
 		return perPoint.length !== 0 ? perPoint :
 			{
 				icon: <svg width={icW} height={icH}>
-						{gprops.onlyMarks ? null : <line x={icx} y={icy} x1={icx1} y1={icy} stroke={icc} strokeWidth={ics}/>}
+						{gprops.onlyMarks ? null : iconer.icon(iconProps, 'line')}
 						{gprops.mark ? iconer.icon(iconProps, gprops.markType) : null}
 					</svg>,
 				label: gprops.name || 'graph #' + idx

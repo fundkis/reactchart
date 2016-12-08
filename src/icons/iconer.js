@@ -2,9 +2,9 @@ var React = require('react');
 
 var icon = {};
 icon.square = icon.Square = function(data){
-	var x = data.hMargin + data.width / 6;
-	var y = data.vMargin + data.height / 6;
 	var l = Math.min(data.width, data.height) * 2/3;
+	var x = data.hMargin + (data.width - l)/2 ;
+	var y = data.vMargin + (data.height - l);
 	return <rect x={x} y={y} width={l} height={l} fill={data.color} />;
 };
 
@@ -28,6 +28,15 @@ icon.pie = icon.Pie = function(data){
 	
 	var path = 'M' + x + ',' + y + ' L' + x1 + ',' + y1 + ' A' + r + ',' + r + ' 0 0,0 ' + x2 + ',' + y2 + ' z';
 	return <path fill={data.color} d={path}/>;
+};
+
+icon.line = function(data){
+
+	var l = Math.min(data.width, data.height) * 2/3;
+	var x1 = data.hMargin + (data.width - l)/2 ;
+	var x2 = x1 + l;
+	var y = data.vMargin + (data.height - 6); // fraction of height of letters...
+  return <line x1={x1} y1={y} x2={x2} y2={y} stroke={data.color} strokeWidth={data.strokeWidth}/>;
 };
 
 var m = {};

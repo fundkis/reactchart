@@ -245,8 +245,8 @@ m.Graph = (axis) => {
 		legend: {
 			iconWidth: 30,
 			iconHeight: 20,
-			iconHMargin: 3,
-			iconVMargin: 0,
+			iconHMargin: 0, // offset from center
+			iconVMargin: 0, // offset from center
 			iconUnit: 'px'
 		},
 		foreground: undefined,
