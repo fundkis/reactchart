@@ -216,7 +216,7 @@ var closestDown = function(date,per){
 		return new Date(date.getFullYear(),month,1);
 	}
 	// start of year
-	if(per.months !== 0){
+	if(per.years !== 0){
 		return new Date(date.getFullYear(),0,1);
 	}
 };
