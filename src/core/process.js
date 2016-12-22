@@ -51,16 +51,12 @@ var defaultTheProps = function(props){
 
 var addDefaultDrop = function(serie, dir, ds){
 
-	var fetchDs = () => {
-		return !!ds[dir].bottom ? ds[dir].bottom : 
+	var fetchDs = () => !!ds[dir].bottom ? ds[dir].bottom : 
 			!!ds[dir].top ? ds[dir].top : 
 			!!ds[dir].left ? ds[dir].left : 
 			!!ds[dir].right ? ds[dir].right : null;
-	};
 
-	var defZero = (point) => {
-		return utils.isDate(point[dir]) ? new Date(0) : 0 ;
-	};
+	var defZero = (point) => utils.isDate(point[dir]) ? new Date(0) : 0 ;
 
 	var def = (point) => {
 		var min = !!ds ? fetchDs().d.min : defZero(point);
@@ -76,9 +72,7 @@ var addDefaultDrop = function(serie, dir, ds){
 
 	var comp = !!dir ? def : cus ;
 
-	return _.map(serie, (point) => {
-		return comp(point);
-	});
+	return _.map(serie, (point) => comp(point));
 };
 
 var copySerie = function(serie){
@@ -119,9 +113,10 @@ var validate = function(series,discard){
 			series[se] = [];
 		}
 		for(var p = 0; p < series[se].length; p++){
-			var px = utils.isValidNumber(series[se][p].x) ? series[se][p].x : series[se][p].value;
-			var py = utils.isValidNumber(series[se][p].y) ? series[se][p].y : series[se][p].label || series[se][p].legend;
-			if(!utils.isValidParam(px) || !utils.isValidParam(py)){
+			var px = utils.isValidNumber(series[se][p].x);
+			var py = utils.isValidNumber(series[se][p].y); 
+			var pv = utils.isValidNumber(series[se][p].value);
+			if(!pv && ( !utils.isValidParam(px) || !utils.isValidParam(py) ) ){
 				if(!discard){
 					return false;
 				}
@@ -159,10 +154,11 @@ var preprocess = function(serie,preproc){
 
 		var out = [];
 
-		var dir = preproc.dir;
-		var otherdir =  dir === 'x' ? 'y' : 'x';
+		var dir = preproc.dir || 'x';
+		var otherdir =  !!dir ? dir === 'x' ? 'y' : 'x' : 'y';
 		var ind = 0;
-		var curref = serie[0][otherdir];
+		var getRef = (n) => utils.isNil(serie[n][otherdir]) ? '_serie_' : serie[n][otherdir];
+		var curref = getRef(0);
 		var refBef;
 
 		var notComplete = true;
@@ -171,28 +167,32 @@ var preprocess = function(serie,preproc){
 		directionProps[dir] = 1;
 		directionProps[otherdir] = 0;
 		while(notComplete){
-			var data = _.map( _.filter(serie, (point) => equal(point[otherdir],curref)),
-				(point) => point[dir]
+			var data = _.map( _.filter(serie, (point) => utils.isValidNumber(point.value) || equal(point[otherdir],curref)),
+				(point) => utils.isValidNumber(point.value) ? point.value : point[dir]
 			);
 			var hist = utils.math.histo.opt_histo(data);
 // drop -> bin
 // value -> bin + db ( = next bin)
 // shade -> prob
 			var maxProb = -1;
+			var minProb = 1e8; // should be safe...
 			var start = ind;
 			for(var d = 0; d < hist.length; d++){
 				out[ind] = {};
 				out[ind].drop = {};
 				out[ind].drop[dir] = hist[d].bin;
-				out[ind][dir] = hist[d].bin + hist[d].db;
+				out[ind][dir] = hist[d].bin;
 				out[ind].shade = hist[d].prob;
-				out[ind][otherdir] = curref;
-				if(utils.isString(curref)){
+				out[ind][otherdir] = curref === '_serie_' ? hist[d].prob : curref;
+				if(utils.isString(curref) && curref !== '_serie_'){
 					out[ind].label = {};
 					out[ind].label[otherdir] = curref;
 				}
 				if(hist[d].prob > maxProb){
 					maxProb = hist[d].prob;
+				}
+				if(hist[d].prob < minProb){
+					minProb = hist[d].prob;
 				}
 				ind++;
 			}
@@ -208,14 +208,14 @@ var preprocess = function(serie,preproc){
 				var mgr = utils.mgr(curref);
 				for(var j = start; j < ind; j++){
 					out[j].span = {};
-					out[j].span[otherdir] = mgr.multiply(mgr.distance(curref,refBef),0.9);
+					out[j].span[otherdir] = utils.isString(curref) ? minProb : mgr.multiply(mgr.distance(curref,refBef),0.9);
 				}
 			}
 			refBef = curref;
 
 			notComplete = false;
 			for(var p = u; p < serie.length; p++){
-				if(!equal(curref,serie[p][otherdir])){
+				if(!equal(curref,getRef(p))){
 					curref = serie[p][otherdir];
 					u = p;
 					notComplete = true;
@@ -227,7 +227,7 @@ var preprocess = function(serie,preproc){
 				var m = utils.mgr(refBef);
 				for(var k = start; k < ind; k++){
 					out[k].span = {};
-					out[k].span[otherdir] = m.multiply(m.distance(curref,refBef),0.9);
+					out[k].span[otherdir] = utils.isString(curref) ? minProb : m.multiply(m.distance(curref,refBef),0.9);
 				}
 			}
 
@@ -371,18 +371,17 @@ var spanify = function(serie,data){
 
 // if stairs, we need an offset
 // at one boundary value
-var offStairs = function(props,gprops){
-  if(props.series.length === 0){
+var offStairs = function(serie,gprops){
+  if(serie.length < 2){
     return undefined;
   }
-	if(props.type ==='Stairs'){
-		if(gprops.stairs === 'right'){
-			return props.series[props.series.length - 1].x - props.series[props.series.length - 2].x;
-		}else if(gprops.stairs === 'left'){
-			return props.series[0].x - props.series[1].x;
-		}else{
-			return undefined;
-		}
+
+	if(!gprops.stairs || gprops.stairs === 'right'){
+		return serie[serie.length - 1].x - serie[serie.length - 2].x;
+	}else if(gprops.stairs === 'left'){
+		return serie[0].x - serie[1].x;
+	}else{
+		return undefined;
 	}
 	return undefined;
 };
@@ -393,7 +392,7 @@ m.process = function(rawProps){
 
 	var props = defaultTheProps(utils.deepCp({},rawProps));
 
-	var raw = _.map(props.data,(dat) => dat.series );
+	var raw = _.pluck(props.data,'series');
 
 	var state = {};
 	var lOffset = [];
@@ -412,7 +411,7 @@ m.process = function(rawProps){
 			// span and offset from Bars || yBars
 		makeSpan(state.series, _.map(props.data, (ser,idx) => {return {type: ser.type, span: props.graphProps[idx].span};}));
 			// offset from Stairs
-		lOffset = _.map(props.data, (p,idx) => offStairs(p,props.graphProps[idx]) );
+		lOffset = _.map(props.data, (p,idx) => p.type === 'Stairs' ? offStairs(state.series[idx],props.graphProps[idx]) : undefined);
 
 	}
 
@@ -535,7 +534,7 @@ m.process = function(rawProps){
 				break;
 		}
 		if(!dir && !!props.graphProps[idx].process){
-			dir = props.graphProps[idx].process.dir;
+			dir = !props.graphProps[idx].process.dir || props.graphProps[idx].process.dir === 'x' ? 'y' : 'x';
 		}
 		return addDefaultDrop(serie,dir,state.spaces);
 	});
@@ -543,7 +542,8 @@ m.process = function(rawProps){
 	//now to immutable VM
 	var imVM = {
 		width: props.width,
-		height: props.height
+		height: props.height,
+		axisOnTop: props.axisOnTop
 	};
 
 	// 1 - cadre

@@ -61,7 +61,7 @@ m.deepCp = function(tgt,thing){
 };
 
 m.mgr = function(ex){
-	return m.isDate(ex)?date:nbr;
+	return m.isDate(ex) ? date : nbr;
 };
 
 m.homothe = function(src,tgt,fac,val){

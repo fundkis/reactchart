@@ -28,7 +28,7 @@ var Graph = React.createClass({
 	},
 
 	orderAG: function(){
-		return this.props.axisOnTop === true ? <g>
+		return this.props.state.axisOnTop === true ? <g>
 			<Curves state={this.props.state.curves} />
 			<Axes state={this.props.state.axes}/>
 		</g> : <g>

@@ -336,7 +336,7 @@ m.spaces = function(datas,universe,borders,title){
 					// limitOffset changes only one boundary
 					if(limOfIdx === idx){
 						if(utils.isArray(val)){
-							_.each(val, (v) => v += loff);
+							val = _.map(val, (v) => v + loff);
 						}else{
 							val += loff;
 						}
