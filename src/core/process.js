@@ -62,8 +62,8 @@ var addDefaultDrop = function(serie, dir, ds){
 		var min = !!ds ? fetchDs().d.min : defZero(point);
 		var raw = point;
 		raw.drop[dir] = utils.isNil(raw.drop[dir]) ? min : raw.drop[dir];
-		var othdir = dir === 'x' ? 'y' : 'x';
-		raw.drop[othdir] = undefined;
+		//var othdir = dir === 'x' ? 'y' : 'x';
+		//raw.drop[othdir] = undefined;
 		
 		return raw;
 	};
@@ -156,6 +156,10 @@ var preprocess = function(serie,preproc){
 
 		var dir = preproc.dir || 'x';
 		var otherdir =  !!dir ? dir === 'x' ? 'y' : 'x' : 'y';
+
+		var nHists = _.uniq(serie, (point) => !!point[otherdir] && !!point[otherdir].getTime ? point[otherdir].getTime() : point[otherdir]);
+		nHists = (nHists.length === 1 && _.findIndex(serie, (point) => !!point.value) !== -1 ); // by 'value'
+
 		var ind = 0;
 		var getRef = (n) => utils.isNil(serie[n][otherdir]) ? '_serie_' : serie[n][otherdir];
 		var curref = getRef(0);
@@ -167,12 +171,12 @@ var preprocess = function(serie,preproc){
 		directionProps[dir] = 1;
 		directionProps[otherdir] = 0;
 		while(notComplete){
-			var data = _.map( _.filter(serie, (point) => utils.isValidNumber(point.value) || equal(point[otherdir],curref)),
-				(point) => utils.isValidNumber(point.value) ? point.value : point[dir]
+			var data = _.map( _.filter(serie, (point) => nHists ? true : equal(point[otherdir],curref)),
+				(point) => nHists ? point.value : point[dir]
 			);
 			var hist = utils.math.histo.opt_histo(data);
-// drop -> bin
-// value -> bin + db ( = next bin)
+// drop -> bin - dx
+// value -> bin
 // shade -> prob
 			var maxProb = -1;
 			var minProb = 1e8; // should be safe...
@@ -180,7 +184,8 @@ var preprocess = function(serie,preproc){
 			for(var d = 0; d < hist.length; d++){
 				out[ind] = {};
 				out[ind].drop = {};
-				out[ind].drop[dir] = hist[d].bin;
+				out[ind].drop[dir] = hist[d].bin - hist[d].db;
+				out[ind].drop[otherdir] = nHists ? undefined : curref;
 				out[ind][dir] = hist[d].bin;
 				out[ind].shade = hist[d].prob;
 				out[ind][otherdir] = curref === '_serie_' ? hist[d].prob : curref;
