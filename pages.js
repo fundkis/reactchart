@@ -1,4 +1,4 @@
-/* 2017- generated at Wed Jan 04 2017 16:13:01 GMT+0100 (CET)
+/* 2017- generated at Wed Jan 04 2017 16:40:24 GMT+0100 (CET)
 */(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 (function (Buffer){
 //     uuid.js
@@ -46760,6 +46760,7 @@ m.BoxMuller = function (n, s) {
 	var fac = s * Math.sqrt(-2 * Math.log(rsq) / rsq);
 	return v1 * fac + n;
 };
+
 m.Marsaglia = function (k, t) {
 	if (k < 1) {
 		return m.Marsaglia(1 + k, t) * Math.pow(unidev_1(), 1 / k);
@@ -46782,7 +46783,7 @@ m.Marsaglia = function (k, t) {
 	do {
 
 		do {
-			x = m.BoxMuller();
+			x = m.BoxMuller(0, 1);
 			v = 1 + c * x;
 		} while (v <= 0);
 
