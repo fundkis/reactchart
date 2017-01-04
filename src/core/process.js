@@ -11,7 +11,7 @@ var defaultTheProps = function(props){
 	// axis depends on data,
 	// where are they?
 	let axis = {
-		abs: _.uniq(_.map(_.pluck(props.data, 'abs'), (e) => utils.isNil(e) ? 'bottom'   : e.axis || 'bottom')),
+		abs: _.uniq(_.map(_.pluck(props.data, 'abs'), (e) => utils.isNil(e) ? 'bottom'	 : e.axis || 'bottom')),
 		ord: _.uniq(_.map(_.pluck(props.data, 'ord'), (e) => utils.isNil(e) ? 'left' : e.axis || 'left')),
 	};
 
@@ -84,8 +84,8 @@ var copySerie = function(serie){
 			x: xstr ? idx : point.x,
 			y: ystr ? idx : point.y,
 			label: {
-				x: xstr ? point.x : undefined,
-				y: ystr ? point.y : undefined
+				x: xstr ? point.x : !!point.label && point.label.x ? point.label.x : undefined,
+				y: ystr ? point.y : !!point.label && point.label.y ? point.label.y : undefined
 			},
 			drop: {
 				x: ystr ? 0 : undefined,
@@ -155,7 +155,7 @@ var preprocess = function(serie,preproc){
 		var out = [];
 
 		var dir = preproc.dir || 'x';
-		var otherdir =  !!dir ? dir === 'x' ? 'y' : 'x' : 'y';
+		var otherdir =	!!dir ? dir === 'x' ? 'y' : 'x' : 'y';
 
 		var nHists = _.uniq(serie, (point) => !!point[otherdir] && !!point[otherdir].getTime ? point[otherdir].getTime() : point[otherdir]);
 		nHists = (nHists.length === 1 && _.findIndex(serie, (point) => !!point.value) !== -1 ); // by 'value'
@@ -244,6 +244,15 @@ var preprocess = function(serie,preproc){
 var addOffset = function(series,stacked){
 	var xoffset = [];
 	var yoffset = [];
+
+	var span = (ser,idx) => ser.length > 1 ? idx === 0 ? Math.abs(ser[idx + 1] - ser[idx]) * 0.9:	// if first
+		idx === ser.length - 1 ? Math.abs(ser[idx] - ser[idx - 1]) * 0.9 :	// if last
+			Math.min(Math.abs(ser[idx] - ser[idx-1]),Math.abs(ser[idx+1] - ser[idx])) * 0.9 : // if in between
+				0; // if no serie
+
+	var ensure = (obj,prop) => !!obj[prop] ? null : obj[prop] = {};
+	var writeIfUndef = (obj,prop,val) => !!obj[prop] ? null : obj[prop] = val;
+
 	for(var i = 0 ; i < series.length; i++){
 
 		_.each(series[i],(point) => {
@@ -268,6 +277,10 @@ var addOffset = function(series,stacked){
 					// add, compute and update
 					for(var j = 0; j < xoffset.length; j++){
 						series[i][j].offset.x = xoffset[j];
+						ensure(series[i][j],'drop');
+						series[i][j].drop.x = 0;
+						ensure(series[i][j],'span');
+						writeIfUndef(series[i][j].span,'y',span(_.pluck(series[i],'y'),j));
 						xoffset[j] += series[i][j].x;
 					}
 					break;
@@ -282,8 +295,12 @@ var addOffset = function(series,stacked){
 					}
 					// add, compute and update
 					for(var k = 0; k < yoffset.length; k++){
-						series[i][j].offset.y = yoffset[j];
-						yoffset[j] += series[i][j].y;
+						series[i][k].offset.y = yoffset[k];
+						ensure(series[i][k],'drop');
+						series[i][k].drop.y = 0;
+						ensure(series[i][k],'span');
+						writeIfUndef(series[i][k].span,'x',span(_.pluck(series[i],'x'),k));
+						yoffset[k] += series[i][k].y;
 					}
 					break;
 			}
@@ -377,9 +394,9 @@ var spanify = function(serie,data){
 // if stairs, we need an offset
 // at one boundary value
 var offStairs = function(serie,gprops){
-  if(serie.length < 2){
-    return undefined;
-  }
+	if(serie.length < 2){
+		return undefined;
+	}
 
 	if(!gprops.stairs || gprops.stairs === 'right'){
 		return serie[serie.length - 1].x - serie[serie.length - 2].x;
@@ -410,7 +427,7 @@ m.process = function(rawProps){
 	}else{
 			// data depening on serie, geographical data only
 		var preproc = _.map(props.graphProps, (gp) => !!gp.process && !!gp.process.type ? gp.process : undefined );
-		state.series = _.map(raw, (serie,idx) =>  !!preproc[idx] ? preprocess(serie,preproc[idx]) : copySerie(serie) );
+		state.series = _.map(raw, (serie,idx) =>	!!preproc[idx] ? preprocess(serie,preproc[idx]) : copySerie(serie) );
 			// offset from stacked
 		addOffset(state.series, _.map(props.data, (ser) => ser.stacked ));
 			// span and offset from Bars || yBars
@@ -569,11 +586,11 @@ m.process = function(rawProps){
 
 	// 3 - foreground
 	imVM.foreground = props.foreground || {};
-	imVM.foreground.cx     = imVM.foreground.cx     || 0;
-	imVM.foreground.cy     = imVM.foreground.cy     || 0;
-	imVM.foreground.width  = imVM.foreground.width  || 0;
+	imVM.foreground.cx		 = imVM.foreground.cx			|| 0;
+	imVM.foreground.cy		 = imVM.foreground.cy			|| 0;
+	imVM.foreground.width  = imVM.foreground.width	|| 0;
 	imVM.foreground.height = imVM.foreground.height || 0;
-	imVM.foreground.ds     = {
+	imVM.foreground.ds		 = {
 		x: state.spaces.x.bottom,
 		y: state.spaces.y.left
 	};
@@ -590,7 +607,7 @@ m.process = function(rawProps){
 
 	// 5 - Axes
 	imVM.axes = {
-    css: props.css,
+		css: props.css,
 		abs: vm.abscissas(props,state),
 		ord: vm.ordinates(props,state)
 	};

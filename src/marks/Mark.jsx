@@ -30,10 +30,10 @@ var Mark = React.createClass({
 
 	pin: function(pinS){
 		return !!pinS.path ? <g>
-			<path strokeWidth='1' stroke='black' fill='none' d={pinS.path}/>
-			<text fontSize={pinS.labelFS} style={{textAnchor: pinS.labelAnc}} x={pinS.x} y={pinS.y}>{pinS.label}</text>
+			<path strokeWidth='1' stroke={pinS.pinColor} fill='none' d={pinS.path}/>
+			<text fontSize={pinS.labelFS} style={{textAnchor: pinS.labelAnc}} fill={pinS.color} x={pinS.xL} y={pinS.yL}>{pinS.label}</text>
 		</g> : 
-		<text fontSize={pinS.labelFS} style={{textAnchor: pinS.labelAnc}} x={pinS.x} y={pinS.y}>{pinS.label}</text>;
+		<text fontSize={pinS.labelFS} style={{textAnchor: pinS.labelAnc}} fill={pinS.color} x={pinS.xL} y={pinS.yL}>{pinS.label}</text>;
 	},
 
 	render: function(){

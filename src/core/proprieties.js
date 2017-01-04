@@ -99,8 +99,11 @@ graph.common = () => {
 			print: (t) => t + '',
 			fontSize: 10,
 			pin: false, // show the pin
+			pinColor: 'black', // color of the pin
 			pinLength: 10, // 10 px as pin length
-			pinAngle: 90 // direction fo pin
+			pinAngle: 90, // direction of pin
+			pinHook: 3, // 3px for hook
+			color: 'black' // color of the tag
 		}
 	};
 };
@@ -146,9 +149,11 @@ graph.Pie = graph.pie = () => {
 			show: false, // show the tag
 			print: (t) => t + '',
 			pin: false, // show the pin
+			pinColor: 'black', // color or the pin
 			pinLength: 0.35, // 10 px as pin length
 			pinRadius: 0.75, // 3/4 of pie size
-			pinHook: 10 // absolute length
+			pinHook: 10, // absolute length
+			color: 'black' // color of the tag
 		}
 	});
 };

@@ -34,4 +34,9 @@ m.toDwidth = function(ds, dist){
 	return Math.abs(ds.c2d * d);
 };
 
+m.fromPic = function(ds,data){
+	let fac = (ds.c.max - ds.c.min);
+	return utils.homothe(0,ds.c.min,fac,data);
+};
+
 module.exports = m;

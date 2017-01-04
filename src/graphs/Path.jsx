@@ -47,17 +47,11 @@ var Path = React.createClass({
 		var pos = state.positions;
 		var drops = state.drops;
 
-		var coord = (idx) => {
-			return space.toC(ds.x,pos[idx].x) + ',' + space.toC(ds.y, pos[idx].y);
-		};
+		var coord = (idx) => space.toC(ds.x,pos[idx].x) + ',' + space.toC(ds.y, pos[idx].y);
 
-		var dropx = (idx) => {
-			return space.toC(ds.x,drops[idx].x) + ',' + space.toC(ds.y, pos[idx].y);
-		};
+		var dropx = (idx) => space.toC(ds.x,drops[idx].x) + ',' + space.toC(ds.y, pos[idx].y);
 
-		var dropy = (idx) => {
-			return space.toC(ds.x,pos[idx].x) + ',' + space.toC(ds.y, drops[idx].y);
-		};
+		var dropy = (idx) => space.toC(ds.x,pos[idx].x) + ',' + space.toC(ds.y, drops[idx].y);
 
 		var points = 'M ' + coord(0);
 		for(var i = 1; i < state.positions.length; i++){
@@ -66,17 +60,17 @@ var Path = React.createClass({
 
 		// we close the curve if wanted
 		// y dir has prevalence
+    let filling = points;
 		if(state.close.y){
 			for(i = drops.length - 1; i >= 0; i--){
-				points += ' L ' + dropy(i);
+				filling += ' L ' + dropy(i);
 			}
-			points += 'z';
 		}else if(state.close.x){
 			for(i = drops.length - 1; i >= 0; i--){
-				points += ' L ' + dropx(i);
+				filling += ' L ' + dropx(i);
 			}
-			points += 'z';
 		}
+		filling += 'z';
 
 // droplines
 		var dropLines = [];
@@ -100,12 +94,17 @@ var Path = React.createClass({
 		}
 
 		return <g>
+			{state.close.y || state.close.x ? <path
+				d={filling} 
+				strokeWidth={0}
+				opacity={shade}
+				fill={state.fill}/> : null }
 			<path
 				d={points} 
 				stroke={color} 
 				strokeWidth={width}
 				opacity={shade}
-				fill={state.fill}/>
+        fill='none'/>
 				{dropLines}
 			</g>;
 	}

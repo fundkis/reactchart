@@ -15,17 +15,17 @@ var pinMgr = require('../marks/pin.js');
 
 // graph
 var graphVM = {};
-graphVM.plain = graphVM.Plain = plainVM.VM;
-graphVM.bars = graphVM.Bars = barChartVM.VM;
-graphVM.ybars = graphVM.yBars = barChartVM.VM;
+graphVM.plain  = graphVM.Plain  = plainVM.VM;
+graphVM.bars   = graphVM.Bars   = barChartVM.VM;
+graphVM.ybars  = graphVM.yBars  = barChartVM.VM;
 graphVM.stairs = graphVM.Stairs = stairsVM.VM;
-graphVM.pie = graphVM.Pie = pieVM.VM;
+graphVM.pie    = graphVM.Pie    = pieVM.VM;
 
 // marks
 var marksVM = {};
-marksVM.dot = marksVM.Dot = dotVM.VM;
+marksVM.dot    = marksVM.Dot    = dotVM.VM;
 marksVM.square = marksVM.Square = squareVM.VM;
-marksVM.bar = marksVM.Bar = barVM.VM;
+marksVM.bar    = marksVM.Bar    = barVM.VM;
 
 var curve = function(spaces,serie,data,props,idx){
 

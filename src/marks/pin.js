@@ -2,13 +2,16 @@ var space = require('../core/space-transf.js');
 
 var angle = (deg) => {
 
+	while(deg < 0){
+		deg += 360;
+	}
 	var span = 5;
 	var v = Math.abs(deg - 90) < span || Math.abs(deg - 270) < span;
 
 	return {
 		rad: deg * Math.PI / 180,
 		isVert: v,
-		dir: v ? deg < 180 ? 1 : -1 : deg < 90 || deg > 270 ? 1 : -1
+		dir: v ? deg < 180 ? -1 : 1 : deg < 90 || deg > 270 ? 1 : -1
 	};
 };
 
@@ -26,8 +29,8 @@ var pin = function(pos,tag,ds) {
 	var ang = angle(tag.pinAngle);
 	// anchor
 	var anchor = {
-		top:    ang.isVert && ang.dir < 0,
-		bottom: ang.isVert && ang.dir > 0,
+		top:    ang.isVert && ang.dir > 0,
+		bottom: ang.isVert && ang.dir < 0,
 		left:  !ang.isVert && ang.dir > 0,
 		right: !ang.isVert && ang.dir < 0
 	};
@@ -46,14 +49,19 @@ var pin = function(pos,tag,ds) {
 
 		// pin hook
 	var ph = {
-		x: ang.isVert ? 0 : tag.pinHook * ang.dir,
-		y: ang.isVert ? tag.pinHook * ang.dir : 0
+		x: ang.isVert ? 0 : ang.dir * tag.pinHook,
+		y: ang.isVert ? ang.dir * tag.pinHook : 0
 	};
 
 	// position = mark + length + hook
 	var lpos = {
 		x: mpos.x + pl.x + ph.x,
-		y: mpos.y - pl.y - ph.y - (anchor.top ? tag.fontSize + 3 : 0)
+		y: mpos.y - pl.y + ph.y 
+	};
+
+	var lAnc = {
+		x: lpos.x + (anchor.left ? 3 : -3),
+		y: lpos.y + (anchor.top ? tag.fontSize : anchor.bottom ? -3 : 1)
 	};
 
 	var path = 'M ' + mpos.x + ',' + mpos.y + ' L ' + (mpos.x + pl.x) + ',' + (mpos.y - pl.y) + ' L ' + lpos.x + ',' + lpos.y;
@@ -63,7 +71,11 @@ var pin = function(pos,tag,ds) {
 		labelFS: tag.fontSize,
 		x: lpos.x,
 		y: lpos.y,
-		path: !tag.pin ? null : path
+		xL: lAnc.x,
+		yL: lAnc.y,
+		path: !tag.pin ? null : path,
+		pinColor: tag.pinColor,
+		color: tag.color
 	};
 };
 
