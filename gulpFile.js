@@ -37,7 +37,7 @@ gulp.task('page-js', function(){
 	      .bundle()
 	      .pipe(source('page.js'))
 	      .pipe(buffer())
-	  //    .pipe(uglify())
+	      .pipe(uglify())
 	      .pipe(header(headerTxt))
 	      .pipe(gulp.dest(rootdirname));
 	
