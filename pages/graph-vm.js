@@ -1,7 +1,7 @@
 let React = require('react');
 let h = require('../src/core/utils.js');
 let _ = require('underscore');
-let generator = require('./generator.js');
+let histoSeries = require('./dataH.js');
 let utils = require('../src/helpers.js');
 
 let m = {};
@@ -50,21 +50,6 @@ m.create = function(){
 			height: 400,
 			width: 550
 		};
-	};
-
-	let multiHisto = () => {
-		let data= [];
-		for(let y = 2013; y < 2017; y++){
-			for(let m = 0; m < 12; m+=3){
-				for(let n = 0; n < 1000; n++){
-					data.push({
-						x: new Date(y,m),
-						y: y === 2015 ? m < 7 ? generator.Marsaglia(1.5,2) : generator.unidev_01() * m : m < 7 ? generator.directBeta(2,5) * (12 - m) : generator.BoxMuller(5,3)
-					});
-				}
-			}
-		}
-		return data;
 	};
 
 	let pieProps = {
@@ -147,8 +132,8 @@ m.create = function(){
 			{series: dataS4, stacked: 'y'}, 
 		],
 		graphProps: [
-			{onlyMarks: true, color: 'blue',   markType: 'bar'},
-			{onlyMarks: true, color: 'red',    markType: 'bar'},
+			{onlyMarks: true, color: 'blue',	 markType: 'bar'},
+			{onlyMarks: true, color: 'red',		 markType: 'bar'},
 			{onlyMarks: true, color: 'orange', markType: 'bar'},
 			{onlyMarks: true, color: 'violet', markType: 'bar'}
 		],
@@ -174,8 +159,8 @@ m.create = function(){
 			{series: dataH('down')}
 		],
 		graphProps: [
-			{color: 'blue',   onlyMarks: true, tag: {show: true, pin: true, pinColor: 'blue'}},
-			{color: 'red',    onlyMarks: true, tag: {show: true, pinAngle: -60, pin: true, pinLength: 20, pinHook: 10}},
+			{color: 'blue',		onlyMarks: true, tag: {show: true, pin: true, pinColor: 'blue'}},
+			{color: 'red',		onlyMarks: true, tag: {show: true, pinAngle: -60, pin: true, pinLength: 20, pinHook: 10}},
 			{color: 'orange', onlyMarks: true, tag: {show: true, pin: true, pinColor: 'orange', pinAngle: -90, color: 'orange', pinHook: 0}},
 			{color: 'violet', onlyMarks: true, tag: {show: true, pinAngle: 180, pin: true}},
 //
@@ -190,16 +175,24 @@ m.create = function(){
 
 	let histoProps = _.extend(common(), {
 		name: 'Histogram',
-		data: [{type: 'Stairs', series: _.map(data, (p) => {return {value: p.y};})}],
-		graphProps: [{dropLine: {y: true}, mark: false, fill: 'lightblue', process: {type: 'histogram'}}],
+		data: [{type: 'Stairs', series: histoSeries.single}],
+		graphProps: [{dropLine: {y: true}, mark: false, fill: 'lightblue' }],
+		axisProps: {
+			ord: [{min: 0}]
+		},
 		axisOnTop: true,
 		chgSerie: '[{value}, ...]'
 	});
 
+	for(let i = 0; i < histoSeries.multi.length; i++){
+		let dp = histoSeries.multi[i];
+		dp.drop.x = new Date(dp.drop.x);
+		dp.x			= new Date(dp.x);
+	}
 	let mHistoProps = _.extend(common(), {
 		name: 'Multi_histogram',
-		data: [{series: multiHisto(), abs: {type: 'date'}}],
-		graphProps: [{markType: 'bar', onlyMarks: true, color: 'darkblue', process: {type: 'histogram', dir: 'y'}}],
+		data: [{series: histoSeries.multi, abs: {type: 'date'}}],
+		graphProps: [{markType: 'bar', onlyMarks: true, color: 'darkblue'}],
 		chgSerie: '[{x, y}, ...]'
 	});
 
@@ -238,42 +231,42 @@ m.create = function(){
 		return tmp;
 	};
 
-  let dynChart = utils.init(_.extend(common(), {
-    name: 'dyn',
-    data: [{series: [{x: 0, y:0}]}],
-    graphProps: [{onlyMarks:true, color: 'blue', markSize: 2}],
-    axisProps: {
-      abs: [{min: 0, max: pi2}],
-      ord: [{min: -1.1, max: 1.1}],
-    },
-    foreground: {
-      content: () => React.createElement('text',null,'#data points: 0'),
-      ix: 0.6,
-      iy: 0.9
-    }
-  }));
+	let dynChart = utils.init(_.extend(common(), {
+		name: 'dyn',
+		data: [{series: [{x: 0, y:0}]}],
+		graphProps: [{onlyMarks:true, color: 'blue', markSize: 2}],
+		axisProps: {
+			abs: [{min: 0, max: pi2}],
+			ord: [{min: -1.1, max: 1.1}],
+		},
+		foreground: {
+			content: () => React.createElement('text',null,'#data points: 0'),
+			ix: 0.6,
+			iy: 0.9
+		}
+	}));
 
-  let dynModel = dynChart.props().curves[0].marks[0];
-  let dynModelize = (point,idx) => _.extend(_.extend({},dynModel),{position: point, key: "Plain.0.d." + idx});
-  let dynDone = true;
-  let dynHowTo = "Using the helpers: <pre>let utils = require('reactchart/helpers');\nlet mgr = utils.init(graph proprieties here); </pre>We pass the mgr to the chart: <pre>&lt;ReactChart {...mgr} /&gt;</pre>, then we change the immutable props at <pre>mgr.props()</pre> using freezer API, and the chart updates all by itself.";
+	let dynModel = dynChart.props().curves[0].marks[0];
+	let dynModelize = (point,idx) => _.extend(_.extend({},dynModel),{position: point, key: "Plain.0.d." + idx});
+	let dynDone = true;
+	let dynHowTo = "Using the helpers: <pre>let utils = require('reactchart/helpers');\nlet mgr = utils.init(graph proprieties here); </pre>We pass the mgr to the chart: <pre>&lt;ReactChart {...mgr} /&gt;</pre>, then we change the immutable props at <pre>mgr.props()</pre> using freezer API, and the chart updates all by itself.";
 
-  let dynLaunch = () => {
-    if(!dynDone){return;}
-    dynDone = false;
-    let d = 0;
-    let oneMore = (idx) => dynChart.props().pivot()
-      .foreground.set('content',() => React.createElement('text',null,'#data points: ' + d))
-      .curves[0].marks.push(dynModelize(data[2*idx],idx));
-    let add = () => setTimeout(() => {
-      oneMore(d);
-      d++;
-      return d < data.length/2 ? add() : dynDone = true;
-    },
-    0);
-    dynChart.props().curves[0].set('marks',[]);
-    add();
-  };
+	let dynLaunch = () => {
+		if(!dynDone){return;}
+		dynDone = false;
+		let d = 0;
+		let oneMore = (idx) => dynChart.props().pivot()
+			.foreground.set('content',() => React.createElement('text',null,'#data points: ' + d))
+			.curves[0].marks.push(dynModelize(data[2*idx],idx));
+		let add = () => setTimeout(() => {
+			oneMore(d);
+			d++;
+			return d < data.length/2 ? add() : dynDone = true;
+		},
+		0);
+		dynChart.props().curves[0].set('marks',[]);
+		add();
+	};
 
 	let toShow = (props) => JSON.stringify(proc(props),null,2);
 
@@ -340,12 +333,12 @@ m.create = function(){
 			__html: parse(toShow(mHistoProps)),
 			title: 'Code'
 		},
-    dyn: dynChart,
-    dynP: {
+		dyn: dynChart,
+		dynP: {
 			__html: dynHowTo,
 			title: 'Dynamic'
-    },
-    dynLaunch: dynLaunch
+		},
+		dynLaunch: dynLaunch
 	};
 };
 
