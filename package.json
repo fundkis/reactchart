@@ -10,7 +10,7 @@
     "SVG",
     "graph"
   ],
-  "homepage": "https://fundkis.com",
+  "homepage": "https://fundkis.com/lab/reactchart",
   "dependencies": {
     "react": "^0.14.7",
     "underscore": "1.8.x",
