@@ -181,7 +181,7 @@ m.create = function(){
 			ord: [{min: 0}]
 		},
 		axisOnTop: true,
-		chgSerie: '[{value}, ...]'
+		chgSerie: '[{x, y, drop: { x }, shade, span: { y } }, ...]'
 	});
 
 	for(let i = 0; i < histoSeries.multi.length; i++){
@@ -193,7 +193,7 @@ m.create = function(){
 		name: 'Multi_histogram',
 		data: [{series: histoSeries.multi, abs: {type: 'date'}}],
 		graphProps: [{markType: 'bar', onlyMarks: true, color: 'darkblue'}],
-		chgSerie: '[{x, y}, ...]'
+		chgSerie: '[{x, y, drop: { x, y }, shade, span: { x } }, ...]'
 	});
 
 	let plainOMProps = _.extend(common(), {
