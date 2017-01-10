@@ -41,7 +41,7 @@ class ShowChart extends React.Component {
 }
 
 ```
-![First graph](readme_files/ex1.pdf)
+![First graph](readme_files/ex1.png)
 
 Then all the subtlety consists in knowing the props.
 
