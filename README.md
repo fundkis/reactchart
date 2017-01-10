@@ -1,4 +1,4 @@
-# FundKIS' immutable React-based graphics library
+# FundKIS' immutable React-based charts library
 
 This is a work of [FundKIS](http://fundkis.com) 
 to easily produce quality charts.
