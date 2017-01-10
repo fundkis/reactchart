@@ -13,9 +13,9 @@ m.init = function(rawProps,type){
 
 	var rc = {};
 
-	rc.props = () => {return freezer.get();};
+	rc.props = () => freezer.get();
 
-	rc.mgr = () => {return freezer;};
+	rc.mgr = () => freezer;
 
 	rc.toC = (point) => {
 		return {
@@ -24,6 +24,10 @@ m.init = function(rawProps,type){
 		};
 	};
 
+  rc.__preprocessed = true;
+
+
+  rc.updateGraph = (obj) => freezer.on('update',() => obj.forceUpdate());
 
 	return rc;
 

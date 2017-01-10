@@ -130,117 +130,6 @@ var validate = function(series,discard){
 
 };
 
-var preprocess = function(serie,preproc){
-
-		if(preproc.type !== 'histogram'){
-			throw new Error('Only "histogram" is known as a preprocessing: "' + preproc.type);
-		}
-
-		var equal = function(p1,p2){
-			if( utils.isDate(p1) ){
-				if( !utils.isDate(p2) ){
-					throw new Error('Inconsistent data point in preprocess');
-				}
-				return p1.getTime() === p2.getTime();
-			}else if( utils.isString(p1) ){
-				if( !utils.isString(p2) ){
-					throw new Error('Inconsistent data point in preprocess');
-				}
-				return p1 === p2;
-			}else{
-				return p1 === p2;
-			}
-		};
-
-		var out = [];
-
-		var dir = preproc.dir || 'x';
-		var otherdir =	!!dir ? dir === 'x' ? 'y' : 'x' : 'y';
-
-		var nHists = _.uniq(serie, (point) => !!point[otherdir] && !!point[otherdir].getTime ? point[otherdir].getTime() : point[otherdir]);
-		nHists = (nHists.length === 1 && _.findIndex(serie, (point) => !!point.value) !== -1 ); // by 'value'
-
-		var ind = 0;
-		var getRef = (n) => utils.isNil(serie[n][otherdir]) ? '_serie_' : serie[n][otherdir];
-		var curref = getRef(0);
-		var refBef;
-
-		var notComplete = true;
-		var u = 0;
-		var directionProps = {};
-		directionProps[dir] = 1;
-		directionProps[otherdir] = 0;
-		while(notComplete){
-			var data = _.map( _.filter(serie, (point) => nHists ? true : equal(point[otherdir],curref)),
-				(point) => nHists ? point.value : point[dir]
-			);
-			var hist = utils.math.histo.opt_histo(data);
-// drop -> bin - dx
-// value -> bin
-// shade -> prob
-			var maxProb = -1;
-			var minProb = 1e8; // should be safe...
-			var start = ind;
-			for(var d = 0; d < hist.length; d++){
-				out[ind] = {};
-				out[ind].drop = {};
-				out[ind].drop[dir] = hist[d].bin - hist[d].db;
-				out[ind].drop[otherdir] = nHists ? undefined : curref;
-				out[ind][dir] = hist[d].bin;
-				out[ind].shade = hist[d].prob;
-				out[ind][otherdir] = curref === '_serie_' ? hist[d].prob : curref;
-				if(utils.isString(curref) && curref !== '_serie_'){
-					out[ind].label = {};
-					out[ind].label[otherdir] = curref;
-				}
-				if(hist[d].prob > maxProb){
-					maxProb = hist[d].prob;
-				}
-				if(hist[d].prob < minProb){
-					minProb = hist[d].prob;
-				}
-				ind++;
-			}
-	// rescale the shade (max = 1)
-			for(var i = start; i < ind; i++){
-				out[i].shade /= maxProb;
-			}
-
-			// span
-			var first = true;
-			if(u !== 0){
-				first = false;
-				var mgr = utils.mgr(curref);
-				for(var j = start; j < ind; j++){
-					out[j].span = {};
-					out[j].span[otherdir] = utils.isString(curref) ? minProb : mgr.multiply(mgr.distance(curref,refBef),0.9);
-				}
-			}
-			refBef = curref;
-
-			notComplete = false;
-			for(var p = u; p < serie.length; p++){
-				if(!equal(curref,getRef(p))){
-					curref = serie[p][otherdir];
-					u = p;
-					notComplete = true;
-					break;
-				}
-			}
-
-			if(first){
-				var m = utils.mgr(refBef);
-				for(var k = start; k < ind; k++){
-					out[k].span = {};
-					out[k].span[otherdir] = utils.isString(curref) ? minProb : m.multiply(m.distance(curref,refBef),0.9);
-				}
-			}
-
-		}
-
-		return copySerie(out);
-};
-
 var addOffset = function(series,stacked){
 	var xoffset = [];
 	var yoffset = [];
@@ -426,8 +315,7 @@ m.process = function(rawProps){
 
 	}else{
 			// data depening on serie, geographical data only
-		var preproc = _.map(props.graphProps, (gp) => !!gp.process && !!gp.process.type ? gp.process : undefined );
-		state.series = _.map(raw, (serie,idx) =>	!!preproc[idx] ? preprocess(serie,preproc[idx]) : copySerie(serie) );
+		state.series = _.map(raw, (serie) => copySerie(serie) );
 			// offset from stacked
 		addOffset(state.series, _.map(props.data, (ser) => ser.stacked ));
 			// span and offset from Bars || yBars
@@ -615,8 +503,6 @@ m.process = function(rawProps){
 	// 6 - Curves
 	imVM.curves = vm.curves(props,state);
 
-	imVM.preprocessed = true;
-
 	var le = legender(props);
 	imVM.legend = () => le;
 
@@ -627,11 +513,10 @@ m.process = function(rawProps){
 m.processLegend = function(rawProps){
 	var props = defaultTheProps(utils.deepCp({},rawProps));
 	// data depening on serie, geographical data only
-	var preproc = _.map(props.graphProps, (gp) => !!gp.process && !!gp.process.type ? gp.process : undefined );
 	props.data = _.map(props.data, (dat,idx) =>  {
 		return {
 		type: rawProps.data[idx].type,
-		series: !!preproc[idx] ? preprocess(dat.series,preproc[idx]) : copySerie(dat.series)
+		series: copySerie(dat.series)
 		};
 	});
 

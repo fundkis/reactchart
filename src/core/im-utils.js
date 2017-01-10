@@ -48,7 +48,7 @@ m.immutable = function(obj){
 };
 
 m.freeze = function(obj,type){
-	return type === 'no' ? noFreeze(obj) : new im(obj);
+  return type === 'no' ? noFreeze(obj) : new im(obj);
 };
 
 m.isEqual = function(obj1,obj2){

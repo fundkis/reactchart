@@ -1,8 +1,7 @@
 # FundKIS' immutable React-based graphics library
 
 This is a work of [FundKIS](http://fundkis.com) 
-to easily produce quality graphics specialized in
-finance.
+to easily produce quality charts.
 
 Those graphics are produce in the [SVG](https://www.w3.org/Graphics/SVG/)
 format.
@@ -75,9 +74,7 @@ data: [{
 ```
 
 The first piece of information to provide is the data points. The simplest
-form is ```{x, y}``` with the values being either a number or a date. In the case
-of preprocessing (see [histogram](https://github.com/fk-dev/fk-graph/#Histograms))
-the _value_ proprieties provide the values we want to preprocess. The _label_ enables
+form is ```{x, y}``` with the values being either a number or a date. The _label_ enables
 to print labels instead of values at the axis' corresponding tick.
 
 It is possible to stack values, it means that the current graphic should be on top
@@ -128,7 +125,8 @@ graphProps: [{
 ]
 ```
 
-The details of the _marksProps_ are given at the [marks](https://github.com/fundkis/reactchart/#The different marks) section, the _shader_ at the [shading](https://github.com/fundkis/reactchart/#Playing with color) section.
+The details of the _marksProps_ are given at the [marks](https://github.com/fundkis/reactchart/#The different marks) section, 
+the _shader_ at the [shading](https://github.com/fundkis/reactchart/#Playing with color) section.
 
 ##### Basic
 
@@ -157,32 +155,6 @@ Note that the size has a different meaning for different marks. For more details
 
 The _shader_ enables fine color control of the marks, it has three calculations type, see
 the [shading section](https://github.com/fundkis/reactchart/#Playing with color).
-
-##### Preprocess the data
-
-the _process_ propriety enables to give the library values we want to display with some
-type of processing. As of now, only histograms are available.
-
-```
-process: {
-	dir: undefined || x || y, 
-    type: undefined || 'histogram'
-}
-```
-
-The type of preprocessing must be explicit. If the proprieties _value_ exists in the
-data, it has predominance over any other defined propriety.  If no _value_ is defined,
-a direction should be given, to define which, of the _(x,y)_ characteristics, should be
-computed.
-
-It is possible to defined several histograms for one serie. In this case, say we want to
-represent an histogram of the daily expenses every month. In that case the data should
-be formatted as follow: the _x_ (or _y_) should contains the date of the targeted month,
-_y_ (resp. _x_) the value of the expense. The direction given is _y_ (resp. _y_). Thus we have _N_ values for every month, the library will compute the optimized histogram according to 
-[Knuth](http://knuthlab.rit.albany.edu/papers/knuth-histo-public.pdf) for every month.
-The library will compute every histogram and define the point so that an _onlyMarks_ _bar_-mark
-graphic would render an histogram as seen from above.
-
 
 ##### Tag the data
 
