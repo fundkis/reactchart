@@ -3,6 +3,7 @@ var gulp = require('gulp');
 var browserify = require('browserify');
 var uglify     = require('gulp-uglify');
 var header     = require('gulp-header');
+var replace    = require('gulp-replace');
 
 var collapse   = require('bundle-collapser/plugin');
 var source     = require('vinyl-source-stream');
@@ -119,6 +120,17 @@ gulp.task('min', function(){
   bundler = bundler.on('update', rebundle);
   return rebundle();
 });
+
+////////////
+// jsx -> js in require
+///////////
+
+gulp.task('jsx2js', () => {
+  return gulp.src(['.lib/*.js',"./lib/**/*.js"])
+    .pipe(replace(/\.jsx/g,'.js'))
+    .pipe(gulp.dest('./lib'));
+});
+
 
 
 gulp.task('dist',['full','min'],() => 0);

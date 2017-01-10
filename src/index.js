@@ -1,1 +1,1 @@
-module.exports = require('./src/Graph.jsx');
+module.exports = require('./Graph.jsx');
