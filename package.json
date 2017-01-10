@@ -2,7 +2,7 @@
   "author": "Fund KIS",
   "name": "reactchart",
   "licence": "MIT",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "a React-based chart library, written from scratch. It is specialized in financial charts.",
   "keywords": [
     "React",
