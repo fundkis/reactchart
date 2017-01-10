@@ -54,8 +54,8 @@ m.create = function(){
 
 	let multiHisto = () => {
 		let data= [];
-		for(let y = 2015; y < 2017; y++){
-			for(let m = 0; m < 12; m++){
+		for(let y = 2013; y < 2017; y++){
+			for(let m = 0; m < 12; m+=3){
 				for(let n = 0; n < 1000; n++){
 					data.push({
 						x: new Date(y,m),
