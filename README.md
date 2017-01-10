@@ -1,14 +1,16 @@
-# FundKIS' immutable React-based charts library
+# Fund KIS' immutable React-based charts library
 
-This is a work of [FundKIS](http://fundkis.com) 
-to easily produce quality charts.
+This is a work of [Fund KIS](http://fundkis.com/lab/react-chart) to 
+easily produce quality charts.
 
 Those graphics are produce in the [SVG](https://www.w3.org/Graphics/SVG/)
 format.
 
+More exemples are available at [the Fund KIS github page](https://fundkis.github.io/reactchart).
+
 ## Dependencies
 
-It's based on [React](http://facebook.github.io/react/)
+This library is based on [React](http://facebook.github.io/react/)
 and [Freezer](https://github.com/arqex/freezer).
 
 ## Usage
@@ -17,7 +19,7 @@ Let's start with a minimal example:
 
 ```
 let React = require('react');
-let Graph = require('fk-graph');
+let Chart = require('reactchart');
 
 let props = {
 	width: 600, // px
@@ -28,19 +30,20 @@ let props = {
     graphProps: [{color: 'blue'}]
 };
 
-class ShowGraph extends React.Component {
+class ShowChart extends React.Component {
 
 	render(){
     	return <div>
         	<h1>My first graph!</h2>
-            <Graph {...props}/>
+            <Chart {...props}/>
         </div>;
     }
 }
 
 ```
+[First graph](readme_files/ex1.pdf)
 
-All the subtlety consists in knowing the props.
+Then all the subtlety consists in knowing the props.
 
 ### Proprieties you should know about
 
@@ -110,23 +113,21 @@ graphProps: [{
 	// for a dot, or anything.
 	markProps: {},
 	shader: undefined, // playing with colors
-	process: undefined, // playing with data {dir: x || y, type: 'histogram'}
 	tag: {
 		show: false, // show the tag
 		print: (t) => t + '', // if something special needs to be done
 		fontSize: 10, // any number
 		pin: true or false, // show the pin
-        pinColor: 'black', 
+    pinColor: 'black', 
 		pinLength: 10, // 10 px as pin length by default
 		pinAngle: 90, // direction fo pin
-        pinHook: 3
+    pinHook: 3
 	}
 }, ...
 ]
 ```
-
-The details of the _marksProps_ are given at the [marks](https://github.com/fundkis/reactchart/#The different marks) section, 
-the _shader_ at the [shading](https://github.com/fundkis/reactchart/#Playing with color) section.
+The details of the _marksProps_ are given at the [marks](https://github.com/fundkis/reactchart/#The-different-marks) section, 
+the _shader_ at the [shading](https://github.com/fundkis/reactchart/#Playing-with-color) section.
 
 ##### Basic
 
@@ -137,7 +138,7 @@ drop values, which by default are 0. This is the mathematical definition of the 
 
 ##### dropLine
 
-The _dropLine_ boolean is used to print the drop lines (usefull mostly for histograms).
+The _dropLine_ boolean is used to print the drop lines.
 
 ##### The marks controller at high level
 
@@ -149,7 +150,7 @@ A few mark controllers are available at this level of description. The most comm
 
 The different types available are currently _dot_, _square_ and _bar_.
 Note that the size has a different meaning for different marks. For more details, see the
-[description of the marks](https://github.com/fundis/reactchart/#The different marks).
+[description of the marks](https://github.com/fundis/reactchart/#The-different-marks).
 
 ##### shader
 
@@ -179,132 +180,3 @@ length, angle, and hook. The tag itself is given by a _tag_ propriety in the dat
 ### Some more playabilities (background, foreground, preprocess)
 #### Histograms
 ### Immutability and optimisation
-
-
-À l'exception des marques, toutes les propriétés
-sont listées dans le fichier _core/proprieties.cs.js_.
-
-Les propriétés sont à comprendre en terme de trois différentes
-catégories :
-- les données d'un graphique ;
-- le style d'un graphique ;
-- les axes.
-
-#### Les données d'un graphique
-
-```
-data: [{
-	serie: [
-		{
-			x: Date || Number || String, 
-			y: Date || Number || String
-		}
-	],
-	abs: {
-		type: String,
-		axis: String
-	},
-	ord: {
-		type: String,
-		axis: String
-	},
-	stacked: Boolean
-}]
-```
-
-Les données comprennent un ensemble de points ```[{x, y}]```
-ainsi que quelques indications structurantes, comme les axes
-sur lesquels sont projetés ces points (objects ```abs``` et 
-```ord```). Les valeurs peuvent être des nombres, des dates
-(l'object javascript **Date**) ou un label.
-
-Les objects ```abs``` et ```ord``` codent pour, respectivement,
-l'abscisse et l'ordonnée du graphique. Le ```type``` est soit
-_number_ soit _date_, un label sera remplacé automatiquement par
-son index, soit un nombre. Le placement des axes est _top_ ou 
-_bottom_ pour une abscisse et _left_ ou _right_ pour une
-ordonnée.
-
-##### Résumé
-
-Clé      | Valeurs possibles  | Défaut
----------|------------------- | 
-abs.type | _number_ ou _date_ | **number**
-abs.axis | _bottom_ ou _top_  | **bottom**
-ord.type | _number_ ou _date_ | **number**
-ord.axis | _left_ ou _right_  | **left**
-stacked  | _true_, _false_    | **undefined** (équivalent _false_)
-
-#### Les styles d'un graphique
-
-```
-	graphProps: [{
-		color: String,
-		width: Number,
-		fill: Number || 'none',
-		mark: Boolean,
-		markColor: String,
-		markSize: Number,
-		markType: String,
-		onlyMarks: Boolean,
-		shader: undefined, 
-		process: undefined 
-	}]
-```
-
-Un graphique se caractérise par une couleur (```color```),
-une épaisseur de trait (```width```) ainsi que des
-marques. Il est possible d'avoir une couleur différente
-pour les marques (```markColor```), de n'afficher que
-celles-ci (```onlyMarks```) et de déterminer leur
-taille (```markSize```). Chaque marque peut aussi
-avoir une description plus fine spécifique, auquel
-cas un objet ```markProps``` contenant
-cette définition sera ajouté au propriétés
-(voir la section sur les [marques](https://github.com/fk-hb/fk-js/tree/develop/src/fkdb/server/src/svg#les-differents-type-de-marques))
-
-Clés      | Valeurs possibles  | Défaut
-----      | ------------------ |  -----
-color     | toute couleur html | noir
-width     | tout nombre        | **1**
-fill      | toute couleur html ou _'none'_ | **'none'**
-mark      | _true_ ou _false_  | _false_
-markColor | toute couleur htlm | **undefined** (équivalent ```color```)
-markSize  | tout nombre        | **3**
-markType  | _'dot'_ ou _'bar'_ | **'dot'**
-onlyMarks | _true_ ou _false_  | **false**
-shader    | objet [_shader_](https://github.com/fk-hb/fk-js/tree/develop/src/fkdb/server/src/svg#shader)  | **undefined**
-process   | objet [_process_](https://github.com/fk-hb/fk-js/tree/develop/src/fkdb/server/src/svg#shader) | **undefined**
-
-##### Shader
-
-```
-shader: {
-	type: String,
-	computation: String,
-	factor: [Number],
-	options: {
-		colors: [String]
-	}
-}
-```
-
-##### Process
-
-```
-process: {
-	type: String,
-	dir: String
-}
-```
-
-## Les différents type de graphiques
-
-* Graphique simple (**Plain**)
-* Histogramme (**Stairs**)
-* Barres (**Bars**)
-
-## Les différents type de marques
-
-* Des disques (**dot**)
-* Des rectangles (**bar**)
