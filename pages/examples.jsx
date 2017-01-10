@@ -4,8 +4,12 @@ let Graph = require('../src/Graph.jsx');
 
 let _ = require('underscore');
 
-//let ReactDOMServer = require('react-dom/server');
-//let file = "data:text/svg;charset=UTF-8," + encodeURIComponent(ReactDOMServer.renderToString(<Graph {...props}/>));
+/*
+let filterReact = (str) => str.replace(/data-react[\w-]*="[\w\.:\$=]*"/g,'').replace(/<noscript *>/g,'').replace(/<\/noscript *>/g,'');
+let ReactDOMServer = require('react-dom/server');
+let file = (props) => "data:text/svg;charset=UTF-8," + encodeURIComponent(filterReact(ReactDOMServer.renderToString(<Graph {...props}/>)));
+let btn = (props,name) => <a href={file(props)} className='btn btn-primary' download={name}>{name}</a>;
+*/
 
 let printStr = (state,key) => <div className='col-md-6'>
 		<Show state={state[key + 'P']}>
