@@ -1,4 +1,4 @@
-/* 2017- generated at Tue Jan 10 2017 14:34:10 GMT+0100 (CET)
+/* 2017- generated at Tue Jan 10 2017 16:02:16 GMT+0100 (CET)
 */(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var Freezer = require(3);
 module.exports = Freezer;
@@ -1097,75 +1097,6 @@ var Utils = {
 module.exports = Utils;
 
 },{}],7:[function(require,module,exports){
-// transliterated from the python snippet here:
-// http://en.wikipedia.org/wiki/Lanczos_approximation
-
-var g = 7;
-var p = [
-    0.99999999999980993,
-    676.5203681218851,
-    -1259.1392167224028,
-    771.32342877765313,
-    -176.61502916214059,
-    12.507343278686905,
-    -0.13857109526572012,
-    9.9843695780195716e-6,
-    1.5056327351493116e-7
-];
-
-var g_ln = 607/128;
-var p_ln = [
-    0.99999999999999709182,
-    57.156235665862923517,
-    -59.597960355475491248,
-    14.136097974741747174,
-    -0.49191381609762019978,
-    0.33994649984811888699e-4,
-    0.46523628927048575665e-4,
-    -0.98374475304879564677e-4,
-    0.15808870322491248884e-3,
-    -0.21026444172410488319e-3,
-    0.21743961811521264320e-3,
-    -0.16431810653676389022e-3,
-    0.84418223983852743293e-4,
-    -0.26190838401581408670e-4,
-    0.36899182659531622704e-5
-];
-
-// Spouge approximation (suitable for large arguments)
-function lngamma(z) {
-
-    if(z < 0) return Number('0/0');
-    var x = p_ln[0];
-    for(var i = p_ln.length - 1; i > 0; --i) x += p_ln[i] / (z + i);
-    var t = z + g_ln + 0.5;
-    return .5*Math.log(2*Math.PI)+(z+.5)*Math.log(t)-t+Math.log(x)-Math.log(z);
-}
-
-module.exports = function gamma (z) {
-    if (z < 0.5) {
-        return Math.PI / (Math.sin(Math.PI * z) * gamma(1 - z));
-    }
-    else if(z > 100) return Math.exp(lngamma(z));
-    else {
-        z -= 1;
-        var x = p[0];
-        for (var i = 1; i < g + 2; i++) {
-            x += p[i] / (z + i);
-        }
-        var t = z + g + 0.5;
-
-        return Math.sqrt(2 * Math.PI)
-            * Math.pow(t, z + 0.5)
-            * Math.exp(-t)
-            * x
-        ;
-    }
-};
-
-module.exports.log = lngamma;
-
-},{}],8:[function(require,module,exports){
 //! moment.js
 //! version : 2.11.2
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
@@ -4772,7 +4703,7 @@ module.exports.log = lngamma;
     return _moment;
 
 }));
-},{}],9:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 //     Underscore.js 1.8.3
 //     http://underscorejs.org
 //     (c) 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -6322,13 +6253,13 @@ module.exports.log = lngamma;
   }
 }.call(this));
 
-},{}],10:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 'use strict';
 
 var React = require("react");
-var Axe = require(18);
-var imUtils = require(27);
-var _ = require(9);
+var Axe = require(17);
+var imUtils = require(26);
+var _ = require(8);
 
 /*
 	{
@@ -6367,12 +6298,12 @@ var Axes = React.createClass({
 
 module.exports = Axes;
 
-},{"18":18,"27":27,"9":9,"react":"react"}],11:[function(require,module,exports){
+},{"17":17,"26":26,"8":8,"react":"react"}],10:[function(require,module,exports){
 'use strict';
 
 var React = require("react");
 
-var imUtils = require(27);
+var imUtils = require(26);
 
 /*
 	{
@@ -6408,11 +6339,11 @@ var Background = React.createClass({
 
 module.exports = Background;
 
-},{"27":27,"react":"react"}],12:[function(require,module,exports){
+},{"26":26,"react":"react"}],11:[function(require,module,exports){
 'use strict';
 
 var React = require("react");
-var imUtils = require(27);
+var imUtils = require(26);
 
 var Cadre = React.createClass({
 	displayName: 'Cadre',
@@ -6428,13 +6359,13 @@ var Cadre = React.createClass({
 
 module.exports = Cadre;
 
-},{"27":27,"react":"react"}],13:[function(require,module,exports){
+},{"26":26,"react":"react"}],12:[function(require,module,exports){
 'use strict';
 
 var React = require("react");
-var _ = require(9);
-var grapher = require(44);
-var imUtils = require(27);
+var _ = require(8);
+var grapher = require(43);
+var imUtils = require(26);
 
 /*
 	{
@@ -6464,18 +6395,18 @@ var Curves = React.createClass({
 
 module.exports = Curves;
 
-},{"27":27,"44":44,"9":9,"react":"react"}],14:[function(require,module,exports){
+},{"26":26,"43":43,"8":8,"react":"react"}],13:[function(require,module,exports){
 'use strict';
 
 var React = require("react");
-var Axes = require(10);
-var Curves = require(13);
-var Cadre = require(12);
-var Background = require(11);
-var Foreground = require(15);
-var Title = require(17);
+var Axes = require(9);
+var Curves = require(12);
+var Cadre = require(11);
+var Background = require(10);
+var Foreground = require(14);
+var Title = require(16);
 
-var imUtils = require(27);
+var imUtils = require(26);
 
 /*
 	{
@@ -6509,7 +6440,7 @@ var Graph = React.createClass({
 
 module.exports = Graph;
 
-},{"10":10,"11":11,"12":12,"13":13,"15":15,"17":17,"27":27,"react":"react"}],15:[function(require,module,exports){
+},{"10":10,"11":11,"12":12,"14":14,"16":16,"26":26,"9":9,"react":"react"}],14:[function(require,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) {
@@ -6523,9 +6454,9 @@ var _extends = Object.assign || function (target) {
 };
 
 var React = require("react");
-var utils = require(36);
-var imUtils = require(27);
-var sptr = require(34);
+var utils = require(35);
+var imUtils = require(26);
+var sptr = require(33);
 
 var Foreground = React.createClass({
 	displayName: 'Foreground',
@@ -6551,7 +6482,7 @@ var Foreground = React.createClass({
 
 module.exports = Foreground;
 
-},{"27":27,"34":34,"36":36,"react":"react"}],16:[function(require,module,exports){
+},{"26":26,"33":33,"35":35,"react":"react"}],15:[function(require,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) {
@@ -6565,10 +6496,10 @@ var _extends = Object.assign || function (target) {
 };
 
 var React = require("react");
-var Drawer = require(14);
+var Drawer = require(13);
 
-var core = require(31);
-var _ = require(9);
+var core = require(30);
+var _ = require(8);
 
 var Graph = React.createClass({
 	displayName: 'Graph',
@@ -6641,12 +6572,12 @@ Graph.Legend = React.createClass({
 
 module.exports = Graph;
 
-},{"14":14,"31":31,"9":9,"react":"react"}],17:[function(require,module,exports){
+},{"13":13,"30":30,"8":8,"react":"react"}],16:[function(require,module,exports){
 'use strict';
 
 var React = require("react");
 
-var imUtils = require(27);
+var imUtils = require(26);
 
 var Title = React.createClass({
 	displayName: 'Title',
@@ -6664,14 +6595,14 @@ var Title = React.createClass({
 
 module.exports = Title;
 
-},{"27":27,"react":"react"}],18:[function(require,module,exports){
+},{"26":26,"react":"react"}],17:[function(require,module,exports){
 'use strict';
 
 var React = require("react");
-var Tick = require(21);
-var AxisLine = require(19);
-var _ = require(9);
-var imUtils = require(27);
+var Tick = require(20);
+var AxisLine = require(18);
+var _ = require(8);
+var imUtils = require(26);
 
 /*
 	{
@@ -6701,7 +6632,7 @@ var Axe = React.createClass({
 
 module.exports = Axe;
 
-},{"19":19,"21":21,"27":27,"9":9,"react":"react"}],19:[function(require,module,exports){
+},{"18":18,"20":20,"26":26,"8":8,"react":"react"}],18:[function(require,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) {
@@ -6715,9 +6646,9 @@ var _extends = Object.assign || function (target) {
 };
 
 var React = require("react");
-var Label = require(20);
-var utils = require(36);
-var imUtils = require(27);
+var Label = require(19);
+var utils = require(35);
+var imUtils = require(26);
 
 /*
 	{
@@ -6829,7 +6760,7 @@ var AxisLine = React.createClass({
 
 module.exports = AxisLine;
 
-},{"20":20,"27":27,"36":36,"react":"react"}],20:[function(require,module,exports){
+},{"19":19,"26":26,"35":35,"react":"react"}],19:[function(require,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) {
@@ -6844,8 +6775,8 @@ var _extends = Object.assign || function (target) {
 
 var React = require("react");
 
-var space = require(34);
-var imUtils = require(27);
+var space = require(33);
+var imUtils = require(26);
 
 /*
 	{
@@ -6897,7 +6828,7 @@ var Label = React.createClass({
 
 module.exports = Label;
 
-},{"27":27,"34":34,"react":"react"}],21:[function(require,module,exports){
+},{"26":26,"33":33,"react":"react"}],20:[function(require,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) {
@@ -6911,10 +6842,10 @@ var _extends = Object.assign || function (target) {
 };
 
 var React = require("react");
-var Label = require(20);
+var Label = require(19);
 
-var sp = require(34);
-var imUtils = require(27);
+var sp = require(33);
+var imUtils = require(26);
 
 /*
 	{
@@ -7019,10 +6950,10 @@ var Tick = React.createClass({
 
 module.exports = Tick;
 
-},{"20":20,"27":27,"34":34,"react":"react"}],22:[function(require,module,exports){
+},{"19":19,"26":26,"33":33,"react":"react"}],21:[function(require,module,exports){
 'use strict';
 
-var utils = require(36);
+var utils = require(35);
 
 /*
 	{
@@ -7203,12 +7134,12 @@ m.VM = function (ds, props, partnerDs, dir) {
 
 module.exports = m;
 
-},{"36":36}],23:[function(require,module,exports){
+},{"35":35}],22:[function(require,module,exports){
 'use strict';
 
-var _ = require(9);
-var utils = require(36);
-var ticker = require(35);
+var _ = require(8);
+var utils = require(35);
+var ticker = require(34);
 
 /*
 	{
@@ -7441,23 +7372,23 @@ m.VM = function (ds, partner, bounds, dir, locProps, comFac, axisKey) {
 
 module.exports = m;
 
-},{"35":35,"36":36,"9":9}],24:[function(require,module,exports){
+},{"34":34,"35":35,"8":8}],23:[function(require,module,exports){
 'use strict';
 
-var _ = require(9);
-var utils = require(36);
-var shader = require(25);
-var axisLine = require(22);
-var ticks = require(23);
-var plainVM = require(46);
-var barChartVM = require(43);
-var stairsVM = require(47);
-var pieVM = require(45);
-var dotVM = require(54);
-var squareVM = require(56);
-var barVM = require(53);
+var _ = require(8);
+var utils = require(35);
+var shader = require(24);
+var axisLine = require(21);
+var ticks = require(22);
+var plainVM = require(45);
+var barChartVM = require(42);
+var stairsVM = require(46);
+var pieVM = require(44);
+var dotVM = require(53);
+var squareVM = require(55);
+var barVM = require(52);
 // pin
-var pinMgr = require(55);
+var pinMgr = require(54);
 
 // graph
 var graphVM = {};
@@ -7653,11 +7584,11 @@ m.curves = function (props, state) {
 
 module.exports = m;
 
-},{"22":22,"23":23,"25":25,"36":36,"43":43,"45":45,"46":46,"47":47,"53":53,"54":54,"55":55,"56":56,"9":9}],25:[function(require,module,exports){
+},{"21":21,"22":22,"24":24,"35":35,"42":42,"44":44,"45":45,"46":46,"52":52,"53":53,"54":54,"55":55,"8":8}],24:[function(require,module,exports){
 'use strict';
 
-var _ = require(9);
-var utils = require(36);
+var _ = require(8);
+var utils = require(35);
 
 var palette = ["#3A83F1", "#DC3FF1", "#F2693F", "#8AF23F", "#758d99", "#F1DC41", "#AC310C", "#40C8F2", "#980DAB", "#F6799B", "#9679F6", "#EE2038", "#00994D", "#758D99", "#F141AD", "#0C86AC", "#C729C7", "#D26F13", "#092508", "#FFBACD", "#7CB603", "#4088EC", "#46002C", "#FF5478", "#43859E", "#72680F", "#97E6EC", "#F777BE", "#AE241F", "#35457B", "#CCA9EF", "#4A0202", "#DDDF14", "#870062", "#B573F2", "#08B83C", "#F59288", "#056EFC", "#2D1B19", "#3AA676", "#2E5045", "#AFE9AA", "#F3D6C2", "#69F393", "#BFFA57", "#FA2C4B", "#355801", "#258B85", "#845100", "#14546B", "#034A29", "#B81288", "#F64BB2", "#D1C2EC", "#83A3F0", "#FEBCA3", "#362463", "#FDB2EA", "#FD981F", "#49F9DF", "#2490C0", "#282807", "#26C186", "#8D54CE", "#6D1662", "#57F2BD"];
 
@@ -7737,7 +7668,7 @@ var fun = function fun(shade, points) {
 
 module.exports = fun;
 
-},{"36":36,"9":9}],26:[function(require,module,exports){
+},{"35":35,"8":8}],25:[function(require,module,exports){
 'use strict';
 
 var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -7748,8 +7679,8 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
 	return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);
 };
 
-var moment = require(8);
-var _ = require(9);
+var moment = require(7);
+var _ = require(8);
 var im = {
 	isImm: function isImm(p) {
 		return (typeof p === 'undefined' ? 'undefined' : _typeof(p)) === 'object' ? Object.isFrozen(p) : true;
@@ -8263,7 +8194,7 @@ m.type = 'date';
 
 module.exports = m;
 
-},{"8":8,"9":9}],27:[function(require,module,exports){
+},{"7":7,"8":8}],26:[function(require,module,exports){
 'use strict';
 
 var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -8274,7 +8205,7 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
 	return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);
 };
 
-var utils = require(36);
+var utils = require(35);
 var im = require(1);
 
 var deepEqual = function deepEqual(obj1, obj2) {
@@ -8338,14 +8269,14 @@ m.isEqual = function (obj1, obj2) {
 
 module.exports = m;
 
-},{"1":1,"36":36}],28:[function(require,module,exports){
+},{"1":1,"35":35}],27:[function(require,module,exports){
 'use strict';
 
 var React = require("react");
-var _ = require(9);
+var _ = require(8);
 
-var iconer = require(48);
-var color = require(25);
+var iconer = require(47);
+var color = require(24);
 
 var process = function process(props) {
 
@@ -8409,8 +8340,8 @@ var process = function process(props) {
 
 module.exports = process;
 
-},{"25":25,"48":48,"9":9,"react":"react"}],29:[function(require,module,exports){
-'use strict';
+},{"24":24,"47":47,"8":8,"react":"react"}],28:[function(require,module,exports){
+"use strict";
 
 /////////////////////
 /// misc
@@ -8457,149 +8388,13 @@ misc.isZero = function (a, coef) {
 	return Math.abs(a) < coef * relEps;
 };
 
-////////////////////////////
-//// histogram
-///////////////////
-var gamm = require(7);
-
-/*
-  Optimal binned 1-D histogram from 
-  ``Optimal Data-Based Binning for Histograms'', Kevin H. Knuth
-  knuthlab.rit.albany.edu/index.php/Products/Paper (paper of 2006)
-
-
-  The idea is to compute the log entropy and to find the max.
-  It implies that the binning adds the minimum amount of information
-  with respect to the sample.
-
-  ** sample of $N$ values
-  ** $m$ is the number of bins
-  ** $c_i$ is the number of values in bin $i$
-
-  For a sample $\{x\}$ of values, we note $\max_x$ the maximum value of
-  the sample, $\min_x$ the minimum. $x_i$ denotes all the values contained
-  in bin $i$. We have:
-  \[
-     P(X \in x_i) = \frac{m}{\max_x - \min_x}  \frac{c_i + \frac{1}{2}}{N + \frac{m}{2}}
-  \]
-  \[
-     \Delta P(X \in x_i) = \frac{m}{\max_x - \min_x} \sqrt{\frac{ (c_i + \frac{1}{2}) ( N - c_i + \frac{m - 1}{2} )}
-                                                                { ( N + \frac{m}{2} + 1) (N + \frac{m}{2})^2 }
-                                                          }
-  \]
-
-  The natural logarithm of the entropy of the histogram is given by:
-  \[
-     \ln(S) = N  \ln(m) + \ln\left(\Gamma(\frac{m}{2})\right) - \ln\left(\Gamma(N + \frac{m}{2})\right) - m \ln\left(\Gamma(\frac{1}{2})\right)
-              + \sum_{i = 1}^m \ln\left(\Gamma(c_i + \frac{1}{2})\right) 
-  \]
-
-
-  À comparer avec le code actuel, côté client:
-   fkdb/public/risk/riskHistograms.js
-*/
-
-var histo = {};
-
-histo.opt_histo = function (echant) {
-	// return optimal binned histo between 5 and 100 bins
-
-	var opt_hist = [];
-
-	if (!echant || echant.length === 0) {
-
-		opt_hist.push({
-			bin: 0,
-			db: 0,
-			prob: 0,
-			dprob: 0,
-			count: 0
-		});
-	} else {
-
-		// local variables
-		var log_entropy;
-		var count_opt;
-		var min = Math.min.apply(null, echant);
-		var max = Math.max.apply(null, echant);
-		var v = max - min;
-
-		// Dirac
-		if (misc.isZero(v)) {
-
-			opt_hist.push({
-				bin: min,
-				db: 0,
-				prob: 1,
-				dprob: 0,
-				count: echant.length
-			});
-		} else {
-			// the histogram algorithm
-			var hist = function hist(sample, nBin) {
-				// nBin is an integer
-				var dx = (max - min) / nBin;
-
-				var histo_count = [];
-
-				for (var i = 0; i < nBin; i++) {
-					// setting the bins
-					histo_count.push({
-						bin: min + i * dx,
-						count: 0
-					});
-				}
-
-				for (i = 0; i < sample.length; i++) {
-					//populating the bins
-					var k = Math.min(Math.floor((sample[i] - min) / dx), nBin - 1);
-					histo_count[k].count++;
-				}
-
-				return histo_count;
-			};
-
-			// the scan
-			for (var bin = 5; bin < 101; bin++) {
-				// 5 - 100 scan
-				var h = hist(echant, bin);
-
-				var val = echant.length * Math.log(bin) + gamm.log(bin * 0.5) - gamm.log(echant.length + bin * 0.5) - bin * gamm.log(0.5);
-				for (var i = 0; i < bin; i++) {
-					val += gamm.log(h[i].count + 0.5);
-				}
-				if (!log_entropy || log_entropy < val) {
-					count_opt = h;
-					log_entropy = val;
-				}
-			}
-
-			// between 5 and 100, 0 and 1 necessarily exists
-			var dx = count_opt[1].bin - count_opt[0].bin;
-			// the final output
-			for (var j = 0; j < count_opt.length; j++) {
-				opt_hist.push({
-					bin: count_opt[j].bin,
-					db: dx,
-					prob: count_opt.length / v * (count_opt[j].count + 0.5) / (echant.length + count_opt.length * 0.5),
-					dprob: count_opt.length / v * Math.sqrt((count_opt[j].count + 0.5) * (echant.length - count_opt[j].count + (count_opt.length - 1) * 0.5) / (echant.length + count_opt.length * 0.5 + 1) / ((echant.length + count_opt.length * 0.5) * (echant.length + count_opt.length * 0.5))),
-					count: count_opt[j].count
-				});
-			}
-		}
-	}
-
-	return opt_hist;
-};
-
 var m = {};
 
-m.histo = histo;
 m.misc = misc;
 
 module.exports = m;
 
-},{"7":7}],30:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 'use strict';
 
 var pow = Math.pow,
@@ -8806,16 +8601,16 @@ m.type = 'number';
 
 module.exports = m;
 
-},{}],31:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 'use strict';
 
-var _ = require(9);
-var space = require(33);
-var utils = require(36);
-var gProps = require(32);
-var vm = require(24);
-var im = require(27);
-var legender = require(28);
+var _ = require(8);
+var space = require(32);
+var utils = require(35);
+var gProps = require(31);
+var vm = require(23);
+var im = require(26);
+var legender = require(27);
 
 var defaultTheProps = function defaultTheProps(props) {
 
@@ -8953,124 +8748,6 @@ var validate = function validate(series, discard) {
 	}
 
 	return true;
-};
-
-var preprocess = function preprocess(serie, preproc) {
-
-	if (preproc.type !== 'histogram') {
-		throw new Error('Only "histogram" is known as a preprocessing: "' + preproc.type);
-	}
-
-	var equal = function equal(p1, p2) {
-		if (utils.isDate(p1)) {
-			if (!utils.isDate(p2)) {
-				throw new Error('Inconsistent data point in preprocess');
-			}
-			return p1.getTime() === p2.getTime();
-		} else if (utils.isString(p1)) {
-			if (!utils.isString(p2)) {
-				throw new Error('Inconsistent data point in preprocess');
-			}
-			return p1 === p2;
-		} else {
-			return p1 === p2;
-		}
-	};
-
-	var out = [];
-
-	var dir = preproc.dir || 'x';
-	var otherdir = !!dir ? dir === 'x' ? 'y' : 'x' : 'y';
-
-	var nHists = _.uniq(serie, function (point) {
-		return !!point[otherdir] && !!point[otherdir].getTime ? point[otherdir].getTime() : point[otherdir];
-	});
-	nHists = nHists.length === 1 && _.findIndex(serie, function (point) {
-		return !!point.value;
-	}) !== -1; // by 'value'
-
-	var ind = 0;
-	var getRef = function getRef(n) {
-		return utils.isNil(serie[n][otherdir]) ? '_serie_' : serie[n][otherdir];
-	};
-	var curref = getRef(0);
-	var refBef;
-
-	var notComplete = true;
-	var u = 0;
-	var directionProps = {};
-	directionProps[dir] = 1;
-	directionProps[otherdir] = 0;
-	while (notComplete) {
-		var data = _.map(_.filter(serie, function (point) {
-			return nHists ? true : equal(point[otherdir], curref);
-		}), function (point) {
-			return nHists ? point.value : point[dir];
-		});
-		var hist = utils.math.histo.opt_histo(data);
-		// drop -> bin - dx
-		// value -> bin
-		// shade -> prob
-		var maxProb = -1;
-		var minProb = 1e8; // should be safe...
-		var start = ind;
-		for (var d = 0; d < hist.length; d++) {
-			out[ind] = {};
-			out[ind].drop = {};
-			out[ind].drop[dir] = hist[d].bin - hist[d].db;
-			out[ind].drop[otherdir] = nHists ? undefined : curref;
-			out[ind][dir] = hist[d].bin;
-			out[ind].shade = hist[d].prob;
-			out[ind][otherdir] = curref === '_serie_' ? hist[d].prob : curref;
-			if (utils.isString(curref) && curref !== '_serie_') {
-				out[ind].label = {};
-				out[ind].label[otherdir] = curref;
-			}
-			if (hist[d].prob > maxProb) {
-				maxProb = hist[d].prob;
-			}
-			if (hist[d].prob < minProb) {
-				minProb = hist[d].prob;
-			}
-			ind++;
-		}
-		// rescale the shade (max = 1)
-		for (var i = start; i < ind; i++) {
-			out[i].shade /= maxProb;
-		}
-
-		// span
-		var first = true;
-		if (u !== 0) {
-			first = false;
-			var mgr = utils.mgr(curref);
-			for (var j = start; j < ind; j++) {
-				out[j].span = {};
-				out[j].span[otherdir] = utils.isString(curref) ? minProb : mgr.multiply(mgr.distance(curref, refBef), 0.9);
-			}
-		}
-		refBef = curref;
-
-		notComplete = false;
-		for (var p = u; p < serie.length; p++) {
-			if (!equal(curref, getRef(p))) {
-				curref = serie[p][otherdir];
-				u = p;
-				notComplete = true;
-				break;
-			}
-		}
-
-		if (first) {
-			var m = utils.mgr(refBef);
-			for (var k = start; k < ind; k++) {
-				out[k].span = {};
-				out[k].span[otherdir] = utils.isString(curref) ? minProb : m.multiply(m.distance(curref, refBef), 0.9);
-			}
-		}
-	}
-
-	return copySerie(out);
 };
 
 var addOffset = function addOffset(series, stacked) {
@@ -9272,11 +8949,8 @@ m.process = function (rawProps) {
 		});
 	} else {
 		// data depening on serie, geographical data only
-		var preproc = _.map(props.graphProps, function (gp) {
-			return !!gp.process && !!gp.process.type ? gp.process : undefined;
-		});
-		state.series = _.map(raw, function (serie, idx) {
-			return !!preproc[idx] ? preprocess(serie, preproc[idx]) : copySerie(serie);
+		state.series = _.map(raw, function (serie) {
+			return copySerie(serie);
 		});
 		// offset from stacked
 		addOffset(state.series, _.map(props.data, function (ser) {
@@ -9480,8 +9154,6 @@ m.process = function (rawProps) {
 	// 6 - Curves
 	imVM.curves = vm.curves(props, state);
 
-	imVM.preprocessed = true;
-
 	var le = legender(props);
 	imVM.legend = function () {
 		return le;
@@ -9493,13 +9165,10 @@ m.process = function (rawProps) {
 m.processLegend = function (rawProps) {
 	var props = defaultTheProps(utils.deepCp({}, rawProps));
 	// data depening on serie, geographical data only
-	var preproc = _.map(props.graphProps, function (gp) {
-		return !!gp.process && !!gp.process.type ? gp.process : undefined;
-	});
 	props.data = _.map(props.data, function (dat, idx) {
 		return {
 			type: rawProps.data[idx].type,
-			series: !!preproc[idx] ? preprocess(dat.series, preproc[idx]) : copySerie(dat.series)
+			series: copySerie(dat.series)
 		};
 	});
 
@@ -9508,15 +9177,15 @@ m.processLegend = function (rawProps) {
 
 module.exports = m;
 
-},{"24":24,"27":27,"28":28,"32":32,"33":33,"36":36,"9":9}],32:[function(require,module,exports){
+},{"23":23,"26":26,"27":27,"31":31,"32":32,"35":35,"8":8}],31:[function(require,module,exports){
 'use strict';
 
 /*
 	all the proprieties
 */
 
-var _ = require(9);
-var utils = require(36);
+var _ = require(8);
+var utils = require(35);
 
 // defaults for marks
 var marks = {};
@@ -9833,7 +9502,7 @@ m.marksDefault = function (key) {
 
 module.exports = m;
 
-},{"36":36,"9":9}],33:[function(require,module,exports){
+},{"35":35,"8":8}],32:[function(require,module,exports){
 'use strict';
 
 /*
@@ -9842,8 +9511,8 @@ module.exports = m;
  * ds is { c : {min, max}, d: {min,max}}
  */
 
-var _ = require(9);
-var utils = require(36);
+var _ = require(8);
+var utils = require(35);
 
 /* If no marginsO are defined, here are the rules:
  *  - ticks and ticks labels are 20 px in the y dir (height of text),
@@ -10262,7 +9931,7 @@ m.spaces = function (datas, universe, borders, title) {
 
 module.exports = m;
 
-},{"36":36,"9":9}],34:[function(require,module,exports){
+},{"35":35,"8":8}],33:[function(require,module,exports){
 'use strict';
 
 /*
@@ -10275,7 +9944,7 @@ module.exports = m;
  *  - polar
  */
 
-var utils = require(36);
+var utils = require(35);
 
 /**
  * ds is { c : {min, max}, d: {min,max}, c2d , d2c}
@@ -10308,11 +9977,11 @@ m.fromPic = function (ds, data) {
 
 module.exports = m;
 
-},{"36":36}],35:[function(require,module,exports){
+},{"35":35}],34:[function(require,module,exports){
 'use strict';
 
-var utils = require(36);
-var _ = require(9);
+var utils = require(35);
+var _ = require(8);
 
 /*
  * beware of distance (period) versus
@@ -10418,7 +10087,7 @@ m.ticks = function (start, length, labels, minor, fac) {
 
 module.exports = m;
 
-},{"36":36,"9":9}],36:[function(require,module,exports){
+},{"35":35,"8":8}],35:[function(require,module,exports){
 'use strict';
 
 var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -10429,8 +10098,8 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
 	return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);
 };
 
-var date = require(26);
-var nbr = require(30);
+var date = require(25);
+var nbr = require(29);
 
 var m = {};
 
@@ -10442,7 +10111,7 @@ var isPeriod = function isPeriod(v) {
 	return out;
 };
 
-m.math = require(29);
+m.math = require(28);
 
 m.isDate = function (v) {
 	return !!v && (v instanceof Date || isPeriod(v));
@@ -10534,13 +10203,13 @@ m.makePeriod = date.makePeriod;
 
 module.exports = m;
 
-},{"26":26,"29":29,"30":30}],37:[function(require,module,exports){
+},{"25":25,"28":28,"29":29}],36:[function(require,module,exports){
 'use strict';
 
 var React = require("react");
-var Mark = require(51);
-var _ = require(9);
-var imUtils = require(27);
+var Mark = require(50);
+var _ = require(8);
+var imUtils = require(26);
 
 /*
 	{
@@ -10570,15 +10239,15 @@ var BarChart = React.createClass({
 
 module.exports = BarChart;
 
-},{"27":27,"51":51,"9":9,"react":"react"}],38:[function(require,module,exports){
+},{"26":26,"50":50,"8":8,"react":"react"}],37:[function(require,module,exports){
 'use strict';
 
 var React = require("react");
 
-var _ = require(9);
-var space = require(34);
-var imUtils = require(27);
-var utils = require(36);
+var _ = require(8);
+var space = require(33);
+var imUtils = require(26);
+var utils = require(35);
 
 /*
 	{
@@ -10725,14 +10394,14 @@ var Bins = React.createClass({
 
 module.exports = Bins;
 
-},{"27":27,"34":34,"36":36,"9":9,"react":"react"}],39:[function(require,module,exports){
+},{"26":26,"33":33,"35":35,"8":8,"react":"react"}],38:[function(require,module,exports){
 'use strict';
 
 var React = require("react");
 
-var _ = require(9);
-var space = require(34);
-var imUtils = require(27);
+var _ = require(8);
+var space = require(33);
+var imUtils = require(26);
 
 /*
 	 {
@@ -10845,12 +10514,12 @@ var Path = React.createClass({
 
 module.exports = Path;
 
-},{"27":27,"34":34,"9":9,"react":"react"}],40:[function(require,module,exports){
+},{"26":26,"33":33,"8":8,"react":"react"}],39:[function(require,module,exports){
 'use strict';
 
 var React = require("react");
 
-var imUtils = require(27);
+var imUtils = require(26);
 
 var Pie = React.createClass({
 	displayName: 'Pie',
@@ -10938,15 +10607,15 @@ var Pie = React.createClass({
 
 module.exports = Pie;
 
-},{"27":27,"react":"react"}],41:[function(require,module,exports){
+},{"26":26,"react":"react"}],40:[function(require,module,exports){
 'use strict';
 
 var React = require("react");
-var Path = require(39);
-var Mark = require(51);
-var _ = require(9);
+var Path = require(38);
+var Mark = require(50);
+var _ = require(8);
 
-var imUtils = require(27);
+var imUtils = require(26);
 
 /*
 	{
@@ -10974,15 +10643,15 @@ var PlainChart = React.createClass({
 
 module.exports = PlainChart;
 
-},{"27":27,"39":39,"51":51,"9":9,"react":"react"}],42:[function(require,module,exports){
+},{"26":26,"38":38,"50":50,"8":8,"react":"react"}],41:[function(require,module,exports){
 'use strict';
 
 var React = require("react");
-var Bins = require(38);
-var Mark = require(51);
-var _ = require(9);
+var Bins = require(37);
+var Mark = require(50);
+var _ = require(8);
 
-var imUtils = require(27);
+var imUtils = require(26);
 
 /*
 	{
@@ -11011,7 +10680,7 @@ var StairsChart = React.createClass({
 
 module.exports = StairsChart;
 
-},{"27":27,"38":38,"51":51,"9":9,"react":"react"}],43:[function(require,module,exports){
+},{"26":26,"37":37,"50":50,"8":8,"react":"react"}],42:[function(require,module,exports){
 "use strict";
 
 var m = {};
@@ -11022,16 +10691,16 @@ m.VM = function () {
 
 module.exports = m;
 
-},{}],44:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 'use strict';
 
 var React = require("react");
-var Plain = require(41);
-var Stairs = require(42);
-var BarChart = require(37);
-var Pie = require(40);
+var Plain = require(40);
+var Stairs = require(41);
+var BarChart = require(36);
+var Pie = require(39);
 
-var utils = require(36);
+var utils = require(35);
 
 // the graphs function generator
 var graph = {};
@@ -11062,13 +10731,13 @@ var m = function m(key, props) {
 
 module.exports = m;
 
-},{"36":36,"37":37,"40":40,"41":41,"42":42,"react":"react"}],45:[function(require,module,exports){
+},{"35":35,"36":36,"39":39,"40":40,"41":41,"react":"react"}],44:[function(require,module,exports){
 'use strict';
 
-var _ = require(9);
-var space = require(34);
-var utils = require(36);
-var color = require(25);
+var _ = require(8);
+var space = require(33);
+var utils = require(35);
+var color = require(24);
 
 var m = {
 
@@ -11119,11 +10788,11 @@ var m = {
 
 module.exports = m;
 
-},{"25":25,"34":34,"36":36,"9":9}],46:[function(require,module,exports){
+},{"24":24,"33":33,"35":35,"8":8}],45:[function(require,module,exports){
 'use strict';
 
-var utils = require(36);
-var _ = require(9);
+var utils = require(35);
+var _ = require(8);
 
 var m = {};
 
@@ -11169,12 +10838,12 @@ m.VM = function (serie, props, ds) {
 
 module.exports = m;
 
-},{"36":36,"9":9}],47:[function(require,module,exports){
+},{"35":35,"8":8}],46:[function(require,module,exports){
 'use strict';
 
-var utils = require(36);
-var _ = require(9);
-var shader = require(25);
+var utils = require(35);
+var _ = require(8);
+var shader = require(24);
 
 var m = {};
 
@@ -11229,7 +10898,7 @@ m.VM = function (serie, props, ds) {
 
 module.exports = m;
 
-},{"25":25,"36":36,"9":9}],48:[function(require,module,exports){
+},{"24":24,"35":35,"8":8}],47:[function(require,module,exports){
 'use strict';
 
 var React = require("react");
@@ -11285,13 +10954,13 @@ m.icon = function (data, key) {
 
 module.exports = m;
 
-},{"react":"react"}],49:[function(require,module,exports){
+},{"react":"react"}],48:[function(require,module,exports){
 'use strict';
 
 var React = require("react");
-var dataScale = require(34);
-var utils = require(36);
-var imUtils = require(27);
+var dataScale = require(33);
+var utils = require(35);
+var imUtils = require(26);
 
 /*
 	{
@@ -11381,12 +11050,12 @@ var BarMark = React.createClass({
 
 module.exports = BarMark;
 
-},{"27":27,"34":34,"36":36,"react":"react"}],50:[function(require,module,exports){
+},{"26":26,"33":33,"35":35,"react":"react"}],49:[function(require,module,exports){
 'use strict';
 
 var React = require("react");
-var dataScale = require(34);
-var imUtils = require(27);
+var dataScale = require(33);
+var imUtils = require(26);
 
 /*
 	{
@@ -11429,16 +11098,16 @@ var DotMark = React.createClass({
 
 module.exports = DotMark;
 
-},{"27":27,"34":34,"react":"react"}],51:[function(require,module,exports){
+},{"26":26,"33":33,"react":"react"}],50:[function(require,module,exports){
 'use strict';
 
 var React = require("react");
 
-var Dot = require(50);
-var Bar = require(49);
-var Square = require(52);
+var Dot = require(49);
+var Bar = require(48);
+var Square = require(51);
 
-var imUtils = require(27);
+var imUtils = require(26);
 
 var Mark = React.createClass({
 	displayName: 'Mark',
@@ -11474,12 +11143,12 @@ var Mark = React.createClass({
 
 module.exports = Mark;
 
-},{"27":27,"49":49,"50":50,"52":52,"react":"react"}],52:[function(require,module,exports){
+},{"26":26,"48":48,"49":49,"51":51,"react":"react"}],51:[function(require,module,exports){
 'use strict';
 
 var React = require("react");
-var dataScale = require(34);
-var imUtils = require(27);
+var dataScale = require(33);
+var imUtils = require(26);
 
 /*
 	{
@@ -11520,10 +11189,10 @@ var SquareMark = React.createClass({
 
 module.exports = SquareMark;
 
-},{"27":27,"34":34,"react":"react"}],53:[function(require,module,exports){
+},{"26":26,"33":33,"react":"react"}],52:[function(require,module,exports){
 'use strict';
 
-var utils = require(36);
+var utils = require(35);
 var m = {};
 
 m.VM = function (position, props, ds, key, pin) {
@@ -11563,7 +11232,7 @@ m.VM = function (position, props, ds, key, pin) {
 
 module.exports = m;
 
-},{"36":36}],54:[function(require,module,exports){
+},{"35":35}],53:[function(require,module,exports){
 'use strict';
 
 var m = {};
@@ -11598,10 +11267,10 @@ m.VM = function (position, props, ds, key, pin) {
 
 module.exports = m;
 
-},{}],55:[function(require,module,exports){
+},{}],54:[function(require,module,exports){
 'use strict';
 
-var space = require(34);
+var space = require(33);
 
 var angle = function angle(deg) {
 
@@ -11688,7 +11357,7 @@ var m = function m(pos, tag, ds) {
 
 module.exports = m;
 
-},{"34":34}],56:[function(require,module,exports){
+},{"33":33}],55:[function(require,module,exports){
 'use strict';
 
 var m = {};
@@ -11721,4 +11390,4 @@ m.VM = function (position, props, ds, key, pin) {
 
 module.exports = m;
 
-},{}]},{},[16]);
+},{}]},{},[15]);
