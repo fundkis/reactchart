@@ -41,9 +41,10 @@ class ShowChart extends React.Component {
 }
 
 ```
+The above example produces this chart:
 ![First graph](readme_files/ex1.png)
 
-Then all the subtlety consists in knowing the props.
+Then all the subtlety consists in knowing how to use the props.
 
 ### Proprieties you should know about
 
