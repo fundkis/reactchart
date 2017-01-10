@@ -1,3 +1,3 @@
-*.swp
+src
+pages
 node_modules
-lib
