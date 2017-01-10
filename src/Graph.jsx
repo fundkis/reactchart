@@ -6,9 +6,15 @@ var _ = require('underscore');
 
 var Graph = React.createClass({
 
+  componentWillMount: function(){
+    if(this.props.__preprocessed){
+      this.props.updateGraph(this);
+    }
+  },
+
 	render: function(){
 
-		var props = this.props.preprocessed === true ? this.props : core.process(this.props).get() ;
+		var props = this.props.__preprocessed ? this.props.props() : core.process(this.props).get() ;
 
 		return <Drawer state={props} />;
 	}
