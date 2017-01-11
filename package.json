@@ -41,9 +41,8 @@
   },
   "scripts": {
     "build": "babel src -d lib",
-    "jsx2js": "gulp jsx2js",
-    "toLib": "gulp src2lib",
-    "prepublish": "npm run build && npm run jsx2js && npm run toLib"
+    "preBuild": "gulp buildNpm",
+    "prepublish": "npm run build && npm run preBuild"
   },
   "main": "index.js",
   "repository": {

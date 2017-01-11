@@ -149,7 +149,17 @@ gulp.task('src2libHlp', () => {
 
 gulp.task('src2lib',["src2libIdx","src2libHlp"],() => 0);
 
+//////////////
+// .npmignore ignores src/
+/////////////
 
+gulp.task('noSrc',() => {
+  return gulp.src(['./.npmignore'])
+    .pipe(header('src\n'))
+    .pipe(gulp.dest('.'));
+});
+
+gulp.task('buildNpm',['jsx2js','src2lib','noSrc'],() => 0);
 
 gulp.task('dist',['full','min'],() => 0);
 
