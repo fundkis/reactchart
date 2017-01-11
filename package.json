@@ -42,9 +42,10 @@
   "scripts": {
     "build": "babel src -d lib",
     "jsx2js": "gulp jsx2js",
-    "prepublish": "npm run build && npm run jsx2js"
+    "toLib": "gulp src2lib",
+    "prepublish": "npm run build && npm run jsx2js && npm run toLib"
   },
-  "main": "lib/index.js",
+  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/fundkis/reactchart"
