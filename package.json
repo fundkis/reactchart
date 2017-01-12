@@ -2,7 +2,7 @@
   "author": "Fund KIS",
   "name": "reactchart",
   "licence": "MIT",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "a React-based chart library, written from scratch. It is specialized in financial charts.",
   "keywords": [
     "React",
@@ -41,10 +41,10 @@
   },
   "scripts": {
     "build": "babel src -d lib",
-    "jsx2js": "gulp jsx2js",
-    "prepublish": "npm run build && npm run jsx2js"
+    "preBuild": "gulp buildNpm",
+    "prepublish": "npm run build && npm run preBuild"
   },
-  "main": "lib/index.js",
+  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/fundkis/reactchart"
