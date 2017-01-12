@@ -1,6 +1,8 @@
-let React = require('react');
-let Show	= require('./Show.jsx');
-let Graph = require('../src/Graph.jsx');
+let React   = require('react');
+let Show	  = require('./Show.jsx');
+let Graph   = require('../src/Graph.jsx');
+let line    = require('./line.jsx');
+let Dynamic = require('./Dynamic.jsx');
 
 let _ = require('underscore');
 
@@ -10,30 +12,6 @@ let ReactDOMServer = require('react-dom/server');
 let file = (props) => "data:text/svg;charset=UTF-8," + encodeURIComponent(filterReact(ReactDOMServer.renderToString(<Graph {...props}/>)));
 let btn = (props,name) => <a href={file(props)} className='btn btn-primary' download={name}>{name}</a>;
 */
-
-let printStr = (state,key) => <div className='col-md-6'>
-		<Show state={state[key + 'P']}>
-			<Graph {...state[key]}/>
-		</Show>
-	</div>;
-
-let printObj = (state,key) => <div className='col-md-6'>
-    {key.extra}
-		<Show state={state[key.graph + 'P']}>
-			<Graph {...state[key.graph]}/>
-		</Show>
-	</div>;
-
-let print = (state,key) => (typeof key === 'string' ? printStr : printObj)(state,key);
-
-let line = (state,key1,key2) => <div className='row' key={key1}>
-  {print(state,key1)}
-	{!!key2 ? <div className='col-md-6'>
-		<Show state={state[key2 + 'P']}>
-			<Graph {...state[key2]}/>
-		</Show>
-	</div> : null}
-</div>;
 
 module.exports = {
 
@@ -45,7 +23,7 @@ module.exports = {
 				['plainOM','plainOMS'],
 				['stack','tag'],
 				['histo','mHisto']
-			],(k) => line(state,k[0],k[1]))}
+			],(k) => line(state,k))}
 			<div className='row'>
 				<div className='col-md-6'>
 					<Show state={state.pieP}>
@@ -69,6 +47,7 @@ module.exports = {
 				</div>
 			</div>
     <h2>Dynamic charts</h2>
-      {line(state,{graph: 'dyn', extra: <button className='btn btn-primary' onClick={() => state.dynLaunch()}>Animate</button>})}
+     <Dynamic state={state.dynamic}/>
 	</div>
 };
+

@@ -131,7 +131,35 @@ gulp.task('jsx2js', () => {
     .pipe(gulp.dest('./lib'));
 });
 
+////////////
+// src -> lib in index
+///////////
 
+gulp.task('src2libIdx', () => {
+  return gulp.src(["./index.js"])
+    .pipe(replace(/src/g,'lib'))
+    .pipe(gulp.dest('.'));
+});
+
+gulp.task('src2libHlp', () => {
+  return gulp.src(["./helpers/index.js"])
+    .pipe(replace(/src/g,'lib'))
+    .pipe(gulp.dest('./helpers'));
+});
+
+gulp.task('src2lib',["src2libIdx","src2libHlp"],() => 0);
+
+//////////////
+// .npmignore ignores src/
+/////////////
+
+gulp.task('noSrc',() => {
+  return gulp.src(['./.npmignore'])
+    .pipe(header('src\n'))
+    .pipe(gulp.dest('.'));
+});
+
+gulp.task('buildNpm',['jsx2js','src2lib','noSrc'],() => 0);
 
 gulp.task('dist',['full','min'],() => 0);
 

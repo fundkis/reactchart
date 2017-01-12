@@ -1,14 +1,15 @@
-let React = require('react');
 let h = require('../src/core/utils.js');
 let _ = require('underscore');
 let histoSeries = require('./dataH.js');
-let utils = require('../src/helpers.js');
+let dynGraphVM = require('./dyn-graph-vm.js');
 
 let m = {};
 
-m.create = function(){
+m.create = function(get){
 
-	let pi2 = 2 * Math.PI;
+	let vm = get;
+
+	let pi2  = 2 * Math.PI;
 
 	let data = _.times(1000, (n) => {
 		return {
@@ -181,7 +182,7 @@ m.create = function(){
 			ord: [{min: 0}]
 		},
 		axisOnTop: true,
-		chgSerie: '[{value}, ...]'
+		chgSerie: '[{x, y, drop: { x }, shade, span: { y } }, ...]'
 	});
 
 	for(let i = 0; i < histoSeries.multi.length; i++){
@@ -193,7 +194,7 @@ m.create = function(){
 		name: 'Multi_histogram',
 		data: [{series: histoSeries.multi, abs: {type: 'date'}}],
 		graphProps: [{markType: 'bar', onlyMarks: true, color: 'darkblue'}],
-		chgSerie: '[{x, y}, ...]'
+		chgSerie: '[{x, y, drop: { x, y }, shade, span: { x } }, ...]'
 	});
 
 	let plainOMProps = _.extend(common(), {
@@ -229,43 +230,6 @@ m.create = function(){
 		let tmp = print(prop);
 		delete tmp.chgSerie;
 		return tmp;
-	};
-
-	let dynChart = utils.init(_.extend(common(), {
-		name: 'dyn',
-		data: [{series: [{x: 0, y:0}]}],
-		graphProps: [{onlyMarks:true, color: 'blue', markSize: 2}],
-		axisProps: {
-			abs: [{min: 0, max: pi2}],
-			ord: [{min: -1.1, max: 1.1}],
-		},
-		foreground: {
-			content: () => React.createElement('text',null,'#data points: 0'),
-			ix: 0.6,
-			iy: 0.9
-		}
-	}));
-
-	let dynModel = dynChart.props().curves[0].marks[0];
-	let dynModelize = (point,idx) => _.extend(_.extend({},dynModel),{position: point, key: "Plain.0.d." + idx});
-	let dynDone = true;
-	let dynHowTo = "Using the helpers: <pre>let utils = require('reactchart/helpers');\nlet mgr = utils.init(graph proprieties here); </pre>We pass the mgr to the chart: <pre>&lt;ReactChart {...mgr} /&gt;</pre>, then we change the immutable props at <pre>mgr.props()</pre> using freezer API, and the chart updates all by itself.";
-
-	let dynLaunch = () => {
-		if(!dynDone){return;}
-		dynDone = false;
-		let d = 0;
-		let oneMore = (idx) => dynChart.props().pivot()
-			.foreground.set('content',() => React.createElement('text',null,'#data points: ' + d))
-			.curves[0].marks.push(dynModelize(data[2*idx],idx));
-		let add = () => setTimeout(() => {
-			oneMore(d);
-			d++;
-			return d < data.length/2 ? add() : dynDone = true;
-		},
-		0);
-		dynChart.props().curves[0].set('marks',[]);
-		add();
 	};
 
 	let toShow = (props) => JSON.stringify(proc(props),null,2);
@@ -333,12 +297,7 @@ m.create = function(){
 			__html: parse(toShow(mHistoProps)),
 			title: 'Code'
 		},
-		dyn: dynChart,
-		dynP: {
-			__html: dynHowTo,
-			title: 'Dynamic'
-		},
-		dynLaunch: dynLaunch
+		dynamic: dynGraphVM.create(() => vm().dynamic)
 	};
 };
 
