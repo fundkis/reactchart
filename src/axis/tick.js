@@ -64,7 +64,7 @@ m.VM = function(ds,partner, bounds, dir, locProps, comFac, axisKey){
 	// do we want the minor grid?
 	var minor = (minProps.show === true || locProps.grid.minor.show === true);
 
-	return _.map(ticker.ticks(min,max,ticksLabel,minor,comFac), (tick,idx) => {
+	return locProps.empty ? [] : _.map(ticker.ticks(min,max,ticksLabel,minor,comFac), (tick,idx) => {
 /*
 		tick: {
 			show: true || false,
@@ -126,7 +126,8 @@ m.VM = function(ds,partner, bounds, dir, locProps, comFac, axisKey){
 			FSize:  p.labelFSize || 15,
 			color:  p.labelColor,
 			rotate: false,
-			transform: true
+			transform: true,
+      show: tick.showLabel || ticksProps.show
 		};
 		labelProps.dir = {};
 		labelProps.dir[dir] = locProps.placement === 'top' || locProps.placement === 'right' ? -1 : 1;
@@ -157,7 +158,7 @@ m.VM = function(ds,partner, bounds, dir, locProps, comFac, axisKey){
 						anchor: 'middle',
 						off: {
 							x: 0,
-							y: fd + defOff
+							y: - fd - defOff
 						}
 					};
 				case 'bottom':
@@ -219,8 +220,9 @@ m.VM = function(ds,partner, bounds, dir, locProps, comFac, axisKey){
 				width: true
 			};
 
+      let cus = tick.grid || {};
 			for(u in tmp){
-				gridProps[u] = p[u];
+				gridProps[u] = utils.isNil(cus[u]) ? p[u] : cus[u];
 			}
 			gridProps.length = partner.length;
 

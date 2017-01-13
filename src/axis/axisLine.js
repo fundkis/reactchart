@@ -115,7 +115,7 @@ m.VM = function(ds,props,partnerDs,dir){
 	// & anchoring the text
 	var fd = 0.25 * label.FSize; // font depth, 25 %
 	var fh = 0.75 * label.FSize; // font height, 75 %
-	var defOff = 40;
+	var defOff = props.empty ? 20 : 40;
 
 	var offsetLab = (() => {
 		switch(props.placement){

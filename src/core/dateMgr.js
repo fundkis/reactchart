@@ -462,13 +462,19 @@ m.getValue = function(dop){
 	return (dop instanceof Date) ? dop.getTime() : moment.duration(dop).asMilliseconds();
 };
 
-m.extraTicks = function(step,start,end){
+m.extraTicks = function(step,start,end, already){
 	var out = [];
 	var startYear = start.getFullYear();
 	var lastYear = end.getFullYear();
 	// every year, whatever happens
 	for(var ye = startYear; ye <= lastYear; ye++){
 		var dat = new Date(ye,0,1);
+    let idx = _.findIndex(already,(a) => m.equal(a.position,dat));
+    if(idx !== -1){
+      already[idx].grid = {};
+      already[idx].grid.show = true;
+      continue;
+    }
 		if(m.lowerThan(start,dat) && m.lowerThan(dat,end)){
 			out.push({
 				position: dat,

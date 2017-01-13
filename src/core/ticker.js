@@ -38,7 +38,8 @@ var computeTicks = function(first,last,minor,fac){
 					perp: 0
 				},
 				label: mgr.label(pos,majDist,fac),
-				show: false
+        show: false,
+        showLabel: true
 			});
 		}
 	}
@@ -80,7 +81,7 @@ var computeTicks = function(first,last,minor,fac){
 		curValue = mgr.add(curValue,majDist);
 	}
 
-	out = out.concat(mgr.extraTicks(majDist,first,last));
+	out = out.concat(mgr.extraTicks(majDist,first,last, out));
 	return out;
 };
 
