@@ -119,13 +119,11 @@ Once you have some data, you get to choose which type of chart will give them th
 justice! Here are the same data, rendered by the default settings, changing the
 _type_ value. The stairs can be either _left_ or _right_.
 
-_type_       | Resulting chart
-:-----:      | :----:
-```Bars```   | ![Bars](readme_files/bar.png)
-```yBars```  | ![yBars](readme_files/ybar.png)
+_type_       | Resulting chart                     |_type_        | Resulting chart
+:-----:      | :----:                              | :---:        | :---:
+```Bars```   |![Bars](readme_files/bar.png)        | ```yBars```  | ![yBars](readme_files/ybar.png)
+```Stairs``` | ![Stairs](readme_files/stairsR.png) | ```Stairs``` | ![Stairs](readme_files/stairsL.png)
 ```Pie```    | ![Pie](readme_files/pie.png)
-```Stairs``` | ![Stairs](readme_files/stairsR.png)
-```Stairs``` | ![Stairs](readme_files/stairsL.png)
 
 ##### Stacking
 
