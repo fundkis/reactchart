@@ -16,9 +16,13 @@ var Mark = React.createClass({
 		switch(this.props.type){
 			case 'square':
 			case 'Square':
+			case 'opensquare':
+			case 'OpenSquare':
 				return <Square state={state} />;
 			case 'dot':
 			case 'Dot':
+			case 'opendot':
+			case 'OpenDot':
 				return <Dot state={state} />;
 			case 'bar':
 			case 'Bar':

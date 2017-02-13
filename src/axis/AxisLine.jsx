@@ -86,21 +86,24 @@ var AxisLine = React.createClass({
 		}
 
 		var dir = utils.direction(this.props.state.line);
-		dir.x = Math.sqrt(dir.x / dir.axe);
-		dir.y = Math.sqrt(dir.y / dir.axe);
+		dir.x = Math.sqrt(dir.x / dir.line);
+		dir.y = Math.sqrt(dir.y / dir.line);
 
-		var offset = this.textOffset(props.FSize,'10-10',dir); // if more than that, there are questions to be asked...
+		var offset = this.textOffset(props.Fsize,'10-10',dir); // if more than that, there are questions to be asked...
 
 		var fac = {
-			x:   props.offset.x + this.props.state.line.end.x + dir.y * ( offset.x + 10 ),
-			y: - props.offset.y + this.props.state.line.end.y + dir.x * ( offset.y + 10 )
+			x:   props.offset.x + this.props.state.line.end.x + dir.x * ( offset.x + 10 ),
+			y: - props.offset.y + this.props.state.line.end.y + dir.y * ( offset.y + 10 )
 		};
+    let trans = 'translate('+fac.x+','+fac.y+')';
 
 		var mgr = utils.mgr(props.factor);
 		var om = mgr.orderMag(props.factor);
-		return <text {...fac} textAnchor={props.anchor} fill={props.color} fontSize={props.FSize}>
-				10<sup>{om}</sup>
-			</text>;
+    return <g transform={trans}>
+      <circle x='0' y='0' r='1'/>
+      <text x='0' y='0' fill={props.color} textAnchor='end' fontSize={props.Fsize}>10</text>
+      <text x='0' y={-0.5*props.Fsize} fontSize={props.Fsize} textAnchor='start'>{om}</text>
+    </g>;
 	},
 
 	render: function(){

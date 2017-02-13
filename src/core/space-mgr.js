@@ -303,7 +303,7 @@ m.spaces = function(datas,universe,borders,title){
 		return _.map(datas, (serie) => {
 			// global characteristics
 			var loff = serie.limitOffset;
-			var limOfIdx = utils.isNil(loff) ? -1 : loff > 0 ? serie.series.length - 1: 0;
+			var limOfIdx = dir === 'y' || utils.isNil(loff) ? -1 : loff > 0 ? serie.series.length - 1: 0;
 			return _.map(serie.series, (point,idx) => {
 					// if label
 					if(utils.isString(point[dir])){

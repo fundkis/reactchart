@@ -1,18 +1,28 @@
 var React = require('react');
 
 var icon = {};
-icon.square = icon.Square = function(data){
-	var l = Math.min(data.width, data.height) * 2/3;
+icon.square = icon.Square = function(data,open){
+	var l = Math.min(data.width, data.height) * 3/5;
 	var x = data.hMargin + (data.width - l)/2 ;
 	var y = data.vMargin + (data.height - l);
-	return <rect x={x} y={y} width={l} height={l} fill={data.color} />;
+	var f = open ? 'none' : data.color;
+	return <rect x={x} y={y} width={l} height={l} fill={f} stroke={data.color} />;
 };
 
-icon.dot = icon.Dot = function(data){
+icon.opensquare = icon.OpenSquare = function(data){
+	return icon.square(data,true);
+};
+
+icon.dot = icon.Dot = function(data,open){
 	var x = (data.width + 2 * data.hMargin)/2;
-	var r = Math.min(data.height, data.width) / 3; // 2/3 de remplissage
+	var r = Math.min(data.height, data.width) * 3 / 10; // 3 / 5 de remplissage
 	var y = data.height + data.vMargin - r;
-	return <circle cx={x} cy={y} r={r} fill={data.color}/>;
+	var f = open ? 'none' : data.color;
+	return <circle cx={x} cy={y} r={r} fill={f} stroke={data.color}/>;
+};
+
+icon.opendot = icon.OpenDot = function(data){
+	return icon.dot(data,true);
 };
 
 icon.bar = icon.Bar = icon.square;
@@ -32,7 +42,7 @@ icon.pie = icon.Pie = function(data){
 
 icon.line = function(data){
 
-	var l = Math.min(data.width, data.height) * 2/3;
+	var l = Math.min(data.width, data.height);
 	var x1 = data.hMargin + (data.width - l)/2 ;
 	var x2 = x1 + l;
 	var y = data.vMargin + (data.height - 6); // fraction of height of letters...

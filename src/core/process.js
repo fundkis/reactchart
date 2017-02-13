@@ -8,6 +8,41 @@ var legender = require('./legendBuilder.js');
 
 var defaultTheProps = function(props){
 
+  // axisProps is an Array, 
+  // can be given as a non array
+  // empty <==> ticks.major.show === false && ticks.minor.show === false
+  if(!!props.axisProps){
+    for(let u in props.axisProps){
+      if(!Array.isArray(props.axisProps[u])){
+        props.axisProps[u] = [props.axisProps[u]];
+      }
+      for(let ax = 0; ax < props.axisProps[u].length; ax++){
+        let axe = props.axisProps[u][ax]; // too long
+        if(axe.empty){
+          if(!axe.ticks){
+            axe.ticks = {};
+          }
+          if(!axe.ticks.major){
+            axe.ticks.major = {};
+          }
+          if(!axe.ticks.minor){
+            axe.ticks.minor = {};
+          }
+          axe.ticks.major.show = false;
+          axe.ticks.minor.show = false;
+        }else{
+            // no major ticks
+          if(!!axe.ticks && !!axe.ticks.major && axe.ticks.major.show === false){
+              // no minor ticks
+              if(!axe.ticks.minor || axe.ticks.minor.show !== true){
+                axe.empty = true;
+              }
+          }
+        }
+      }
+    }
+  }
+
 	// axis depends on data,
 	// where are they?
 	let axis = {
@@ -49,30 +84,25 @@ var defaultTheProps = function(props){
 	return fullprops;
 };
 
-var addDefaultDrop = function(serie, dir, ds){
+var addDefaultDrop = function(serie, dir, ds, after){
 
-	var fetchDs = () => !!ds[dir].bottom ? ds[dir].bottom : 
-			!!ds[dir].top ? ds[dir].top : 
-			!!ds[dir].left ? ds[dir].left : 
-			!!ds[dir].right ? ds[dir].right : null;
+	var fetchDs = (d) => !!ds[d].bottom ? ds[d].bottom : 
+			!!ds[d].top ? ds[d].top : 
+			!!ds[d].left ? ds[d].left : 
+			!!ds[d].right ? ds[d].right : null;
 
 	var defZero = (point) => utils.isDate(point[dir]) ? new Date(0) : 0 ;
 
-	var def = (point) => {
-		var min = !!ds ? fetchDs().d.min : defZero(point);
+	var def = (point,locdir) => {
+		var min = !!ds ? fetchDs(locdir).d.min : defZero(point);
 		var raw = point;
-		raw.drop[dir] = utils.isNil(raw.drop[dir]) ? min : raw.drop[dir];
-		//var othdir = dir === 'x' ? 'y' : 'x';
-		//raw.drop[othdir] = undefined;
+		raw.drop[locdir] = utils.isNil(raw.drop[locdir]) ? min : raw.drop[locdir];
 		
 		return raw;
 	};
 
-	var cus = (p) => p;
-
-	var comp = !!dir ? def : cus ;
-
-	return _.map(serie, (point) => comp(point));
+  // if dir is specified, only this dir, if not, both
+	return _.map(serie, (point) => !!dir ? def(point,dir) : after ? def(def(point,'x'), 'y') : point);
 };
 
 var copySerie = function(serie){
@@ -201,7 +231,7 @@ var makeSpan = function(series,data){
 
 	var spanSer = (barType) => {
 
-		var makeOffset = (serie,n,s) => {
+		var makeOffset = (serie,n,s,sb) => {
 			if(utils.isNil(serie.Span) || series[s].length === 0){
 				return;
 			}
@@ -215,8 +245,8 @@ var makeSpan = function(series,data){
 			var mgr = utils.mgr(series[s][0][dir]);
 			var othmgr = utils.mgr(series[s][0][othdir]);
 
-	// start[s] = x - span * n / 2 + s * span => offset = (s *	span	- span * n / 2 ) = span * (s - n / 2 )
-			serie.offset[dir] = mgr.multiply(serie.span, s - (n - 1) / 2);
+	// start[s] = x - span * n / 2 + sb * span => offset = (sb *	span	- span * n / 2 ) = span * (sb - n / 2 )
+			serie.offset[dir] = mgr.multiply(serie.span, sb - (n - 1) / 2);
 			if(utils.isNil(serie.offset[othdir])){
 				serie.offset[othdir] = othmgr.step(0);
 			}
@@ -229,25 +259,27 @@ var makeSpan = function(series,data){
 			});
 		};
 
-		var spanDiv = (serie,n,idx) => {
+		var spanDiv = (serie,n,idx,idxb) => {
 			if(utils.isNil(serie.Span)){
 				return;
 			}
 			var mgr = utils.mgr(serie.span);
 			serie.span = mgr.divide(serie.span,n);
-			makeOffset(serie,n,idx);
+			makeOffset(serie,n,idx,idxb);
 		};
 
 		var n = 0;
 		var out = [];
+		var oidx = [];
 		_.each(series, (serie,idx) => {
 			if(data[idx].type === barType){
 				out[idx] = serie.length ? spanify(serie, data[idx]) : {};
-				n++;
+				oidx[idx] = n;
+        n++;
 			}
 		});
 
-		_.each(out, (serie,idx) => spanDiv(serie,n,idx));
+		_.each(out, (serie,idx) => serie ? spanDiv(serie,n,idx,oidx[idx]) : null );
 	};
 
 	spanSer('Bars');
@@ -268,7 +300,7 @@ var spanify = function(serie,data){
 		for(var i = 1; i < serie.length; i++){
 			var dd = mgr.distance(serie[i][dir],serie[i - 1][dir]);
 			if(d === undefined || mgr.lowerThan(dd, d)){
-				d = dd;
+				d = mgr.multiply(dd,0.99);
 			}
 		}
 		out.span = d;
@@ -430,23 +462,29 @@ m.process = function(rawProps){
 
 	// defaut drops for those that don't have them
 	state.series = _.map(state.series, (serie,idx) => {
-		var dir;
+		var dir, ds;
 		switch(props.data[idx].type){
 			case 'Bars':
 			case 'bars':
 				dir = 'y';
+        ds = state.spaces;
 				break;
 			case 'yBars':
 			case 'ybars':
 				dir = 'x';
+        ds = state.spaces;
 				break;
 			default:
 				break;
 		}
+
+    if(!!props.data[idx].stacked){
+      dir = props.data[idx].stacked;
+    }
 		if(!dir && !!props.graphProps[idx].process){
 			dir = !props.graphProps[idx].process.dir || props.graphProps[idx].process.dir === 'x' ? 'y' : 'x';
 		}
-		return addDefaultDrop(serie,dir,state.spaces);
+		return addDefaultDrop(serie,dir,ds,true);
 	});
 
 	//now to immutable VM

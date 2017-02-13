@@ -23,9 +23,11 @@ graphVM.pie    = graphVM.Pie    = pieVM.VM;
 
 // marks
 var marksVM = {};
-marksVM.dot    = marksVM.Dot    = dotVM.VM;
-marksVM.square = marksVM.Square = squareVM.VM;
-marksVM.bar    = marksVM.Bar    = barVM.VM;
+marksVM.opendot     = marksVM.OpenDot     = dotVM.OVM;
+marksVM.dot         = marksVM.Dot         = dotVM.VM;
+marksVM.opensquare  = marksVM.OpenSquare  = squareVM.OVM;
+marksVM.square      = marksVM.Square      = squareVM.VM;
+marksVM.bar         = marksVM.Bar         = barVM.VM;
 
 var curve = function(spaces,serie,data,props,idx){
 
@@ -162,9 +164,6 @@ var axis = function(props,state,axe,dir){
 
 		var axisKey = axe + '.' + key;
 
-		// add here the common factor computations and definitions
-		var comFac = 1;
-
 		var axisProps = _.findWhere(props.axisProps[axe], {placement: key});
 		axisProps.CS = props.axisProps.CS;
 
@@ -184,8 +183,8 @@ var axis = function(props,state,axe,dir){
 		return {
 			show: axisProps.show,
 			key: axisKey,
-			axisLine: axisLine.VM(ds,axisProps,partnerDs,dir),
-			ticks: ticks.VM(DS, partner, bounds, dir, axisProps, comFac, axisKey)
+			axisLine: axisLine.VM(ds,axisProps,partnerDs,dir ),
+			ticks: ticks.VM(DS, partner, bounds, dir, axisProps, axisProps.factor, axisKey)
 		};
 	});
 

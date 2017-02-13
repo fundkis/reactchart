@@ -96,7 +96,7 @@ var Bins = React.createClass({
 		switch(state.stairs){
 			case 'right':
 			// right stairs
-				data = dropy(0) + ' ' + coord(0);
+				data = ( state.dropLine.y ? dropy(0) + ' ' : '' ) + coord(0);
 				for(var i = 1; i < Nd; i++){
 					data += ' ' + coord(i,i-1) + ' ' + coord(i);
 					if(state.dropLine.y){
@@ -107,11 +107,15 @@ var Bins = React.createClass({
 					}
 				}
 				data += ' ' + (space.toC(ds.x,positions[Nd - 1].x) + delta) + ',' + space.toC(ds.y,positions[Nd - 1].y); // point
-				data += ' ' + (space.toC(ds.x,positions[Nd - 1].x) + delta) + ',' + space.toC(ds.y,drops[Nd - 1].y); // drop
+				if(state.dropLine.y){
+			    data += ' ' + (space.toC(ds.x,positions[Nd - 1].x) + delta) + ',' + space.toC(ds.y,drops[Nd - 1].y); // drop
+        }
 				break;
 			case 'left':
 				// left stairs
-				data =  (space.toC(ds.x,positions[0].x) - delta) + ',' + space.toC(ds.y,drops[0].y); // drop
+				if(state.dropLine.y){
+				  data +=  (space.toC(ds.x,positions[0].x) - delta) + ',' + space.toC(ds.y,drops[0].y); // drop
+        }
 				data += ' ' + (space.toC(ds.x,positions[0].x) - delta) + ',' + space.toC(ds.y,positions[0].y); // point
 				data += ' ' + coord(0);
 				for(i = 1; i < Nd; i++){
@@ -123,7 +127,7 @@ var Bins = React.createClass({
 					}
 					data +=  ' ' + coord(i-1,i) + ' ' + coord(i);
 				}
-				data += ' ' + dropy(Nd - 1);
+				data += state.dropLine.y ? ' ' + dropy(Nd - 1) : '';
 				break;
 			default:
 					throw 'Stairs are either right or left';

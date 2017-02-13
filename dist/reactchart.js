@@ -1,4 +1,4 @@
-/* 2017- generated at Tue Jan 10 2017 16:02:16 GMT+0100 (CET)
+/* 2017- generated at Tue Feb 14 2017 00:23:37 GMT+0100 (CET)
 */(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var Freezer = require(3);
 module.exports = Freezer;
@@ -6734,19 +6734,20 @@ var AxisLine = React.createClass({
 		}
 
 		var dir = utils.direction(this.props.state.line);
-		dir.x = Math.sqrt(dir.x / dir.axe);
-		dir.y = Math.sqrt(dir.y / dir.axe);
+		dir.x = Math.sqrt(dir.x / dir.line);
+		dir.y = Math.sqrt(dir.y / dir.line);
 
-		var offset = this.textOffset(props.FSize, '10-10', dir); // if more than that, there are questions to be asked...
+		var offset = this.textOffset(props.Fsize, '10-10', dir); // if more than that, there are questions to be asked...
 
 		var fac = {
-			x: props.offset.x + this.props.state.line.end.x + dir.y * (offset.x + 10),
-			y: -props.offset.y + this.props.state.line.end.y + dir.x * (offset.y + 10)
+			x: props.offset.x + this.props.state.line.end.x + dir.x * (offset.x + 10),
+			y: -props.offset.y + this.props.state.line.end.y + dir.y * (offset.y + 10)
 		};
+		var trans = 'translate(' + fac.x + ',' + fac.y + ')';
 
 		var mgr = utils.mgr(props.factor);
 		var om = mgr.orderMag(props.factor);
-		return React.createElement('text', _extends({}, fac, { textAnchor: props.anchor, fill: props.color, fontSize: props.FSize }), '10', React.createElement('sup', null, om));
+		return React.createElement('g', { transform: trans }, React.createElement('circle', { x: '0', y: '0', r: '1' }), React.createElement('text', { x: '0', y: '0', fill: props.color, textAnchor: 'end', fontSize: props.Fsize }, '10'), React.createElement('text', { x: '0', y: -0.5 * props.Fsize, fontSize: props.Fsize, textAnchor: 'start' }, om));
 	},
 
 	render: function render() {
@@ -6931,7 +6932,7 @@ var Tick = React.createClass({
 	},
 
 	label: function label() {
-		if (this.props.state.tick.show === false) {
+		if (this.props.state.label.show === false) {
 			return null;
 		}
 		var labelName = this.props.className + 'Label';
@@ -6939,7 +6940,7 @@ var Tick = React.createClass({
 	},
 
 	noShow: function noShow() {
-		return !(this.props.state.tick.show || this.props.state.grid.show);
+		return !(this.props.state.tick.show || this.props.state.grid.show || this.props.state.label.show);
 	},
 
 	render: function render() {
@@ -7070,7 +7071,7 @@ m.VM = function (ds, props, partnerDs, dir) {
 	// & anchoring the text
 	var fd = 0.25 * label.FSize; // font depth, 25 %
 	var fh = 0.75 * label.FSize; // font height, 75 %
-	var defOff = 40;
+	var defOff = props.empty ? 20 : 40;
 
 	var offsetLab = function () {
 		switch (props.placement) {
@@ -7113,7 +7114,8 @@ m.VM = function (ds, props, partnerDs, dir) {
  			factor: ,
  			offset: {x, y},
  			FSize: ,
- 			anchor: ''
+ 			anchor: '',
+ 			color: ''
  		}
  */
 
@@ -7121,7 +7123,8 @@ m.VM = function (ds, props, partnerDs, dir) {
 		factor: props.factor,
 		offset: props.factorOffset,
 		anchor: props.factorAnchor,
-		Fsize: props.factorFSize
+		Fsize: props.factorFSize,
+		color: props.factorColor
 	};
 
 	return {
@@ -7202,7 +7205,7 @@ m.VM = function (ds, partner, bounds, dir, locProps, comFac, axisKey) {
 	// do we want the minor grid?
 	var minor = minProps.show === true || locProps.grid.minor.show === true;
 
-	return _.map(ticker.ticks(min, max, ticksLabel, minor, comFac), function (tick, idx) {
+	return locProps.empty ? [] : _.map(ticker.ticks(min, max, ticksLabel, minor, comFac), function (tick, idx) {
 		/*
   		tick: {
   			show: true || false,
@@ -7264,7 +7267,8 @@ m.VM = function (ds, partner, bounds, dir, locProps, comFac, axisKey) {
 			FSize: p.labelFSize || 15,
 			color: p.labelColor,
 			rotate: false,
-			transform: true
+			transform: true,
+			show: tick.showLabel || ticksProps.show
 		};
 		labelProps.dir = {};
 		labelProps.dir[dir] = locProps.placement === 'top' || locProps.placement === 'right' ? -1 : 1;
@@ -7294,7 +7298,7 @@ m.VM = function (ds, partner, bounds, dir, locProps, comFac, axisKey) {
 						anchor: 'middle',
 						off: {
 							x: 0,
-							y: fd + defOff
+							y: -fd - defOff
 						}
 					};
 				case 'bottom':
@@ -7355,8 +7359,9 @@ m.VM = function (ds, partner, bounds, dir, locProps, comFac, axisKey) {
 			width: true
 		};
 
+		var cus = tick.grid || {};
 		for (u in tmp) {
-			gridProps[u] = p[u];
+			gridProps[u] = utils.isNil(cus[u]) ? p[u] : cus[u];
 		}
 		gridProps.length = partner.length;
 
@@ -7400,7 +7405,9 @@ graphVM.pie = graphVM.Pie = pieVM.VM;
 
 // marks
 var marksVM = {};
+marksVM.opendot = marksVM.OpenDot = dotVM.OVM;
 marksVM.dot = marksVM.Dot = dotVM.VM;
+marksVM.opensquare = marksVM.OpenSquare = squareVM.OVM;
 marksVM.square = marksVM.Square = squareVM.VM;
 marksVM.bar = marksVM.Bar = barVM.VM;
 
@@ -7534,9 +7541,6 @@ var axis = function axis(props, state, axe, dir) {
 
 		var axisKey = axe + '.' + key;
 
-		// add here the common factor computations and definitions
-		var comFac = 1;
-
 		var axisProps = _.findWhere(props.axisProps[axe], { placement: key });
 		axisProps.CS = props.axisProps.CS;
 
@@ -7557,7 +7561,7 @@ var axis = function axis(props, state, axe, dir) {
 			show: axisProps.show,
 			key: axisKey,
 			axisLine: axisLine.VM(ds, axisProps, partnerDs, dir),
-			ticks: ticks.VM(DS, partner, bounds, dir, axisProps, comFac, axisKey)
+			ticks: ticks.VM(DS, partner, bounds, dir, axisProps, axisProps.factor, axisKey)
 		};
 	});
 
@@ -8142,13 +8146,21 @@ m.getValue = function (dop) {
 	return dop instanceof Date ? dop.getTime() : moment.duration(dop).asMilliseconds();
 };
 
-m.extraTicks = function (step, start, end) {
+m.extraTicks = function (step, start, end, already) {
 	var out = [];
 	var startYear = start.getFullYear();
 	var lastYear = end.getFullYear();
 	// every year, whatever happens
 	for (var ye = startYear; ye <= lastYear; ye++) {
 		var dat = new Date(ye, 0, 1);
+		var idx = _.findIndex(already, function (a) {
+			return m.equal(a.position, dat);
+		});
+		if (idx !== -1) {
+			already[idx].grid = {};
+			already[idx].grid.show = true;
+			continue;
+		}
 		if (m.lowerThan(start, dat) && m.lowerThan(dat, end)) {
 			out.push({
 				position: dat,
@@ -8614,6 +8626,41 @@ var legender = require(27);
 
 var defaultTheProps = function defaultTheProps(props) {
 
+	// axisProps is an Array, 
+	// can be given as a non array
+	// empty <==> ticks.major.show === false && ticks.minor.show === false
+	if (!!props.axisProps) {
+		for (var u in props.axisProps) {
+			if (!Array.isArray(props.axisProps[u])) {
+				props.axisProps[u] = [props.axisProps[u]];
+			}
+			for (var ax = 0; ax < props.axisProps[u].length; ax++) {
+				var axe = props.axisProps[u][ax]; // too long
+				if (axe.empty) {
+					if (!axe.ticks) {
+						axe.ticks = {};
+					}
+					if (!axe.ticks.major) {
+						axe.ticks.major = {};
+					}
+					if (!axe.ticks.minor) {
+						axe.ticks.minor = {};
+					}
+					axe.ticks.major.show = false;
+					axe.ticks.minor.show = false;
+				} else {
+					// no major ticks
+					if (!!axe.ticks && !!axe.ticks.major && axe.ticks.major.show === false) {
+						// no minor ticks
+						if (!axe.ticks.minor || axe.ticks.minor.show !== true) {
+							axe.empty = true;
+						}
+					}
+				}
+			}
+		}
+	}
+
 	// axis depends on data,
 	// where are they?
 	var axis = {
@@ -8667,34 +8714,27 @@ var defaultTheProps = function defaultTheProps(props) {
 	return fullprops;
 };
 
-var addDefaultDrop = function addDefaultDrop(serie, dir, ds) {
+var addDefaultDrop = function addDefaultDrop(serie, dir, ds, after) {
 
-	var fetchDs = function fetchDs() {
-		return !!ds[dir].bottom ? ds[dir].bottom : !!ds[dir].top ? ds[dir].top : !!ds[dir].left ? ds[dir].left : !!ds[dir].right ? ds[dir].right : null;
+	var fetchDs = function fetchDs(d) {
+		return !!ds[d].bottom ? ds[d].bottom : !!ds[d].top ? ds[d].top : !!ds[d].left ? ds[d].left : !!ds[d].right ? ds[d].right : null;
 	};
 
 	var defZero = function defZero(point) {
 		return utils.isDate(point[dir]) ? new Date(0) : 0;
 	};
 
-	var def = function def(point) {
-		var min = !!ds ? fetchDs().d.min : defZero(point);
+	var def = function def(point, locdir) {
+		var min = !!ds ? fetchDs(locdir).d.min : defZero(point);
 		var raw = point;
-		raw.drop[dir] = utils.isNil(raw.drop[dir]) ? min : raw.drop[dir];
-		//var othdir = dir === 'x' ? 'y' : 'x';
-		//raw.drop[othdir] = undefined;
+		raw.drop[locdir] = utils.isNil(raw.drop[locdir]) ? min : raw.drop[locdir];
 
 		return raw;
 	};
 
-	var cus = function cus(p) {
-		return p;
-	};
-
-	var comp = !!dir ? def : cus;
-
+	// if dir is specified, only this dir, if not, both
 	return _.map(serie, function (point) {
-		return comp(point);
+		return !!dir ? def(point, dir) : after ? def(def(point, 'x'), 'y') : point;
 	});
 };
 
@@ -8832,7 +8872,7 @@ var makeSpan = function makeSpan(series, data) {
 
 	var spanSer = function spanSer(barType) {
 
-		var makeOffset = function makeOffset(serie, n, s) {
+		var makeOffset = function makeOffset(serie, n, s, sb) {
 			if (utils.isNil(serie.Span) || series[s].length === 0) {
 				return;
 			}
@@ -8846,8 +8886,8 @@ var makeSpan = function makeSpan(series, data) {
 			var mgr = utils.mgr(series[s][0][dir]);
 			var othmgr = utils.mgr(series[s][0][othdir]);
 
-			// start[s] = x - span * n / 2 + s * span => offset = (s *	span	- span * n / 2 ) = span * (s - n / 2 )
-			serie.offset[dir] = mgr.multiply(serie.span, s - (n - 1) / 2);
+			// start[s] = x - span * n / 2 + sb * span => offset = (sb *	span	- span * n / 2 ) = span * (sb - n / 2 )
+			serie.offset[dir] = mgr.multiply(serie.span, sb - (n - 1) / 2);
 			if (utils.isNil(serie.offset[othdir])) {
 				serie.offset[othdir] = othmgr.step(0);
 			}
@@ -8860,26 +8900,28 @@ var makeSpan = function makeSpan(series, data) {
 			});
 		};
 
-		var spanDiv = function spanDiv(serie, n, idx) {
+		var spanDiv = function spanDiv(serie, n, idx, idxb) {
 			if (utils.isNil(serie.Span)) {
 				return;
 			}
 			var mgr = utils.mgr(serie.span);
 			serie.span = mgr.divide(serie.span, n);
-			makeOffset(serie, n, idx);
+			makeOffset(serie, n, idx, idxb);
 		};
 
 		var n = 0;
 		var out = [];
+		var oidx = [];
 		_.each(series, function (serie, idx) {
 			if (data[idx].type === barType) {
 				out[idx] = serie.length ? spanify(serie, data[idx]) : {};
+				oidx[idx] = n;
 				n++;
 			}
 		});
 
 		_.each(out, function (serie, idx) {
-			return spanDiv(serie, n, idx);
+			return serie ? spanDiv(serie, n, idx, oidx[idx]) : null;
 		});
 	};
 
@@ -8900,7 +8942,7 @@ var spanify = function spanify(serie, data) {
 		for (var i = 1; i < serie.length; i++) {
 			var dd = mgr.distance(serie[i][dir], serie[i - 1][dir]);
 			if (d === undefined || mgr.lowerThan(dd, d)) {
-				d = dd;
+				d = mgr.multiply(dd, 0.99);
 			}
 		}
 		out.span = d;
@@ -9073,23 +9115,29 @@ m.process = function (rawProps) {
 
 	// defaut drops for those that don't have them
 	state.series = _.map(state.series, function (serie, idx) {
-		var dir;
+		var dir, ds;
 		switch (props.data[idx].type) {
 			case 'Bars':
 			case 'bars':
 				dir = 'y';
+				ds = state.spaces;
 				break;
 			case 'yBars':
 			case 'ybars':
 				dir = 'x';
+				ds = state.spaces;
 				break;
 			default:
 				break;
 		}
+
+		if (!!props.data[idx].stacked) {
+			dir = props.data[idx].stacked;
+		}
 		if (!dir && !!props.graphProps[idx].process) {
 			dir = !props.graphProps[idx].process.dir || props.graphProps[idx].process.dir === 'x' ? 'y' : 'x';
 		}
-		return addDefaultDrop(serie, dir, state.spaces);
+		return addDefaultDrop(serie, dir, ds, true);
 	});
 
 	//now to immutable VM
@@ -9415,6 +9463,7 @@ var axe = {
 	partner: 0,
 	// for ticklabel formatting
 	factor: 1,
+	factorColor: 'black',
 	factorOffset: { x: 0, y: 0 },
 	factorAnchor: 'middle',
 	factorFSize: 10
@@ -9809,7 +9858,7 @@ m.spaces = function (datas, universe, borders, title) {
 		return _.map(datas, function (serie) {
 			// global characteristics
 			var loff = serie.limitOffset;
-			var limOfIdx = utils.isNil(loff) ? -1 : loff > 0 ? serie.series.length - 1 : 0;
+			var limOfIdx = dir === 'y' || utils.isNil(loff) ? -1 : loff > 0 ? serie.series.length - 1 : 0;
 			return _.map(serie.series, function (point, idx) {
 				// if label
 				if (utils.isString(point[dir])) {
@@ -10020,7 +10069,8 @@ var computeTicks = function computeTicks(first, last, minor, fac) {
 					perp: 0
 				},
 				label: mgr.label(pos, majDist, fac),
-				show: false
+				show: false,
+				showLabel: true
 			});
 		}
 	}
@@ -10062,7 +10112,7 @@ var computeTicks = function computeTicks(first, last, minor, fac) {
 		curValue = mgr.add(curValue, majDist);
 	}
 
-	out = out.concat(mgr.extraTicks(majDist, first, last));
+	out = out.concat(mgr.extraTicks(majDist, first, last, out));
 	return out;
 };
 
@@ -10344,7 +10394,7 @@ var Bins = React.createClass({
 		switch (state.stairs) {
 			case 'right':
 				// right stairs
-				data = dropy(0) + ' ' + coord(0);
+				data = (state.dropLine.y ? dropy(0) + ' ' : '') + coord(0);
 				for (var i = 1; i < Nd; i++) {
 					data += ' ' + coord(i, i - 1) + ' ' + coord(i);
 					if (state.dropLine.y) {
@@ -10355,11 +10405,15 @@ var Bins = React.createClass({
 					}
 				}
 				data += ' ' + (space.toC(ds.x, positions[Nd - 1].x) + delta) + ',' + space.toC(ds.y, positions[Nd - 1].y); // point
-				data += ' ' + (space.toC(ds.x, positions[Nd - 1].x) + delta) + ',' + space.toC(ds.y, drops[Nd - 1].y); // drop
+				if (state.dropLine.y) {
+					data += ' ' + (space.toC(ds.x, positions[Nd - 1].x) + delta) + ',' + space.toC(ds.y, drops[Nd - 1].y); // drop
+				}
 				break;
 			case 'left':
 				// left stairs
-				data = space.toC(ds.x, positions[0].x) - delta + ',' + space.toC(ds.y, drops[0].y); // drop
+				if (state.dropLine.y) {
+					data += space.toC(ds.x, positions[0].x) - delta + ',' + space.toC(ds.y, drops[0].y); // drop
+				}
 				data += ' ' + (space.toC(ds.x, positions[0].x) - delta) + ',' + space.toC(ds.y, positions[0].y); // point
 				data += ' ' + coord(0);
 				for (i = 1; i < Nd; i++) {
@@ -10371,7 +10425,7 @@ var Bins = React.createClass({
 					}
 					data += ' ' + coord(i - 1, i) + ' ' + coord(i);
 				}
-				data += ' ' + dropy(Nd - 1);
+				data += state.dropLine.y ? ' ' + dropy(Nd - 1) : '';
 				break;
 			default:
 				throw 'Stairs are either right or left';
@@ -10904,18 +10958,28 @@ module.exports = m;
 var React = require("react");
 
 var icon = {};
-icon.square = icon.Square = function (data) {
-	var l = Math.min(data.width, data.height) * 2 / 3;
+icon.square = icon.Square = function (data, open) {
+	var l = Math.min(data.width, data.height) * 3 / 5;
 	var x = data.hMargin + (data.width - l) / 2;
 	var y = data.vMargin + (data.height - l);
-	return React.createElement('rect', { x: x, y: y, width: l, height: l, fill: data.color });
+	var f = open ? 'none' : data.color;
+	return React.createElement('rect', { x: x, y: y, width: l, height: l, fill: f, stroke: data.color });
 };
 
-icon.dot = icon.Dot = function (data) {
+icon.opensquare = icon.OpenSquare = function (data) {
+	return icon.square(data, true);
+};
+
+icon.dot = icon.Dot = function (data, open) {
 	var x = (data.width + 2 * data.hMargin) / 2;
-	var r = Math.min(data.height, data.width) / 3; // 2/3 de remplissage
+	var r = Math.min(data.height, data.width) * 3 / 10; // 3 / 5 de remplissage
 	var y = data.height + data.vMargin - r;
-	return React.createElement('circle', { cx: x, cy: y, r: r, fill: data.color });
+	var f = open ? 'none' : data.color;
+	return React.createElement('circle', { cx: x, cy: y, r: r, fill: f, stroke: data.color });
+};
+
+icon.opendot = icon.OpenDot = function (data) {
+	return icon.dot(data, true);
 };
 
 icon.bar = icon.Bar = icon.square;
@@ -10935,7 +10999,7 @@ icon.pie = icon.Pie = function (data) {
 
 icon.line = function (data) {
 
-	var l = Math.min(data.width, data.height) * 2 / 3;
+	var l = Math.min(data.width, data.height);
 	var x1 = data.hMargin + (data.width - l) / 2;
 	var x2 = x1 + l;
 	var y = data.vMargin + (data.height - 6); // fraction of height of letters...
@@ -11120,9 +11184,13 @@ var Mark = React.createClass({
 		switch (this.props.type) {
 			case 'square':
 			case 'Square':
+			case 'opensquare':
+			case 'OpenSquare':
 				return React.createElement(Square, { state: state });
 			case 'dot':
 			case 'Dot':
+			case 'opendot':
+			case 'OpenDot':
 				return React.createElement(Dot, { state: state });
 			case 'bar':
 			case 'Bar':
@@ -11237,12 +11305,12 @@ module.exports = m;
 
 var m = {};
 
-m.VM = function (position, props, ds, key, pin) {
+m.VM = function (position, props, ds, key, pin, open) {
 
 	var draw = props.markProps.draw || position.draw || false;
 	var color = position.color || props.markProps.color || props.markColor || props.color || 'black';
-	var width = position.width || props.markProps.width || draw ? 1 : 0;
-	var fill = position.fill || props.markProps.fill || color;
+	var width = position.width || props.markProps.width || open ? 1 : 0;
+	var fill = open ? 'none' : position.fill || props.markProps.fill || color;
 	var size = position.size || props.markProps.size || props.markSize || 3;
 	var radius = position.radius || props.markProps.radius || size;
 	var shade = position.shade || props.markProps.shade || 1;
@@ -11263,6 +11331,11 @@ m.VM = function (position, props, ds, key, pin) {
 		shade: shade,
 		pin: pin
 	};
+};
+
+m.OVM = function (position, props, ds, key, pin) {
+	props.markProps.draw = true;
+	return m.VM(position, props, ds, key, pin, true);
 };
 
 module.exports = m;
@@ -11362,12 +11435,12 @@ module.exports = m;
 
 var m = {};
 
-m.VM = function (position, props, ds, key, pin) {
+m.VM = function (position, props, ds, key, pin, open) {
 
 	var draw = props.markProps.draw || position.draw || false;
 	var color = position.color || props.markProps.color || props.markColor || props.color || 'black';
 	var width = position.width || props.markProps.width || draw ? 1 : 0;
-	var fill = position.fill || props.markProps.fill || color;
+	var fill = open ? 'none' : position.fill || props.markProps.fill || color;
 	var size = position.size || props.markProps.size || props.markSize || 3;
 	var shade = position.shade || props.markProps.shade || 1;
 
@@ -11386,6 +11459,11 @@ m.VM = function (position, props, ds, key, pin) {
 		shade: shade,
 		pin: pin
 	};
+};
+
+m.OVM = function (position, props, ds, key, pin) {
+	props.markProps.draw = true;
+	return m.VM(position, props, ds, key, pin, true);
 };
 
 module.exports = m;
