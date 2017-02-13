@@ -225,6 +225,7 @@ var axe = {
 	partner: 0,
 	// for ticklabel formatting
 	factor: 1,
+	factorColor: 'black',
 	factorOffset: {x: 0, y: 0},
 	factorAnchor: 'middle',
 	factorFSize: 10
