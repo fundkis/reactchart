@@ -158,7 +158,8 @@ m.VM = function(ds,props,partnerDs,dir){
 			factor: ,
 			offset: {x, y},
 			FSize: ,
-			anchor: ''
+			anchor: '',
+			color: ''
 		}
 */
 
@@ -167,6 +168,7 @@ m.VM = function(ds,props,partnerDs,dir){
 		offset: props.factorOffset,
 		anchor: props.factorAnchor,
 		Fsize:  props.factorFSize,
+		color:  props.factorColor,
 	};
 
 
