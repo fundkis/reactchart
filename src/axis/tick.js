@@ -1,6 +1,6 @@
-var _ = require('underscore');
-var utils = require('../core/utils.js');
-var ticker = require('../core/ticker.js');
+let _ = require('underscore');
+let utils = require('../core/utils.js');
+let ticker = require('../core/ticker.js');
 
 /*
 	{
@@ -38,31 +38,31 @@ var ticker = require('../core/ticker.js');
 	}
 */
 
-var m = {};
+let m = {};
 
 m.VM = function(ds,partner, bounds, dir, locProps, comFac, axisKey){
 
 	//// general defs
 
-	var othdir = dir === 'x' ? 'y' : 'x';
+	let othdir = dir === 'x' ? 'y' : 'x';
 
 
 	// min max of the axis
-	var min = bounds.min;
-	var max = bounds.max;
+	let min = bounds.min;
+	let max = bounds.max;
 
 	// all ticks are computed along, we need to 
 	// know for each tick which it is
-	var majProps = locProps.ticks.major;
-	var minProps = locProps.ticks.minor;
-	var majGrid = locProps.grid.major;
-	var minGrid = locProps.grid.minor;
+	let majProps = locProps.ticks.major;
+	let minProps = locProps.ticks.minor;
+	let majGrid = locProps.grid.major;
+	let minGrid = locProps.grid.minor;
 
 	// do we have labels? Only majorTicks
-	var ticksLabel = locProps.tickLabels;
+	let ticksLabel = locProps.tickLabels;
 	// do we want the minor ticks to be computed?
 	// do we want the minor grid?
-	var minor = (minProps.show === true || locProps.grid.minor.show === true);
+	let minor = (minProps.show === true || locProps.grid.minor.show === true);
 
 	return locProps.empty ? [] : _.map(ticker.ticks(min,max,ticksLabel,minor,comFac), (tick,idx) => {
 /*
@@ -76,9 +76,9 @@ m.VM = function(ds,partner, bounds, dir, locProps, comFac, axisKey){
 			out:
 		},
 */
-		var ticksProps = {};
-		var p = tick.minor ? minProps : majProps;
-		var tmp = {
+		let ticksProps = {};
+		let p = tick.minor ? minProps : majProps;
+		let tmp = {
 			show: true,
 			color: true,
 			length: true,
@@ -86,7 +86,7 @@ m.VM = function(ds,partner, bounds, dir, locProps, comFac, axisKey){
 			width: true
 		};
 
-		for(var u in tmp){
+		for(let u in tmp){
 			ticksProps[u] = utils.isNil(tick[u]) ? p[u] : tick[u];
 		}
 		ticksProps.position = {};
@@ -96,13 +96,13 @@ m.VM = function(ds,partner, bounds, dir, locProps, comFac, axisKey){
 
 		ticksProps.dir = {};
 		ticksProps.dir[dir] = 0;
-		ticksProps.dir[othdir] =  locProps.placement === 'right' || locProps.placement === 'top' ? -1 : 1;
+		ticksProps.dir[othdir] =	locProps.placement === 'right' || locProps.placement === 'top' ? -1 : 1;
 
 		if(tick.extra){
 			ticksProps.show = tick.show;
 		}
 
-		var mgr = {
+		let mgr = {
 			x: utils.mgr(ticksProps.position.x),
 			y: utils.mgr(ticksProps.position.y)
 		};
@@ -120,38 +120,38 @@ m.VM = function(ds,partner, bounds, dir, locProps, comFac, axisKey){
 		}
 */
 
-		var labelProps = {
+		let labelProps = {
 			ds: ds,
-			label:  p.labelize(tick.position) === false ? tick.label : p.labelize(tick.position),
-			FSize:  p.labelFSize || 15,
-			color:  p.labelColor,
+			label:	p.labelize(tick.position) === false ? tick.label : p.labelize(tick.position),
+			FSize:	p.labelFSize || 15,
+			color:	p.labelColor,
 			rotate: false,
 			transform: true,
-      show: tick.showLabel || ticksProps.show
+			show: tick.showLabel || ticksProps.show
 		};
 		labelProps.dir = {};
 		labelProps.dir[dir] = locProps.placement === 'top' || locProps.placement === 'right' ? -1 : 1;
 		labelProps.dir[othdir] = 0;
 
 
-		var addPerp =  tick.minor ? 3.75 : 0;
-		var offsetCspace = {
+		let addPerp =  tick.minor ? 3.75 : 0;
+		let offsetCspace = {
 			x: p.labelOffset.x, 
 			y: tick.offset.perp + addPerp + p.labelOffset.y 
 		};
 
-		var offset = {
+		let offset = {
 			x: labelProps.dir.x !== 0 ? tick.offset.along : 0,
 			y: labelProps.dir.y !== 0 ? tick.offset.along : 0
 		};
 
 		// adding a little margin
 		// & anchoring the text
-		var fd = 0.25 * labelProps.FSize; // font depth, 25 %
-		var fh = 0.75 * labelProps.FSize; // font height, 75 %
-		var defOff = 8;
+		let fd = 0.25 * labelProps.FSize; // font depth, 25 %
+		let fh = 0.75 * labelProps.FSize; // font height, 75 %
+		let defOff = 8;
 
-		var anchor = (() => {
+		let anchor = (() => {
 			switch(locProps.placement){
 				case 'top':
 					return {
@@ -212,7 +212,7 @@ m.VM = function(ds,partner, bounds, dir, locProps, comFac, axisKey){
 			width: 
 		},
 */
-			var gridProps = {};
+			let gridProps = {};
 			p = tick.extra ? tick.grid : tick.minor ? minGrid : majGrid;
 			tmp = {
 				show: true,
@@ -220,13 +220,13 @@ m.VM = function(ds,partner, bounds, dir, locProps, comFac, axisKey){
 				width: true
 			};
 
-      let cus = tick.grid || {};
-			for(u in tmp){
+			let cus = tick.grid || {};
+			for(let u in tmp){
 				gridProps[u] = utils.isNil(cus[u]) ? p[u] : cus[u];
 			}
 			gridProps.length = partner.length;
 
-		var tickKey = axisKey + '.t.' + idx;
+		let tickKey = axisKey + '.t.' + idx;
 		return {
 			key: tickKey,
 			tick: ticksProps,

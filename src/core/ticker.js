@@ -1,35 +1,35 @@
-var utils = require('../core/utils.js');
-var _ = require('underscore');
+let utils = require('../core/utils.js');
+let _ = require('underscore');
 
 /*
  * beware of distance (period) versus
  * values (date), see {date,nbr}Mgr.js
 */
-var computeTicks = function(first,last,minor,fac){
-	var mgr = utils.mgr(first);
-	var start = mgr.closestRoundUp(first,mgr.divide(mgr.distance(first,last),10));
-	var length = mgr.distance(start,last);
+let computeTicks = function(first,last,minor,fac){
+	let mgr = utils.mgr(first);
+	let start = mgr.closestRoundUp(first,mgr.divide(mgr.distance(first,last),10));
+	let length = mgr.distance(start,last);
 	// distance min criteria 1
 	// 10 ticks max
-	var dec = mgr.divide(length,10);
-	var majDist = mgr.roundUp(dec);
-	var minDist = mgr.roundDown(majDist);
+	let dec = mgr.divide(length,10);
+	let majDist = mgr.roundUp(dec);
+	let minDist = mgr.roundDown(majDist);
 
 // redefine start to have the biggest rounded value
-	var biggestRounded = mgr.orderMagValue(last,first);
+	let biggestRounded = mgr.orderMagValue(last,first);
 	start = utils.isNil(biggestRounded) ? start : biggestRounded;
 	while(mgr.greaterThan(start,first) || mgr.equal(start,first)){
 		start = mgr.subtract(start,majDist);
 	}
 	start = mgr.add(start,majDist);
 	length = mgr.distance(start,last);
-	var llength = mgr.multiply(majDist,mgr.labelF);
+	let llength = mgr.multiply(majDist,mgr.labelF);
 
-	var out = [];
-	var curValue = start;
+	let out = [];
+	let curValue = start;
 	// if a date, might want a first label with no tick
 	if(mgr.type === 'date'){
-		var pos = mgr.subtract(curValue,majDist);
+		let pos = mgr.subtract(curValue,majDist);
 		if(mgr.greaterThan(mgr.distance(first,curValue),llength)){
 			out.push({
 				position: pos,
@@ -38,14 +38,14 @@ var computeTicks = function(first,last,minor,fac){
 					perp: 0
 				},
 				label: mgr.label(pos,majDist,fac),
-        show: false,
-        showLabel: true
+				show: false,
+				showLabel: true
 			});
 		}
 	}
 
 	while(mgr.lowerThan(curValue,last)){
-		var lte = mgr.distance(curValue,last);
+		let lte = mgr.distance(curValue,last);
 		out.push({
 			position: curValue,
 			offset: {
@@ -58,8 +58,8 @@ var computeTicks = function(first,last,minor,fac){
 		});
 		// minor ticks
 		if(minor){
-			var curminValue = mgr.add(curValue,minDist);
-			var ceil = mgr.add(curValue,majDist);
+			let curminValue = mgr.add(curValue,minDist);
+			let ceil = mgr.add(curValue,majDist);
 			while(mgr.lowerThan(curminValue,ceil)){
 				if(mgr.greaterThan(curminValue,last)){
 					break;
@@ -85,7 +85,7 @@ var computeTicks = function(first,last,minor,fac){
 	return out;
 };
 
-var m = {};
+let m = {};
 
 m.ticks = function(start,length,labels,minor,fac){
 	if(!!labels && labels.length > 0){

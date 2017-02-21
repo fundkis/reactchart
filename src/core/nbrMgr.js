@@ -76,22 +76,6 @@ m.roundDown = function(r){
 	return cand;
 };
 
-m.multiply = function(d,f){
-	return d * f;
-};
-
-m.divide = function(d,f){
-	return d / f;
-};
-
-m.increase = function(d1,d2){
-	return d1 + d2;
-};
-
-m.offset = function(/*d*/){
-	return 0;
-};
-
 // value methods
 m.closestRoundUp = function(ref,dist){
 
@@ -130,64 +114,53 @@ m.closestRoundDown = function(ref,dist){
 	return start;
 };
 
-m.closestRound = function(ref,om,type){
-	return (type === 'up')? m.closestRoundUp(ref,om):m.closestRoundDown(ref,om);
-};
-
-m.min = function(values){
-	return min.apply(null,values);
-};
-
-m.max = function(values){
-	return max.apply(null,values);
-};
-
-m.label = function(value, useless, fac){
-	let out = (value / fac).toFixed(1);
-	return out;
-};
-
 // value & distance methods
-m.add = function(d1,d2){
-	return d1 + d2;
-};
+m.closestRound = (ref,om,type) => (type === 'up')? m.closestRoundUp(ref,om):m.closestRoundDown(ref,om);
 
-m.subtract = function(d1,d2){
-	return d1 - d2;
-};
+m.min          = (values) => min.apply(null,values);
 
-m.distance = function(d1,d2){
-	return abs(d1 - d2);
-};
+m.max          = (values) => max.apply(null,values);
 
-m.greaterThan = function(v1,v2){
-	return v1 > v2;
-};
+m.label        = (value, useless, fac) => (value / fac).toFixed(1);
 
-m.lowerThan = function(v1,v2){
-	return v1 < v2;
-};
+m.multiply     = (d,f) => d * f;
 
-m.equal = function(v1,v2){
-	return v1 === v2;
-};
+m.divide       = (d,f) => d / f;
+
+m.increase     = (d1,d2) => d1 + d2;
+
+m.offset       = (/*d*/) => 0;
+
+m.add          = (d1,d2) => d1 + d2;
+
+m.subtract     = (d1,d2) => d1 - d2;
+
+m.distance     = (d1,d2) => abs(d1 - d2);
+
+m.greaterThan  = (v1,v2) => v1 > v2;
+
+m.lowerThan    = (v1,v2) => v1 < v2;
+
+m.equal        = (v1,v2) => v1 === v2;
 
 // some management
+m.extraTicks = () => [];
 
-m.extraTicks = function(){
-	return [];
-};
+m.getValue = m.value = m.step = (v) => v;
 
-m.getValue = m.value = m.step = function(v){
-	return v;
-};
-
-m.smallestStep = function(){
-	return 1;
-};
+m.smallestStep = () => 1;
 
 m.labelF = 0.75;
 
 m.type = 'number';
+
+m.autoFactor = function(ma,mi){
+  let orMax = m.orderMag(ma);
+  let orMin = m.orderMag(mi);
+  let a = min(orMax, orMin);
+  let b = max(orMax, orMin);
+  
+  return b - a < 3 ? pow(10,a) : pow(10,b);
+};
 
 module.exports = m;

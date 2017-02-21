@@ -1,7 +1,7 @@
-var React = require('react');
-var dataScale = require('../core/space-transf.js');
-var utils = require('../core/utils.js');
-var imUtils = require('../core/im-utils.js');
+let React = require('react');
+let dataScale = require('../core/space-transf.js');
+let utils = require('../core/utils.js');
+let imUtils = require('../core/im-utils.js');
 
 /*
 	{
@@ -26,49 +26,47 @@ var imUtils = require('../core/im-utils.js');
 	}
 */
 
-var BarMark = React.createClass({
+class BarMark extends React.Component {
 
-	shouldComponentUpdate: function(props){
+	shouldComponentUpdate(props){
 		return !imUtils.isEqual(props.state,this.props.state);
-	},
+	}
 
-  render : function() {
+	render() {
 
-	var state = this.props.state;
+	let { state } = this.props;
 
-	var mgr = {
+	let mgr = {
 		x: utils.mgr(state.position.x),
 		y: utils.mgr(state.position.y)
 	};
 
-	var ds = state.ds;
+	let ds = state.ds;
 
-	var position = state.position;
+	let position = state.position;
 
-	var span = {
+	let span = {
 		x: utils.isNil(state.span.x) ? 0 : state.span.x,
 		y: utils.isNil(state.span.y) ? 0 : state.span.y 
 	};
 
-	var drop = {
+	let drop = {
 		x: utils.isNil(state.drop.x) ? state.position.x : state.drop.x,
 		y: utils.isNil(state.drop.y) ? state.position.y : state.drop.y 
 	};
 
-	var toC = (dir) => {
-		var op = dir === 'y' ? 'add' : 'subtract';
+	let toC = (dir) => {
+		let op = dir === 'y' ? 'add' : 'subtract';
 		return dataScale.toC(ds[dir], mgr[dir][op](position[dir],mgr[dir].divide(span[dir],2))); // all in dataSpace
 	};
 
-	var x = toC('x');
-	var y = toC('y');
+	let x = toC('x');
+	let y = toC('y');
 
-	var toCwidth = (dir) => {
-		return dataScale.toCwidth(ds[dir], mgr[dir].add(mgr[dir].distance(drop[dir],position[dir]), span[dir]));
-	};
+	let toCwidth = (dir) => dataScale.toCwidth(ds[dir], mgr[dir].add(mgr[dir].distance(drop[dir],position[dir]), span[dir]));
 
-	var height = toCwidth('y');
-	var width  = toCwidth('x');
+	let height = toCwidth('y');
+	let width  = toCwidth('x');
 	if(mgr.y.lowerThan(position.y,drop.y)){
 		y -= height;
 	}
@@ -76,8 +74,8 @@ var BarMark = React.createClass({
 		x -= width;
 	}
 
-	var color = state.color || state.fill || 'none';
-	var stroke = state.draw ? color : null;
+	let color = state.color || state.fill || 'none';
+	let stroke = state.draw ? color : null;
 	if(drop.y > state.y){
 		y -= height;
 	}
@@ -85,7 +83,7 @@ var BarMark = React.createClass({
 	 return <rect x={x} y={y} height={height} width={width}
 			stroke={stroke} strokeWidth={state.strokeWidth} 
 			fill={color} opacity={state.shade}/>;
-  }
-});
+	}
+}
 
 module.exports = BarMark;

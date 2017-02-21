@@ -1,14 +1,14 @@
-var m = {};
+let m = {};
 
 m.VM = function(position,props,ds,key,pin,open){
 
-	var draw = props.markProps.draw || position.draw || false;
-	var color = position.color || props.markProps.color || props.markColor || props.color || 'black';
-	var width = position.width || props.markProps.width || open ? 1 : 0;
-	var fill = open ? 'none' : position.fill || props.markProps.fill || color;
-	var size = position.size || props.markProps.size || props.markSize || 3;
-	var radius = position.radius || props.markProps.radius || size;
-	var shade = position.shade || props.markProps.shade || 1;
+	let draw = props.markProps.draw || position.draw || false;
+	let color = position.color || props.markProps.color || props.markColor || props.color || 'black';
+	let width = position.width || props.markProps.width || open ? 1 : 0;
+	let fill = open ? 'none' : position.fill || props.markProps.fill || color;
+	let size = position.size || props.markProps.size || props.markSize || 3;
+	let radius = position.radius || props.markProps.radius || size;
+	let shade = position.shade || props.markProps.shade || 1;
 
 	return {
 		key: key,

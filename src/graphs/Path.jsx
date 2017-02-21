@@ -1,8 +1,8 @@
-var React = require('react');
+let React = require('react');
 
-var _ = require('underscore');
-var space = require('../core/space-transf.js');
-var imUtils = require('../core/im-utils.js');
+let _ = require('underscore');
+let space = require('../core/space-transf.js');
+let imUtils = require('../core/im-utils.js');
 
 /*
 	 {
@@ -28,67 +28,67 @@ var imUtils = require('../core/im-utils.js');
 	}
 */
 
-var Path = React.createClass({
+class Path extends React.Component {
 
-	shouldComponentUpdate: function(props) {
+	shouldComponentUpdate(props) {
 		return !imUtils.isEqual(props.state,this.props.state);
-	},
+	}
 
 
-	render: function(){
+	render(){
 
-		var state = this.props.state;
+		let state = this.props.state;
 
-    if(state.show === false || state.positions.length === 0){
-      return null;
-    }
+		if(state.show === false || state.positions.length === 0){
+			return null;
+		}
 
-		var ds = state.ds;
-		var pos = state.positions;
-		var drops = state.drops;
+		let ds = state.ds;
+		let pos = state.positions;
+		let drops = state.drops;
 
-		var coord = (idx) => space.toC(ds.x,pos[idx].x) + ',' + space.toC(ds.y, pos[idx].y);
+		let coord = (idx) => space.toC(ds.x,pos[idx].x) + ',' + space.toC(ds.y, pos[idx].y);
 
-		var dropx = (idx) => space.toC(ds.x,drops[idx].x) + ',' + space.toC(ds.y, pos[idx].y);
+		let dropx = (idx) => space.toC(ds.x,drops[idx].x) + ',' + space.toC(ds.y, pos[idx].y);
 
-		var dropy = (idx) => space.toC(ds.x,pos[idx].x) + ',' + space.toC(ds.y, drops[idx].y);
+		let dropy = (idx) => space.toC(ds.x,pos[idx].x) + ',' + space.toC(ds.y, drops[idx].y);
 
-		var points = 'M ' + coord(0);
-		for(var i = 1; i < state.positions.length; i++){
+		let points = 'M ' + coord(0);
+		for(let i = 1; i < state.positions.length; i++){
 			points += ' L ' + coord(i);
 		}
 
 		// we close the curve if wanted
 		// y dir has prevalence
-    let filling = points;
+		let filling = points;
 		if(state.close.y){
-			for(i = drops.length - 1; i >= 0; i--){
+			for(let i = drops.length - 1; i >= 0; i--){
 				filling += ' L ' + dropy(i);
 			}
 		}else if(state.close.x){
-			for(i = drops.length - 1; i >= 0; i--){
+			for(let i = drops.length - 1; i >= 0; i--){
 				filling += ' L ' + dropx(i);
 			}
 		}
 		filling += 'z';
 
 // droplines
-		var dropLines = [];
-		var color = state.color;
-		var width = state.width; 
-		var shade = state.shade;
+		let dropLines = [];
+		let color = state.color;
+		let width = state.width; 
+		let shade = state.shade;
 
 		if(state.dropLine.y){
 			dropLines = _.map(state.positions,(pos,idx) => {
-				var path = 'M ' + coord(idx) + ' L ' + dropy(idx);
-				var key = state.key + '.dl.' + idx;
+				let path = 'M ' + coord(idx) + ' L ' + dropy(idx);
+				let key = state.key + '.dl.' + idx;
 				return <path key={key} d={path} stroke={color} strokeWidth={width} opacity={shade}/>;
 			});
 		}
 		if(state.dropLine.x){
 			dropLines = _.map(state.positions,(pos,idx) => {
-				var path = 'M ' + coord(idx) + ' L ' + dropx(idx);
-				var key = state.key + '.dl.' + idx;
+				let path = 'M ' + coord(idx) + ' L ' + dropx(idx);
+				let key = state.key + '.dl.' + idx;
 				return <path key={key} d={path} stroke={color} strokeWidth={width} opacity={shade}/>;
 			});
 		}
@@ -104,11 +104,11 @@ var Path = React.createClass({
 				stroke={color} 
 				strokeWidth={width}
 				opacity={shade}
-        fill='none'/>
+				fill='none'/>
 				{dropLines}
 			</g>;
 	}
 
-});
+}
 
 module.exports = Path;

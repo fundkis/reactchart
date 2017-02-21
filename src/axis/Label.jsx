@@ -1,7 +1,7 @@
-var React = require('react');
+let React = require('react');
 
-var space = require('../core/space-transf.js');
-var imUtils = require('../core/im-utils.js');
+let space = require('../core/space-transf.js');
+let imUtils = require('../core/im-utils.js');
 
 /*
 	{
@@ -18,12 +18,14 @@ var imUtils = require('../core/im-utils.js');
 	},
 */
 
-var Label = React.createClass({
-	shouldComponentUpdate: function(props){
-		return !imUtils.isEqual(props.state,this.props.state);
-	},
+class Label extends React.Component {
 
-	render: function(){
+	shouldComponentUpdate(props){
+		return !imUtils.isEqual(props.state,this.props.state);
+	}
+
+	render(){
+
 		if(this.props.state.label.length === 0){
 			return null;
 		}
@@ -31,16 +33,16 @@ var Label = React.createClass({
 // label
 		// => theta = arctan(y/x) [-90,90]
 
-		var state = this.props.state;
+		let state = this.props.state;
 
-		var xL = ( state.transform ? space.toC(state.ds.x,state.position.x) : state.position.x ) + state.offset.x;
-		var yL = ( state.transform ? space.toC(state.ds.y,state.position.y) : state.position.y ) + state.offset.y;
+		let xL = ( state.transform ? space.toC(state.ds.x,state.position.x) : state.position.x ) + state.offset.x;
+		let yL = ( state.transform ? space.toC(state.ds.y,state.position.y) : state.position.y ) + state.offset.y;
 
-		var theta = state.rotate ? Math.floor( Math.atan( - Math.sqrt( state.dir.y / state.dir.x ) ) * 180 / Math.PI ) : 0; // in degrees
+		let theta = state.rotate ? Math.floor( Math.atan( - Math.sqrt( state.dir.y / state.dir.x ) ) * 180 / Math.PI ) : 0; // in degrees
 
-		var rotate = 'rotate(' + theta + ' ' + xL + ' ' + yL + ')';
+		let rotate = 'rotate(' + theta + ' ' + xL + ' ' + yL + ')';
 
-    var labProps = this.props.css ? null :
+		let labProps = this.props.css ? null :
 			{
 				fill: state.color,
 				fontSize: state.FSize
@@ -50,6 +52,6 @@ var Label = React.createClass({
 			{state.label}
 		</text>;
 	}
-});
+}
 
 module.exports = Label;

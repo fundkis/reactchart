@@ -1,6 +1,6 @@
-var React = require('react');
-var dataScale = require('../core/space-transf.js');
-var imUtils = require('../core/im-utils.js');
+let React = require('react');
+let dataScale = require('../core/space-transf.js');
+let imUtils = require('../core/im-utils.js');
 
 /*
 	{
@@ -21,21 +21,21 @@ var imUtils = require('../core/im-utils.js');
 	}
 */
 
-var SquareMark = React.createClass({
+class SquareMark extends React.Component {
 
-	shouldComponentUpdate: function(props){
+	shouldComponentUpdate(props){
 		return !imUtils.isEqual(props.state,this.props.state);
-	},
-
-	render: function(){
-		var state = this.props.state;
-
-		var x = dataScale.toC(state.ds.x,state.position.x) - state.size;
-		var y = dataScale.toC(state.ds.y,state.position.y) - state.size;
-		var f = state.fill || state.color;
-
-		return <rect x={x} y={y} width={2 * state.size} height={2 * state.size} fill={f} opacity={state.shade} stroke={state.color} strokeWidth={state.width}/>;
 	}
-});
+
+	render(){
+		let { ds, position, size, fill, color, shade, width} = this.props.state;
+
+		let x = dataScale.toC(ds.x,position.x) - size;
+		let y = dataScale.toC(ds.y,position.y) - size;
+		let f = fill || color;
+
+		return <rect x={x} y={y} width={2 * size} height={2 * size} fill={f} opacity={shade} stroke={color} strokeWidth={width}/>;
+	}
+}
 
 module.exports = SquareMark;

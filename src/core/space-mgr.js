@@ -3,42 +3,11 @@
  *
  * ds is { c : {min, max}, d: {min,max}}
  */
-var _ = require('underscore');
-var utils = require('./utils.js');
+let _ = require('underscore');
+let utils = require('./utils.js');
+let { defMargins } = require('./proprieties.js');
 
-/* If no marginsO are defined, here are the rules:
- *  - ticks and ticks labels are 20 px in the y dir (height of text),
- *			40 px in the x dir (length of text).
- *  - we take a 10px margin on title and labels
- *  - bottom and right margin:
- *			- 20px + ({x,y}LabelFSize + 10 px) if a {x,y}Label is defined,
- *  - top and left margin:
- *			- 20px + ({x,y}LabelFSize	+ 10 px) if a {x,y}Label is defined,
- *  - top margin takes a titleFSize + 10px more if a title is defined
- */
-var defaults = {
-	axis: {
-		label: {
-			bottom: 20,
-			top: 20,
-			left: 20,
-			right: 20,
-			mar: 10
-		},
-		ticks: {
-			left: 20,
-			right: 20,
-			bottom: 15,
-			top: 15
-		},
-		min: 3
-	},
-	title: 10,
-	min: 0,
-	max: 4
-};
-
-var m = {};
+let m = {};
 
 /* universe is {width , height}, this
  * is the total size of the svg picture.
@@ -118,7 +87,7 @@ var m = {};
  * the cs/ds correspondance is found with:
  *    universe - marginsO - marginsI = datas
  */
-var space = function(datas,universe,borders,title){
+let space = function(datas,universe,borders,title){
 		// if no data, we don't waste time
 		if(datas.length === 0){
 			return null;
@@ -127,8 +96,8 @@ var space = function(datas,universe,borders,title){
 	// 1 - the coordinate space
 
 		// get the (right,left) or (top,bottom)
-		var places = [];
-		for(var p in borders.marginsO){
+		let places = [];
+		for(let p in borders.marginsO){
 			places.push(p);
 		}
 
@@ -136,35 +105,35 @@ var space = function(datas,universe,borders,title){
 		// universe-world margins
 		// min and max of coord space
 		// margins between borders and axis
-		var margins = {};
-		for(p  = 0; p < places.length; p++){
-			margins[places[p]] = defaults.min;
+		let margins = {};
+		for(let p = 0; p < places.length; p++){
+			margins[places[p]] = defMargins.min;
 		}
 
 		// fetch the margin (label + ticks + default) for an axis
-		var margin = function(axis){
+		let margin = function(axis){
 			if(!axis.show){
-				return defaults.axis.min;
+				return defMargins.outer.min;
 			}
-			var marg = defaults.axis.label[axis.placement];
+			let marg = defMargins.outer.label[axis.placement];
 			if(!axis.empty){
-				marg += defaults.axis.ticks[axis.placement];
+				marg += defMargins.outer.ticks[axis.placement];
 			}
 			if(axis.label.length !== 0){
-			marg += ( axis.labelFSize + defaults.axis.label.mar );
+				marg += ( axis.labelFSize + defMargins.outer.label.mar );
 			}
 			return marg;
 		};
 
 		// labels
-		for(var l = 0; l < borders.axis.length; l++){
-			var key = borders.axis[l].placement;
-			margins[key] = Math.max(margins[key],margin(borders.axis[l]));
+		for(let l = 0; l < borders.axis.length; l++){
+			let key = borders.axis[l].placement;
+			margins[key] = Math.max(margins[key],margin(borders.axis[l])); 
 		}
 
 		// title is at the top
 		if(!utils.isNil(margins.top) && !utils.isNil(title)){
-			margins.top += title.title.length !== 0 ? title.titleFSize + defaults.title : 0;
+			margins.top += title.title.length !== 0 ? title.titleFSize + defMargins.title : 0;
 		}
 
 		// more suppleness, but less
@@ -172,49 +141,49 @@ var space = function(datas,universe,borders,title){
 		// margins computed whatever
 		// happens, overwrite here
 		// if defined
-		for(p = 0; p < places.length; p++){
-			var k = places[p];
+		for(let p = 0; p < places.length; p++){
+			let k = places[p];
 			if(!utils.isNil(borders.marginsO[k])){
 				margins[k] = borders.marginsO[k];
 			}
-			margins[k] = Math.max(margins[k],defaults.axis.min);
+			margins[k] = Math.max(margins[k],defMargins.outer.min);
 		}
 
 		// we have the world's corners
 		// the transformation between data space and the world space is
 		// given by data space scaled to (world size - inner margins) and
 		// placed at (origin.x.x + inner x margin, origin.y.y - inner y margin)
-		var min, max;
-		var rmin, rmax;
+		let min, max;
+		let rmin, rmax;
 		if(utils.isNil(margins.left)){
 			min = universe - margins.bottom;
-			max = margins.top;
-			rmin = min - borders.marginsI.bottom;
-			rmax = max + borders.marginsI.top;
+			max = margins.top + (borders.marginsF.top || 0);
+			rmin = min - ( borders.marginsI.bottom || defMargins.inner.bottom );
+			rmax = max + ( borders.marginsI.top    || defMargins.inner.top );
 		}else{
 			min = margins.left;
-			max = universe - margins.right;
-			rmin = min + borders.marginsI.left;
-			rmax = max - borders.marginsI.right;
+			max = universe - margins.right -  + (borders.marginsF.right || 0);
+			rmin = min + ( borders.marginsI.left  || defMargins.inner.left );
+			rmax = max - ( borders.marginsI.right || defMargins.inner.right );
 		}
 
-		var cWorld = {
+		let cWorld = {
 			min: min,
 			max: max
 		};
-		var posCWorld = {
+		let posCWorld = {
 			min: rmin,
 			max: rmax
 		};
 
 	// 2 - the data space
 
-		var allValues = _.flatten(datas);
+		let allValues = _.flatten(datas);
 
-		var mgr = (allValues.length === 0)?utils.mgr(5):utils.mgr(allValues[0]);
+		let mgr = allValues.length === 0 ? utils.mgr(5) : utils.mgr(allValues[0]);
 
 	// either data defined or explicitely defined
-		var minVals = (vals) => {
+		let minVals = (vals) => {
 			if(vals.length === 0){
 				return null;
 			}
@@ -222,7 +191,7 @@ var space = function(datas,universe,borders,title){
 			return mgr.min(vals);
 		};
 
-		var maxVals = (vals) => {
+		let maxVals = (vals) => {
 			if(vals.length === 0){
 				return null;
 			}
@@ -231,7 +200,7 @@ var space = function(datas,universe,borders,title){
 		};
 
 
-		var bounds = {
+		let bounds = {
 			min: minVals(allValues),
 			max: maxVals(allValues)
 		};
@@ -244,11 +213,11 @@ var space = function(datas,universe,borders,title){
 		}
 
 		// on augmente la distance totale
-		var cRelMinMore = Math.abs( (cWorld.min - posCWorld.min) / (posCWorld.max - posCWorld.min) );
-		var cRelMaxMore = Math.abs( (cWorld.max - posCWorld.max) / (posCWorld.max - posCWorld.min) );
-		var dMinMore = mgr.multiply(mgr.distance(bounds.max,bounds.min),cRelMinMore);
-		var dMaxMore = mgr.multiply(mgr.distance(bounds.max,bounds.min),cRelMaxMore);
-		var dWorld = {
+		let cRelMinMore = Math.abs( (cWorld.min - posCWorld.min) / (posCWorld.max - posCWorld.min) );
+		let cRelMaxMore = Math.abs( (cWorld.max - posCWorld.max) / (posCWorld.max - posCWorld.min) );
+		let dMinMore = mgr.multiply(mgr.distance(bounds.max,bounds.min),cRelMinMore);
+		let dMaxMore = mgr.multiply(mgr.distance(bounds.max,bounds.min),cRelMaxMore);
+		let dWorld = {
 			min: mgr.subtract(bounds.min, dMinMore),
 			max: mgr.add(bounds.max, dMaxMore)
 		};
@@ -281,7 +250,7 @@ var space = function(datas,universe,borders,title){
     d2c
   }
 */
-		var fromCtoD = mgr.getValue( mgr.divide( mgr.distance( dWorld.max , dWorld.min ), cWorld.max - cWorld.min));
+		let fromCtoD = mgr.getValue( mgr.divide( mgr.distance( dWorld.max , dWorld.min ), cWorld.max - cWorld.min));
 		return {
 			c: {
 				min: cWorld.min,
@@ -299,22 +268,22 @@ var space = function(datas,universe,borders,title){
 
 m.spaces = function(datas,universe,borders,title){
 
-	var filter = (datas,dir) => {
+	let filter = (datas,dir) => {
 		return _.map(datas, (serie) => {
 			// global characteristics
-			var loff = serie.limitOffset;
-			var limOfIdx = dir === 'y' || utils.isNil(loff) ? -1 : loff > 0 ? serie.series.length - 1: 0;
+			let loff = serie.limitOffset;
+			let limOfIdx = dir === 'y' || utils.isNil(loff) ? -1 : loff > 0 ? serie.series.length - 1: 0;
 			return _.map(serie.series, (point,idx) => {
 					// if label
 					if(utils.isString(point[dir])){
 						return idx;
 					}
-					var val = point[dir];
+					let val = point[dir];
 
 					// modifiers are span, drop and offset
 					// offset changes the value
 					if(!utils.isNil(point.offset) && !utils.isNil(point.offset[dir])){
-						var mgr = utils.mgr(val);
+						let mgr = utils.mgr(val);
 						val = mgr.add(val,point.offset[dir]);
 					}
 					// drop adds a value
@@ -328,7 +297,7 @@ m.spaces = function(datas,universe,borders,title){
 					if(!utils.isNil(point.span) && !utils.isNil(point.span[dir])){
 						// beware, do we have a drop?
 						val = utils.isArray(val) ? val : [val];
-						var mm = utils.mgr(val[0]);
+						let mm = utils.mgr(val[0]);
 						val.push(mm.subtract(val[0],mm.divide(point.span[dir],2)));
 						val.push(mm.add(val[0],mm.divide(point.span[dir],2)));
 					}
@@ -347,23 +316,23 @@ m.spaces = function(datas,universe,borders,title){
 			});
 	};
 
-	var ob = {right: 'ord', left: 'ord', top: 'abs', bottom: 'abs'};
-	var dats = {};
-	for(var w in ob){
-		dats[w] = _.filter(datas,(series) => {return !!series[ob[w]] && series[ob[w]].axis === w;});
+	let ob = {right: 'ord', left: 'ord', top: 'abs', bottom: 'abs'};
+	let dats = {};
+	for(let w in ob){
+		dats[w] = _.filter(datas,(series) => !!series[ob[w]] && series[ob[w]].axis === w);
 	}
 
-	var mins = {};
-	var maxs = {};
-	for(w in ob){
+	let mins = {};
+	let maxs = {};
+	for(let w in ob){
 		mins[w] = null;
 		maxs[w] = null;
-		for(var i = 0; i < borders[ob[w]].length; i++){
+		for(let i = 0; i < borders[ob[w]].length; i++){
 			if(borders[ob[w]][i].placement !== w){
 				continue;
 			}
 			// min
-			var mgr;
+			let mgr;
 			if(!utils.isNil(borders[ob[w]][i].min)){
 				mgr = utils.mgr(borders[ob[w]][i].min);
 				if(utils.isNil(mins[w]) || mgr.lowerThan(borders[ob[w]][i].min,mins[w])){
@@ -381,27 +350,29 @@ m.spaces = function(datas,universe,borders,title){
 	}
 
 	// worlds = (l,b), (l,t), (r,b), (r,t)
-	var rights = filter(dats.right,  'y');
-	var lefts  = filter(dats.left,   'y');
-	var top    = filter(dats.top,    'x');
-	var bottom = filter(dats.bottom, 'x');
+	let rights = filter(dats.right,  'y');
+	let lefts  = filter(dats.left,   'y');
+	let top    = filter(dats.top,    'x');
+	let bottom = filter(dats.bottom, 'x');
 
 
-	var border = {};
+	let border = {};
 	border.ord = {
 		marginsO: {top: borders.marginsO.top, bottom: borders.marginsO.bottom},
 		marginsI: {top: borders.marginsI.top, bottom: borders.marginsI.bottom},
+		marginsF: {top: borders.marginsF.top, bottom: borders.marginsF.bottom},
 		axis: borders.abs
 	};
 
 	border.abs = {
 		marginsO: {left: borders.marginsO.left, right: borders.marginsO.right},
 		marginsI: {left: borders.marginsI.left, right: borders.marginsI.right},
+		marginsF: {left: borders.marginsF.left, right: borders.marginsF.right},
 		axis: borders.ord
 	};
 
-	var bor = {};
-	for(w in ob){
+	let bor = {};
+	for(let w in ob){
 		// copy/expand
 		bor[w] = _.extend(_.extend({},border[ob[w]]), {min: mins[w], max: maxs[w]});
 	}

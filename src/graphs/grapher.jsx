@@ -1,31 +1,23 @@
-var React = require('react');
-var Plain = require('./Plain.jsx');
-var Stairs = require('./Stairs.jsx');
-var BarChart = require('./BarChart.jsx');
-var Pie = require('./Pie.jsx');
+let React = require('react');
+let Plain = require('./Plain.jsx');
+let Stairs = require('./Stairs.jsx');
+let BarChart = require('./BarChart.jsx');
+let Pie = require('./Pie.jsx');
 
-var utils = require('../core/utils.js');
+let utils = require('../core/utils.js');
 
 // the graphs function generator
-var graph = {};
+let graph = {};
 
-graph.Plain = function(props){
-		return <Plain key={props.key} state={props}/>;
-};
+graph.Plain  = (props) => <Plain key={props.key} state={props}/>;
 
-graph.Stairs = function(props){
-	return <Stairs key={props.key} state={props}/>;
-};
+graph.Stairs = (props) => <Stairs key={props.key} state={props}/>;
 
-graph.Bars = graph.yBars = function(props){
-	return <BarChart key={props.key} state={props}/>;
-};
+graph.Bars   = graph.yBars = (props) => <BarChart key={props.key} state={props}/>;
 
-graph.Pie = function(props){
-	return <Pie key={props.key} state={props}/>;
-};
+graph.Pie    = (props) => <Pie key={props.key} state={props}/>;
 
-var m = function(key,props){
+let m = function(key,props){
 	if(utils.isNil(graph[key])){
 		throw new Error('Unknown graph type "' + key + '"');
 	}

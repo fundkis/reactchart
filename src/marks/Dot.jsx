@@ -1,6 +1,6 @@
-var React = require('react');
-var dataScale = require('../core/space-transf.js');
-var imUtils = require('../core/im-utils.js');
+let React = require('react');
+let dataScale = require('../core/space-transf.js');
+let imUtils = require('../core/im-utils.js');
 
 /*
 	{
@@ -22,22 +22,22 @@ var imUtils = require('../core/im-utils.js');
 	}
 */
 
-var DotMark = React.createClass({
+class DotMark extends React.Component {
 
-	shouldComponentUpdate: function(props){
+	shouldComponentUpdate(props){
 		return !imUtils.isEqual(props.state,this.props.state);
-	},
-
-	render: function(){
-		var state = this.props.state;
-
-		var x = dataScale.toC(state.ds.x,state.position.x);
-		var y = dataScale.toC(state.ds.y,state.position.y);
-		var r = state.radius || state.size;
-		var f = state.fill || state.color;
-
-		return <circle cx={x} cy={y} r={r} fill={f} opacity={state.shade} stroke={state.color} strokeWidth={state.width}/>;
 	}
-});
+
+	render(){
+		let { ds, position, size, color, radius, fill, shade, width } = this.props.state;
+
+		let x = dataScale.toC(ds.x,position.x);
+		let y = dataScale.toC(ds.y,position.y);
+		let r = radius || size;
+		let f = fill || color;
+
+		return <circle cx={x} cy={y} r={r} fill={f} opacity={shade} stroke={color} strokeWidth={width}/>;
+	}
+}
 
 module.exports = DotMark;
