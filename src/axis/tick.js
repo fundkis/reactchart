@@ -120,6 +120,12 @@ m.VM = function(ds,partner, bounds, dir, locProps, comFac, axisKey){
 		}
 */
 
+		// label
+		if(typeof p.labelize === 'string'){
+			let lmgr = utils.mgr(tick.position);
+			let maxDist = ds[dir].d.max - ds[dir].d.min;
+			p.labelize = lmgr.labelize(p.labelize, maxDist);
+		}
 		let labelProps = {
 			ds: ds,
 			label:	p.labelize(tick.position) === false ? tick.label : p.labelize(tick.position),

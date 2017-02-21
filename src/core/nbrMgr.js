@@ -1,5 +1,21 @@
 let { pow, floor, log, min, max, abs, LN10 } = Math;
 
+let suffixes = {
+	18: 'E', // exa
+	15: 'P', // peta
+	12: 'T', // tera
+	9: 'G',  // giga
+	6: 'M',  // mega
+	3: 'k',  // kilo
+  0: '',   // unit
+	'-3': 'm', // milli
+	'-6': '\u03BC', // micro
+	'-9': 'n', // nano
+	'-12': 'p', // pico
+	'-15': 'f', // femto
+	'-18': 'a' // atto
+};
+
 let m = {};
 
 let firstDigit = function(r){
@@ -7,6 +23,22 @@ let firstDigit = function(r){
 	let str = '' + res;
 	let out = str[0] || 0;
 	return Number(out);
+};
+
+let firstNonNull = function(v){
+	let str = v + '';
+	let com = str.indexOf('.');
+	if(com < 0){
+		return 0;
+	}
+	let i, out;
+	for (i = str.length - 1; i >= 0; i--){
+		if(str[i] !== '0'){
+			break;
+		}
+	}
+	out = i - com;
+	return max(out,0);
 };
 
 let roundMe = function(min,max){
@@ -25,6 +57,57 @@ let roundMe = function(min,max){
 		}
 	}
 	return val;
+};
+
+let scientific = (val, orMax) => {
+	let om = m.orderMag(val);
+	let face = val / pow(10,om);
+	while(face >= 10){
+		face /= 10;
+		om += 1;
+	}
+
+	let maxV = max(om - orMax + 1, 0);
+	let f = min(firstNonNull(face), maxV);
+
+	return {base: face.toFixed(f), power: om};
+};
+
+let suffixe = (order) => {
+	let num = order % 3 === 0 ? order : (order - 1) % 3 === 0 ? order - 1 : order - 2;
+	return {
+		num, 
+		string: suffixes[num]
+	};
+};
+
+let natural = (val, orMax) => {
+	let om = m.orderMag(val);
+	let { num, string } = suffixe(om);
+	let base = val / pow(10, num);
+	while(base >= 1e3){
+		base /= 1e3;
+		om += 3;
+		string = suffixe(om).string;
+	}
+
+	let maxV = max(om - orMax + 1, 0);
+	let comp = firstNonNull(base);
+	let f = min(comp, maxV);
+
+	return base.toFixed(f) + string;
+};
+
+let labelFromType = (type, dist) => {
+
+	switch(type){
+		case 'sci':
+			return (val) => scientific(val, m.orderMag(dist));
+		case 'nat':
+			return (val) => natural(val, m.orderMag(dist));
+		default:
+			return () => false;
+	}
 };
 
 // distance methods
@@ -149,6 +232,9 @@ m.extraTicks = () => [];
 m.getValue = m.value = m.step = (v) => v;
 
 m.smallestStep = () => 1;
+
+// management
+m.labelize     = (type, dist) => labelFromType(type, dist);
 
 m.labelF = 0.75;
 

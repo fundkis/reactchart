@@ -446,6 +446,9 @@ m.value        = (num) => new Date(num * 1000 * 3600 * 24 * 365);
 // in years
 m.step         = (num) => makePeriod({years: num});
 
+// no
+m.labelize     = () => false;
+
 m.labelF = 0.75;
 
 m.type = 'date';

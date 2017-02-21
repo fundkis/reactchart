@@ -78,7 +78,7 @@ class AxisLine extends React.Component {
 		let om = mgr.orderMag(factor);
 
 		let labMar = defMargins.outer.label.bottom; // = top, left, right
-		let width  = 5 * (3 + ( om > 100 ? -1 : om > 10 ? 0.5 : 0.2 )); // 5px for 10^(123)
+		let width  = 5 * (3 + ( om > 100 ? 0.8 : om > 10 ? 0.5 : 0.2 )); // 5px for 10^(123)
 		let height = Fsize;
 
 		let off = {x: 0, y: 0};
@@ -96,16 +96,15 @@ class AxisLine extends React.Component {
 				off.y = height + labMar;
 		}
 
-		let fac = {
+		let pos = {
 			x: offset.x + line.end.x + off.x,
 			y: offset.y + line.end.y + off.y
 		};
-		let trans = 'translate(' + fac.x + ',' + fac.y + ')';
 
-		return <g transform={trans}>
-			<text x='0' y='0' fill={color} textAnchor='end' fontSize={Fsize}>&#183;10</text>
-			<text x='0' y={-0.5 * Fsize} fontSize={Fsize} textAnchor='start'>{om}</text>
-		</g>;
+		return <text {...pos} fill={color} fontSize={Fsize}>
+			<tspan textAnchor='end'>&#183;10</tspan>
+			<tspan dy={-0.5 * Fsize} textAnchor='start'>{om}</tspan>
+		</text>;
 	}
 
 	render(){
