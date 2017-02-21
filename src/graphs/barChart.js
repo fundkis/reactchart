@@ -1,7 +1,5 @@
-var m = {};
+let m = {};
 
-m.VM = function() {
-	return null;
-};
+m.VM = () => null;
 
 module.exports = m;

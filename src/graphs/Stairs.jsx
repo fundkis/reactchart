@@ -1,9 +1,9 @@
-var React = require('react');
-var Bins = require('./Bins.jsx');
-var Mark = require('../marks/Mark.jsx');
-var _ = require('underscore');
+let React = require('react');
+let Bins = require('./Bins.jsx');
+let Mark = require('../marks/Mark.jsx');
+let _ = require('underscore');
 
-var imUtils = require('../core/im-utils.js');
+let imUtils = require('../core/im-utils.js');
 
 /*
 	{
@@ -13,19 +13,19 @@ var imUtils = require('../core/im-utils.js');
 	}
 */
 
-var StairsChart = React.createClass({
+class StairsChart extends React.Component {
 
-  shouldComponentUpdate: function(props) {
+	shouldComponentUpdate(props) {
 	 return !imUtils.isEqual(props.state,this.props.state);
-  },
+	}
 
-	render: function(){
-		var marks = this.props.state.marks;
+	render(){
+		let marks = this.props.state.marks;
 		return marks.length === 0 ? <Bins state={this.props.state.path} /> : <g>
 			<Bins state={this.props.state.path} />
 			{_.map(marks, (point) => <Mark key={point.key} state={point} type={this.props.state.markType}/>)}
 			</g>;
 	}
-});
+}
 
 module.exports = StairsChart;

@@ -1,12 +1,12 @@
-var React = require('react');
-var Axes = require('./Axes.jsx');
-var Curves = require('./Curves.jsx');
-var Cadre = require('./Cadre.jsx');
-var Background = require('./Background.jsx');
-var Foreground = require('./Foreground.jsx');
-var Title = require('./Title.jsx');
+let React = require('react');
+let Axes = require('./Axes.jsx');
+let Curves = require('./Curves.jsx');
+let Cadre = require('./Cadre.jsx');
+let Background = require('./Background.jsx');
+let Foreground = require('./Foreground.jsx');
+let Title = require('./Title.jsx');
 
-var imUtils = require('./core/im-utils.js');
+let imUtils = require('./core/im-utils.js');
 
 /*
 	{
@@ -21,13 +21,13 @@ var imUtils = require('./core/im-utils.js');
 	}
 */
 
-var Graph = React.createClass({
+class Drawer extends React.Component {
 
-	shouldComponentUpdate: function(props){
+	shouldComponentUpdate(props){
 		return !imUtils.isEqual(props.state,this.props.state);
-	},
+	}
 
-	orderAG: function(){
+	orderAG(){
 		return this.props.state.axisOnTop === true ? <g>
 			<Curves state={this.props.state.curves} />
 			<Axes state={this.props.state.axes}/>
@@ -36,10 +36,10 @@ var Graph = React.createClass({
 			<Curves state={this.props.state.curves} />
 		</g>;
 					
-	},
+	}
 
-	render: function(){
-		var state = this.props.state;
+	render(){
+		let state = this.props.state;
 		return <svg width={state.width} height={state.height}>
 			{state.cadre ? <Cadre width={state.width} height={state.height}/> : null }
 			<Background state={state.background}/>
@@ -49,6 +49,6 @@ var Graph = React.createClass({
 			</svg>;
 
 	}
-});
+}
 
-module.exports = Graph;
+module.exports = Drawer;

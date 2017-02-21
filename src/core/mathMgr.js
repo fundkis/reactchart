@@ -2,29 +2,21 @@
 /// misc
 ///////////////////
 
-var relEps = 1e-16;
+let relEps = 1e-16;
 
-var misc = {};
-
-// a < b
-misc.lowerThan = function(a,b){
-	return (a - b) < - relEps;
-};
+let misc = {};
 
 // a < b
-misc.greaterThan = function(a,b){
-	return (a - b) > relEps;
-};
+misc.lowerThan = (a,b) => (a - b) < - relEps;
+
+// a < b
+misc.greaterThan = (a,b) => (a - b) > relEps;
 
 // a <= b
-misc.lowerEqualThan = function(a,b){
-	return (a - b) < relEps;
-};
+misc.lowerEqualThan = (a,b) => (a - b) < relEps;
 
 // a <= b
-misc.greaterEqualThan = function(a,b){
-	return (a - b) > - relEps;
-};
+misc.greaterEqualThan = (a,b) => (a - b) > - relEps;
 
 // a === b
 misc.equalTo = function(a,b,coef){
@@ -43,7 +35,7 @@ misc.isZero = function(a,coef){
 	return Math.abs(a) < coef * relEps;
 };
 
-var m = {};
+let m = {};
 
 m.misc = misc;
 

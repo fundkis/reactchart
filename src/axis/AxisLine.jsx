@@ -1,7 +1,8 @@
-var React = require('react');
-var Label = require('./Label.jsx');
-var utils = require('../core/utils.js');
-var imUtils = require('../core/im-utils.js');
+let React = require('react');
+let Label = require('./Label.jsx');
+let utils = require('../core/utils.js');
+let imUtils = require('../core/im-utils.js');
+let { defMargins } = require('../core/proprieties.js');
 
 /*
 	{
@@ -35,15 +36,16 @@ var imUtils = require('../core/im-utils.js');
 */
 
 
-var AxisLine = React.createClass({
-	shouldComponentUpdate: function(props){
+class AxisLine extends React.Component {
+
+	shouldComponentUpdate(props){
 		return !imUtils.isEqual(props.state,this.props.state);
-	},
+	}
 
-	axis: function(){
-		var lprops = this.props.state.line;
+	axis(){
+		let lprops = this.props.state.line;
 
-		var lp = this.props.css ? null: {
+		let lp = this.props.css ? null: {
 			stroke: lprops.color,
 			strokeWidth: lprops.width
 		};
@@ -58,65 +60,64 @@ var AxisLine = React.createClass({
 			default:
 				throw new Error('Unknown coordinate system: "' + this.props.state.CS + '"' );
 		}
-	},
+	}
 
-	textOffset: function(fs,text,dir){
-
-		var fd = 0.25 * fs; // font depth, 25 %
-		var fh = 0.75 * fs; // font height, 75 %
-
-		// arbitrary values, from some font:
-		// width "m" = 40 px
-		// width "M" = 45 px => used
-		var labelWidthOff = - text.length * 22.5;
-		var labelHeightOff = (dir) => {
-			return dir > 0 ? fh : fd;
-		};
-
-		return {
-			x: dir.x !== 0 ? labelHeightOff(dir.x) : labelWidthOff ,
-			y: dir.y !== 0 ? labelHeightOff(dir.y) : labelWidthOff
-		};
-	},
-
-	factor: function(){
-		var props = this.props.state.comFac;
-		if(utils.isNil(props.factor) || props.factor === 1){
+	factor(){
+		let { state } = this.props;
+		let { comFac, line } = state;
+		let { factor, Fsize, offset, color, ds } = comFac;
+		if(utils.isNil(factor) || factor === 1){
 			return null;
 		}
 
-		var dir = utils.direction(this.props.state.line);
+		let dir = utils.direction(line, ds);
 		dir.x = Math.sqrt(dir.x / dir.line);
 		dir.y = Math.sqrt(dir.y / dir.line);
 
-		var offset = this.textOffset(props.Fsize,'10-10',dir); // if more than that, there are questions to be asked...
+		let mgr = utils.mgr(factor);
+		let om = mgr.orderMag(factor);
 
-		var fac = {
-			x:   props.offset.x + this.props.state.line.end.x + dir.x * ( offset.x + 10 ),
-			y: - props.offset.y + this.props.state.line.end.y + dir.y * ( offset.y + 10 )
+		let labMar = defMargins.outer.label.bottom; // = top, left, right
+		let width  = 5 * (3 + ( om > 100 ? 0.8 : om > 10 ? 0.5 : 0.2 )); // 5px for 10^(123)
+		let height = Fsize;
+
+		let off = {x: 0, y: 0};
+		switch(dir.corner){
+			case '01':
+				off.x = - width;
+				off.y = - height;
+				break;
+			case '11':
+				off.x = width  * ( dir.y - dir.x) + dir.y * labMar;
+				off.y = height * ( dir.y - dir.x) - dir.x * labMar - dir.y * labMar * 0.5;
+				break;
+			case '10':
+				off.x = width;
+				off.y = height + labMar;
+		}
+
+		let pos = {
+			x: offset.x + line.end.x + off.x,
+			y: offset.y + line.end.y + off.y
 		};
-    let trans = 'translate('+fac.x+','+fac.y+')';
 
-		var mgr = utils.mgr(props.factor);
-		var om = mgr.orderMag(props.factor);
-    return <g transform={trans}>
-      <circle x='0' y='0' r='1'/>
-      <text x='0' y='0' fill={props.color} textAnchor='end' fontSize={props.Fsize}>10</text>
-      <text x='0' y={-0.5*props.Fsize} fontSize={props.Fsize} textAnchor='start'>{om}</text>
-    </g>;
-	},
+		return <text {...pos} fill={color} fontSize={Fsize}>
+			<tspan textAnchor='end'>&#183;10</tspan>
+			<tspan dy={-0.5 * Fsize} textAnchor='start'>{om}</tspan>
+		</text>;
+	}
 
-	render: function(){
+	render(){
 
-    var labName = this.props.className + 'Label';
+		let labName = this.props.className + 'Label';
 
 		return this.props.state.show === false ? null : <g>
 			{this.axis()}
-			<Label className={labName} css={this.props.css} state={this.props.state.label}/>
 			{this.factor()}
+			<Label className={labName} css={this.props.css} state={this.props.state.label}/>
 		</g>;
 	}
 
-});
+}
 
 module.exports = AxisLine;

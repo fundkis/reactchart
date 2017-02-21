@@ -1,7 +1,7 @@
-var React = require('react');
-var Mark = require('../marks/Mark.jsx');
-var _ = require('underscore');
-var imUtils = require('../core/im-utils.js');
+let React = require('react');
+let Mark = require('../marks/Mark.jsx');
+let _ = require('underscore');
+let imUtils = require('../core/im-utils.js');
 
 /*
 	{
@@ -10,13 +10,13 @@ var imUtils = require('../core/im-utils.js');
 	}
 */
 
-var BarChart = React.createClass({
+class BarChart extends React.Component {
 
-  shouldComponentUpdate: function(props) {
+	shouldComponentUpdate(props) {
 	 return !imUtils.isEqual(props.state,this.props.state);
-  },
+	}
 
-  render : function() {
+	render() {
 
 	if(this.props.state.marks.length === 0){
 		return null;
@@ -25,7 +25,7 @@ var BarChart = React.createClass({
 	 return <g>
 		{_.map(this.props.state.marks,(bar) => <Mark key={bar.key} state={bar} type='bar'/>)}
 		</g>;
-  }
-});
+	}
+}
 
 module.exports = BarChart;

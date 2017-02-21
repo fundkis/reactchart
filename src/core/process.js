@@ -1,12 +1,12 @@
-var _ = require('underscore');
-var space = require('./space-mgr.js');
-var utils = require('./utils.js');
-var gProps = require('./proprieties.js');
-var vm = require('./VMbuilder.js');
-var im = require('./im-utils.js');
-var legender = require('./legendBuilder.js');
+let _ = require('underscore');
+let space = require('./space-mgr.js');
+let utils = require('./utils.js');
+let gProps = require('./proprieties.js');
+let vm = require('./VMbuilder.js');
+let im = require('./im-utils.js');
+let legender = require('./legendBuilder.js');
 
-var defaultTheProps = function(props){
+let preprocessAxis = function(props){
 
   // axisProps is an Array, 
   // can be given as a non array
@@ -46,11 +46,11 @@ var defaultTheProps = function(props){
 	// axis depends on data,
 	// where are they?
 	let axis = {
-		abs: _.uniq(_.map(_.pluck(props.data, 'abs'), (e) => utils.isNil(e) ? 'bottom'	 : e.axis || 'bottom')),
-		ord: _.uniq(_.map(_.pluck(props.data, 'ord'), (e) => utils.isNil(e) ? 'left' : e.axis || 'left')),
+		abs: _.uniq(_.map(_.pluck(props.data, 'abs'), (e) => utils.isNil(e) ? 'bottom' : e.axis || 'bottom')),
+		ord: _.uniq(_.map(_.pluck(props.data, 'ord'), (e) => utils.isNil(e) ? 'left'   : e.axis || 'left')),
 	};
 
-	// empty graph
+	// default
 	if(axis.abs.length === 0){
 		axis.abs.push('bottom');
 	}
@@ -58,8 +58,78 @@ var defaultTheProps = function(props){
 		axis.ord.push('left');
 	}
 
+	return axis;
+
+};
+
+let postprocessAxis = function(props){
+
+	let fetchBounds = (type,where) => {
+		let serie = [];
+		for (let id = 0; id < props.data.length; id++){
+			let dataW = !!props.data[id][type] && !!props.data[id][type].axis ? props.data[id][type].axis : 
+				type === 'abs' ? 'bottom' : 'left';
+			if(dataW === where){
+				serie = serie.concat(_.pluck(props.data[id].series, type === 'abs' ? 'x' : 'y'));
+			}
+		}
+
+		let mgr = utils.mgr(serie[0]);
+		return {
+			max: mgr.max(serie),
+			min: mgr.min(serie),
+			mgr
+		};
+
+	};
+
+	let cores = (wa) => {
+		switch(wa){
+			case 'left':
+			case 'right':
+				return 'top';
+			case 'top':
+			case 'bottom':
+				return 'right';
+		}
+	};
+
+	/// common factor, should we add some margin?
+	for(let ax in {abs: true, ord: true}){
+
+		for(let ia = 0; ia < props.axisProps[ax].length; ia++){
+
+			let axisProps = props.axisProps[ax][ia];
+
+		  if(axisProps.factor === 'auto'){
+  	  	let { max, min, mgr } = fetchBounds(ax,axisProps.placement);
+
+     		if(mgr.type === 'number'){
+					axisProps.factor = mgr.autoFactor(max, min);
+					if(axisProps.factor !== 1){
+						let sax = cores(axisProps.placement);
+						props.factorMargin[sax] = gProps.defMargins.outer.factor[sax];
+					}
+				}else{
+					axisProps.factor = 1;
+				}
+	    }else{
+  	    axisProps.factor = 1;
+   		}
+ 		}
+
+	}
+
+};
+
+let defaultTheProps = function(props){
+
+	let axis = preprocessAxis(props);
+
 	// fill by default
 	let fullprops = utils.deepCp(utils.deepCp({},gProps.Graph(axis)), props);
+
+	postprocessAxis(fullprops);
 
 	// default for pie !!!bad coding!!!, Pie should do it (how?)
 	let noMark = (idx) => {
@@ -84,18 +154,18 @@ var defaultTheProps = function(props){
 	return fullprops;
 };
 
-var addDefaultDrop = function(serie, dir, ds, after){
+let addDefaultDrop = function(serie, dir, ds, after){
 
-	var fetchDs = (d) => !!ds[d].bottom ? ds[d].bottom : 
+let fetchDs = (d) => !!ds[d].bottom ? ds[d].bottom : 
 			!!ds[d].top ? ds[d].top : 
 			!!ds[d].left ? ds[d].left : 
 			!!ds[d].right ? ds[d].right : null;
 
-	var defZero = (point) => utils.isDate(point[dir]) ? new Date(0) : 0 ;
+let defZero = (point) => utils.isDate(point[dir]) ? new Date(0) : 0 ;
 
-	var def = (point,locdir) => {
-		var min = !!ds ? fetchDs(locdir).d.min : defZero(point);
-		var raw = point;
+let def = (point,locdir) => {
+	let min = !!ds ? fetchDs(locdir).d.min : defZero(point);
+	let raw = point;
 		raw.drop[locdir] = utils.isNil(raw.drop[locdir]) ? min : raw.drop[locdir];
 		
 		return raw;
@@ -105,12 +175,12 @@ var addDefaultDrop = function(serie, dir, ds, after){
 	return _.map(serie, (point) => !!dir ? def(point,dir) : after ? def(def(point,'x'), 'y') : point);
 };
 
-var copySerie = function(serie){
+let copySerie = function(serie){
 
 	return _.map(serie, (point,idx) => {
-		var xstr = utils.isString(point.x);
-		var ystr = utils.isString(point.y);
-		var raw = {
+	let xstr = utils.isString(point.x);
+	let ystr = utils.isString(point.y);
+	let raw = {
 			x: xstr ? idx : point.x,
 			y: ystr ? idx : point.y,
 			label: {
@@ -125,7 +195,7 @@ var copySerie = function(serie){
 				xstr ? xstr : ystr ? ystr : // it's a label
 					'(' + point.x + ',' + point.y + ')' // the (x,y) coordinates
 		};
-		for(var u in point){
+		for(let u in point){
 			if(u !== 'x' &&
 				u !== 'y'  &&
 				u !== 'label'){
@@ -136,16 +206,16 @@ var copySerie = function(serie){
 	});
 };
 
-var validate = function(series,discard){
+let validate = function(series,discard){
 
-	for(var se = 0; se < series.length; se++){
+	for(let se = 0; se < series.length; se++){
 		if(utils.isNil(series[se])){
 			series[se] = [];
 		}
-		for(var p = 0; p < series[se].length; p++){
-			var px = utils.isValidNumber(series[se][p].x);
-			var py = utils.isValidNumber(series[se][p].y); 
-			var pv = utils.isValidNumber(series[se][p].value);
+		for(let p = 0; p < series[se].length; p++){
+		let px = utils.isValidNumber(series[se][p].x);
+		let py = utils.isValidNumber(series[se][p].y); 
+		let pv = utils.isValidNumber(series[se][p].value);
 			if(!pv && ( !utils.isValidParam(px) || !utils.isValidParam(py) ) ){
 				if(!discard){
 					return false;
@@ -160,19 +230,19 @@ var validate = function(series,discard){
 
 };
 
-var addOffset = function(series,stacked){
-	var xoffset = [];
-	var yoffset = [];
+let addOffset = function(series,stacked){
+let xoffset = [];
+let yoffset = [];
 
-	var span = (ser,idx) => ser.length > 1 ? idx === 0 ? Math.abs(ser[idx + 1] - ser[idx]) * 0.9:	// if first
+let span = (ser,idx) => ser.length > 1 ? idx === 0 ? Math.abs(ser[idx + 1] - ser[idx]) * 0.9:	// if first
 		idx === ser.length - 1 ? Math.abs(ser[idx] - ser[idx - 1]) * 0.9 :	// if last
 			Math.min(Math.abs(ser[idx] - ser[idx-1]),Math.abs(ser[idx+1] - ser[idx])) * 0.9 : // if in between
 				0; // if no serie
 
-	var ensure = (obj,prop) => !!obj[prop] ? null : obj[prop] = {};
-	var writeIfUndef = (obj,prop,val) => !!obj[prop] ? null : obj[prop] = val;
+let ensure = (obj,prop) => !!obj[prop] ? null : obj[prop] = {};
+let writeIfUndef = (obj,prop,val) => !!obj[prop] ? null : obj[prop] = val;
 
-	for(var i = 0 ; i < series.length; i++){
+	for(let i = 0 ; i < series.length; i++){
 
 		_.each(series[i],(point) => {
 			if(utils.isNil(point.offset)){
@@ -194,7 +264,7 @@ var addOffset = function(series,stacked){
 						}
 					}
 					// add, compute and update
-					for(var j = 0; j < xoffset.length; j++){
+					for(let j = 0; j < xoffset.length; j++){
 						series[i][j].offset.x = xoffset[j];
 						ensure(series[i][j],'drop');
 						series[i][j].drop.x = 0;
@@ -213,7 +283,7 @@ var addOffset = function(series,stacked){
 						}
 					}
 					// add, compute and update
-					for(var k = 0; k < yoffset.length; k++){
+					for(let k = 0; k < yoffset.length; k++){
 						series[i][k].offset.y = yoffset[k];
 						ensure(series[i][k],'drop');
 						series[i][k].drop.y = 0;
@@ -227,11 +297,11 @@ var addOffset = function(series,stacked){
 	}
 };
 
-var makeSpan = function(series,data){
+let makeSpan = function(series,data){
 
-	var spanSer = (barType) => {
+let spanSer = (barType) => {
 
-		var makeOffset = (serie,n,s,sb) => {
+	let makeOffset = (serie,n,s,sb) => {
 			if(utils.isNil(serie.Span) || series[s].length === 0){
 				return;
 			}
@@ -239,11 +309,11 @@ var makeSpan = function(series,data){
 				serie.offset = {};
 			}
 
-			var dir = barType[0] === 'y' ? 'y' : 'x';
-			var othdir = dir === 'y' ? 'x' : 'y';
+		let dir = barType[0] === 'y' ? 'y' : 'x';
+		let othdir = dir === 'y' ? 'x' : 'y';
 
-			var mgr = utils.mgr(series[s][0][dir]);
-			var othmgr = utils.mgr(series[s][0][othdir]);
+		let mgr = utils.mgr(series[s][0][dir]);
+		let othmgr = utils.mgr(series[s][0][othdir]);
 
 	// start[s] = x - span * n / 2 + sb * span => offset = (sb *	span	- span * n / 2 ) = span * (sb - n / 2 )
 			serie.offset[dir] = mgr.multiply(serie.span, sb - (n - 1) / 2);
@@ -259,18 +329,18 @@ var makeSpan = function(series,data){
 			});
 		};
 
-		var spanDiv = (serie,n,idx,idxb) => {
+	let spanDiv = (serie,n,idx,idxb) => {
 			if(utils.isNil(serie.Span)){
 				return;
 			}
-			var mgr = utils.mgr(serie.span);
+		let mgr = utils.mgr(serie.span);
 			serie.span = mgr.divide(serie.span,n);
 			makeOffset(serie,n,idx,idxb);
 		};
 
-		var n = 0;
-		var out = [];
-		var oidx = [];
+	let n = 0;
+	let out = [];
+	let oidx = [];
 		_.each(series, (serie,idx) => {
 			if(data[idx].type === barType){
 				out[idx] = serie.length ? spanify(serie, data[idx]) : {};
@@ -290,15 +360,15 @@ var makeSpan = function(series,data){
 
 };
 
-var spanify = function(serie,data){
-	var out = {};
+let spanify = function(serie,data){
+let out = {};
 	if(utils.isNil(data.span) || data.span === 0){
-		var d;
-		var dir = (data.type[0] === 'y')?'y':'x';
+	let d;
+	let dir = (data.type[0] === 'y')?'y':'x';
 
-		var mgr = utils.mgr(serie[0][dir]);
-		for(var i = 1; i < serie.length; i++){
-			var dd = mgr.distance(serie[i][dir],serie[i - 1][dir]);
+	let mgr = utils.mgr(serie[0][dir]);
+		for(let i = 1; i < serie.length; i++){
+		let dd = mgr.distance(serie[i][dir],serie[i - 1][dir]);
 			if(d === undefined || mgr.lowerThan(dd, d)){
 				d = mgr.multiply(dd,0.99);
 			}
@@ -314,7 +384,7 @@ var spanify = function(serie,data){
 
 // if stairs, we need an offset
 // at one boundary value
-var offStairs = function(serie,gprops){
+let offStairs = function(serie,gprops){
 	if(serie.length < 2){
 		return undefined;
 	}
@@ -329,16 +399,16 @@ var offStairs = function(serie,gprops){
 	return undefined;
 };
 
-var m = {};
+let m = {};
 
 m.process = function(rawProps){
 
-	var props = defaultTheProps(utils.deepCp({},rawProps));
+	let props = defaultTheProps(utils.deepCp({},rawProps));
 
-	var raw = _.pluck(props.data,'series');
+	let raw = _.pluck(props.data,'series');
 
-	var state = {};
-	var lOffset = [];
+	let state = {};
+	let lOffset = [];
 
 	// empty
 	if(!validate(raw,props.discard)){
@@ -358,8 +428,8 @@ m.process = function(rawProps){
 	}
 
 		// so we have all the keywords
-	var marginalize = (mar) => {
-		for(var m in {left: true, right: true, bottom: true, top: true}){
+	let marginalize = (mar) => {
+		for(let m in {left: true, right: true, bottom: true, top: true}){
 			if(!mar[m]){
 				mar[m] = undefined;
 			}
@@ -369,18 +439,18 @@ m.process = function(rawProps){
 	};
 
 		// axis data, min-max from series (computed in space-mgr)
-	var abs = utils.isArray(props.axisProps.abs) ? props.axisProps.abs : [props.axisProps.abs];
-	var ord = utils.isArray(props.axisProps.ord) ? props.axisProps.ord : [props.axisProps.ord];
+	let abs = utils.isArray(props.axisProps.abs) ? props.axisProps.abs : [props.axisProps.abs];
+	let ord = utils.isArray(props.axisProps.ord) ? props.axisProps.ord : [props.axisProps.ord];
 
 	// let's look for labels given in the data
 	_.each(props.data, (dat,idx) => {
-		var locObDir = {x: 'abs', y: 'ord'};
-		var ser = state.series[idx];
-		for(var u in locObDir){
-				var dir = locObDir[u];
-				var locAxis = _.find(props.axisProps[dir], (ax) => ax.placement === dat[dir].axis);
-				for(var p = 0; p < ser.length; p++){
-					var point = ser[p];
+	let locObDir = {x: 'abs', y: 'ord'};
+	let ser = state.series[idx];
+		for(let u in locObDir){
+			let dir = locObDir[u];
+			let locAxis = _.find(props.axisProps[dir], (ax) => ax.placement === dat[dir].axis);
+				for(let p = 0; p < ser.length; p++){
+				let point = ser[p];
 					if(!!point.label[u]){  
 						locAxis.tickLabels.push({coord: point[u], label: point.label[u]});
 					}
@@ -388,34 +458,35 @@ m.process = function(rawProps){
 		}
 	});
 
-	var borders = {
+	let borders = {
 		ord: ord,
 		abs: abs,
 		marginsO: marginalize(props.outerMargin),
-		marginsI: marginalize(props.axisMargin)
+		marginsF: marginalize(props.factorMargin),
+		marginsI: marginalize(props.innerMargin),
 	};
 
 	// xmin, xmax...
-	var obDir = {x: 'abs', y: 'ord'};
-	var obMM = {min: true, max: true};
-	for(var dir in obDir){
-		for(var type in obMM){
-			var tmp = dir + type; //xmin, xmax, ...
+	let obDir = {x: 'abs', y: 'ord'};
+	let obMM = {min: true, max: true};
+	for(let dir in obDir){
+		for(let type in obMM){
+		let tmp = dir + type; //xmin, xmax, ...
 			if(!utils.isNil(props[tmp])){
 				borders[obDir[dir]][0][type] = props[tmp];
 			}
 		}
 	}
 
-	var title = {title: props.title, titleFSize: props.titleFSize};
+	let title = {title: props.title, titleFSize: props.titleFSize};
 
 	// getting dsx and dsy
-	var universe = {width: props.width, height: props.height};
+	let universe = {width: props.width, height: props.height};
 
 	// span and offet pointwise
 	// drops if required and not given (default value)
 	_.each(state.series, (serie,idx) => {
-		var dir;
+	let dir;
 		switch(props.data[idx].type){
 			case 'Bars':
 			case 'bars':
@@ -431,7 +502,7 @@ m.process = function(rawProps){
 		addDefaultDrop(serie,dir);
 	});
 
-	var data = _.map(state.series,(ser,idx) => {
+	let data = _.map(state.series,(ser,idx) => {
 		return {
 			series: ser,
 			phantomSeries: props.data[idx].phantomSeries,
@@ -462,7 +533,7 @@ m.process = function(rawProps){
 
 	// defaut drops for those that don't have them
 	state.series = _.map(state.series, (serie,idx) => {
-		var dir, ds;
+	let dir, ds;
 		switch(props.data[idx].type){
 			case 'Bars':
 			case 'bars':
@@ -488,7 +559,7 @@ m.process = function(rawProps){
 	});
 
 	//now to immutable VM
-	var imVM = {
+	let imVM = {
 		width: props.width,
 		height: props.height,
 		axisOnTop: props.axisOnTop
@@ -541,15 +612,15 @@ m.process = function(rawProps){
 	// 6 - Curves
 	imVM.curves = vm.curves(props,state);
 
-	var le = legender(props);
-	imVM.legend = () => le;
+	// 7 - legend
+	imVM.legend = () => legender(props);
 
 	return im.freeze(imVM,props.freeze);
 
 };
 
 m.processLegend = function(rawProps){
-	var props = defaultTheProps(utils.deepCp({},rawProps));
+	let props = defaultTheProps(utils.deepCp({},rawProps));
 	// data depening on serie, geographical data only
 	props.data = _.map(props.data, (dat,idx) =>  {
 		return {

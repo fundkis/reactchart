@@ -1,4 +1,4 @@
-/* 2017- generated at Tue Feb 14 2017 00:23:37 GMT+0100 (CET)
+/* 2017- generated at Tue Feb 21 2017 17:24:07 GMT+0100 (CET)
 */(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var Freezer = require(3);
 module.exports = Freezer;
@@ -6256,6 +6256,36 @@ module.exports = Utils;
 },{}],9:[function(require,module,exports){
 'use strict';
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () {
+	function defineProperties(target, props) {
+		for (var i = 0; i < props.length; i++) {
+			var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+		}
+	}return function (Constructor, protoProps, staticProps) {
+		if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+	};
+}();
+
+function _classCallCheck(instance, Constructor) {
+	if (!(instance instanceof Constructor)) {
+		throw new TypeError("Cannot call a class as a function");
+	}
+}
+
+function _possibleConstructorReturn(self, call) {
+	if (!self) {
+		throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+	}return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+	if (typeof superClass !== "function" && superClass !== null) {
+		throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+	}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
 var React = require("react");
 var Axe = require(17);
 var imUtils = require(26);
@@ -6268,38 +6298,81 @@ var _ = require(8);
 	}
 */
 
-var Axes = React.createClass({
-	displayName: 'Axes',
+var Axes = function (_React$Component) {
+	_inherits(Axes, _React$Component);
 
-	shouldComponentUpdate: function shouldComponentUpdate(props) {
-		return !imUtils.isEqual(props.state, this.props.state);
-	},
+	function Axes() {
+		_classCallCheck(this, Axes);
 
-	abscissa: function abscissa() {
-		var css = this.props.state.css;
-		return _.map(this.props.state.abs, function (p) {
-			return p.show ? React.createElement(Axe, { className: 'xAxis', key: p.key, css: css, state: p }) : null;
-		});
-	},
-
-	ordinate: function ordinate() {
-		var css = this.props.state.css;
-		return _.map(this.props.state.ord, function (p) {
-			return p.show ? React.createElement(Axe, { className: 'yAxis', key: p.key, css: css, state: p }) : null;
-		});
-	},
-
-	render: function render() {
-
-		return React.createElement('g', null, this.abscissa(), this.ordinate());
+		return _possibleConstructorReturn(this, (Axes.__proto__ || Object.getPrototypeOf(Axes)).apply(this, arguments));
 	}
 
-});
+	_createClass(Axes, [{
+		key: 'shouldComponentUpdate',
+		value: function shouldComponentUpdate(props) {
+			return !imUtils.isEqual(props.state, this.props.state);
+		}
+	}, {
+		key: 'abscissa',
+		value: function abscissa() {
+			var css = this.props.state.css;
+			return _.map(this.props.state.abs, function (p) {
+				return p.show ? React.createElement(Axe, { className: 'xAxis', key: p.key, css: css, state: p }) : null;
+			});
+		}
+	}, {
+		key: 'ordinate',
+		value: function ordinate() {
+			var css = this.props.state.css;
+			return _.map(this.props.state.ord, function (p) {
+				return p.show ? React.createElement(Axe, { className: 'yAxis', key: p.key, css: css, state: p }) : null;
+			});
+		}
+	}, {
+		key: 'render',
+		value: function render() {
+
+			return React.createElement('g', null, this.abscissa(), this.ordinate());
+		}
+	}]);
+
+	return Axes;
+}(React.Component);
 
 module.exports = Axes;
 
 },{"17":17,"26":26,"8":8,"react":"react"}],10:[function(require,module,exports){
 'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () {
+	function defineProperties(target, props) {
+		for (var i = 0; i < props.length; i++) {
+			var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+		}
+	}return function (Constructor, protoProps, staticProps) {
+		if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+	};
+}();
+
+function _classCallCheck(instance, Constructor) {
+	if (!(instance instanceof Constructor)) {
+		throw new TypeError("Cannot call a class as a function");
+	}
+}
+
+function _possibleConstructorReturn(self, call) {
+	if (!self) {
+		throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+	}return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+	if (typeof superClass !== "function" && superClass !== null) {
+		throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+	}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
 
 var React = require("react");
 
@@ -6321,46 +6394,130 @@ var imUtils = require(26);
 	}
 */
 
-var Background = React.createClass({
-	displayName: 'Background',
+var Background = function (_React$Component) {
+	_inherits(Background, _React$Component);
 
-	shouldComponentUpdate: function shouldComponentUpdate(props) {
-		return !imUtils.isEqual(props.state, this.props.state);
-	},
+	function Background() {
+		_classCallCheck(this, Background);
 
-	render: function render() {
-		var x = this.props.state.spaceX.min;
-		var y = this.props.state.spaceY.max;
-		var width = this.props.state.spaceX.max - this.props.state.spaceX.min;
-		var height = this.props.state.spaceY.min - this.props.state.spaceY.max;
-		return this.props.state.color === 'none' ? null : React.createElement('rect', { width: width, height: height, strokeWidth: '0', fill: this.props.state.color, x: x, y: y });
+		return _possibleConstructorReturn(this, (Background.__proto__ || Object.getPrototypeOf(Background)).apply(this, arguments));
 	}
-});
+
+	_createClass(Background, [{
+		key: 'shouldComponentUpdate',
+		value: function shouldComponentUpdate(props) {
+			return !imUtils.isEqual(props.state, this.props.state);
+		}
+	}, {
+		key: 'render',
+		value: function render() {
+			var x = this.props.state.spaceX.min;
+			var y = this.props.state.spaceY.max;
+			var width = this.props.state.spaceX.max - this.props.state.spaceX.min;
+			var height = this.props.state.spaceY.min - this.props.state.spaceY.max;
+			return this.props.state.color === 'none' ? null : React.createElement('rect', { width: width, height: height, strokeWidth: '0', fill: this.props.state.color, x: x, y: y });
+		}
+	}]);
+
+	return Background;
+}(React.Component);
 
 module.exports = Background;
 
 },{"26":26,"react":"react"}],11:[function(require,module,exports){
 'use strict';
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () {
+	function defineProperties(target, props) {
+		for (var i = 0; i < props.length; i++) {
+			var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+		}
+	}return function (Constructor, protoProps, staticProps) {
+		if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+	};
+}();
+
+function _classCallCheck(instance, Constructor) {
+	if (!(instance instanceof Constructor)) {
+		throw new TypeError("Cannot call a class as a function");
+	}
+}
+
+function _possibleConstructorReturn(self, call) {
+	if (!self) {
+		throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+	}return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+	if (typeof superClass !== "function" && superClass !== null) {
+		throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+	}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
 var React = require("react");
 var imUtils = require(26);
 
-var Cadre = React.createClass({
-	displayName: 'Cadre',
+var Cadre = function (_React$Component) {
+	_inherits(Cadre, _React$Component);
 
-	shouldComponentUpdate: function shouldComponentUpdate(props) {
-		return !imUtils.isEqual(props.cadre, this.props.cadre);
-	},
+	function Cadre() {
+		_classCallCheck(this, Cadre);
 
-	render: function render() {
-		return React.createElement('rect', { width: this.props.width, height: this.props.height, strokeWidth: '1', stroke: 'black', fill: 'none', x: '0', y: '0' });
+		return _possibleConstructorReturn(this, (Cadre.__proto__ || Object.getPrototypeOf(Cadre)).apply(this, arguments));
 	}
-});
+
+	_createClass(Cadre, [{
+		key: 'shouldComponentUpdate',
+		value: function shouldComponentUpdate(props) {
+			return !imUtils.isEqual(props.cadre, this.props.cadre);
+		}
+	}, {
+		key: 'render',
+		value: function render() {
+			return React.createElement('rect', { width: this.props.width, height: this.props.height, strokeWidth: '1', stroke: 'black', fill: 'none', x: '0', y: '0' });
+		}
+	}]);
+
+	return Cadre;
+}(React.Component);
 
 module.exports = Cadre;
 
 },{"26":26,"react":"react"}],12:[function(require,module,exports){
 'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () {
+	function defineProperties(target, props) {
+		for (var i = 0; i < props.length; i++) {
+			var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+		}
+	}return function (Constructor, protoProps, staticProps) {
+		if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+	};
+}();
+
+function _classCallCheck(instance, Constructor) {
+	if (!(instance instanceof Constructor)) {
+		throw new TypeError("Cannot call a class as a function");
+	}
+}
+
+function _possibleConstructorReturn(self, call) {
+	if (!self) {
+		throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+	}return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+	if (typeof superClass !== "function" && superClass !== null) {
+		throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+	}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
 
 var React = require("react");
 var _ = require(8);
@@ -6378,25 +6535,66 @@ var imUtils = require(26);
 	}
 */
 
-var Curves = React.createClass({
-	displayName: 'Curves',
+var Curves = function (_React$Component) {
+	_inherits(Curves, _React$Component);
 
-	shouldComponentUpdate: function shouldComponentUpdate(props) {
-		return !imUtils.isEqual(props.state, this.props.state);
-	},
+	function Curves() {
+		_classCallCheck(this, Curves);
 
-	render: function render() {
-		return React.createElement('g', null, _.map(this.props.state, function (curve) {
-			return grapher(curve.type, curve);
-		}));
+		return _possibleConstructorReturn(this, (Curves.__proto__ || Object.getPrototypeOf(Curves)).apply(this, arguments));
 	}
 
-});
+	_createClass(Curves, [{
+		key: 'shouldComponentUpdate',
+		value: function shouldComponentUpdate(props) {
+			return !imUtils.isEqual(props.state, this.props.state);
+		}
+	}, {
+		key: 'render',
+		value: function render() {
+			return React.createElement('g', null, _.map(this.props.state, function (curve) {
+				return grapher(curve.type, curve);
+			}));
+		}
+	}]);
+
+	return Curves;
+}(React.Component);
 
 module.exports = Curves;
 
 },{"26":26,"43":43,"8":8,"react":"react"}],13:[function(require,module,exports){
 'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () {
+	function defineProperties(target, props) {
+		for (var i = 0; i < props.length; i++) {
+			var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+		}
+	}return function (Constructor, protoProps, staticProps) {
+		if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+	};
+}();
+
+function _classCallCheck(instance, Constructor) {
+	if (!(instance instanceof Constructor)) {
+		throw new TypeError("Cannot call a class as a function");
+	}
+}
+
+function _possibleConstructorReturn(self, call) {
+	if (!self) {
+		throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+	}return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+	if (typeof superClass !== "function" && superClass !== null) {
+		throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+	}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
 
 var React = require("react");
 var Axes = require(9);
@@ -6421,27 +6619,42 @@ var imUtils = require(26);
 	}
 */
 
-var Graph = React.createClass({
-	displayName: 'Graph',
+var Drawer = function (_React$Component) {
+	_inherits(Drawer, _React$Component);
 
-	shouldComponentUpdate: function shouldComponentUpdate(props) {
-		return !imUtils.isEqual(props.state, this.props.state);
-	},
+	function Drawer() {
+		_classCallCheck(this, Drawer);
 
-	orderAG: function orderAG() {
-		return this.props.state.axisOnTop === true ? React.createElement('g', null, React.createElement(Curves, { state: this.props.state.curves }), React.createElement(Axes, { state: this.props.state.axes })) : React.createElement('g', null, React.createElement(Axes, { state: this.props.state.axes }), React.createElement(Curves, { state: this.props.state.curves }));
-	},
-
-	render: function render() {
-		var state = this.props.state;
-		return React.createElement('svg', { width: state.width, height: state.height }, state.cadre ? React.createElement(Cadre, { width: state.width, height: state.height }) : null, React.createElement(Background, { state: state.background }), React.createElement(Title, { state: state.title }), this.orderAG(), React.createElement(Foreground, { state: state.foreground, pWidth: state.width, pHeight: state.height }));
+		return _possibleConstructorReturn(this, (Drawer.__proto__ || Object.getPrototypeOf(Drawer)).apply(this, arguments));
 	}
-});
 
-module.exports = Graph;
+	_createClass(Drawer, [{
+		key: 'shouldComponentUpdate',
+		value: function shouldComponentUpdate(props) {
+			return !imUtils.isEqual(props.state, this.props.state);
+		}
+	}, {
+		key: 'orderAG',
+		value: function orderAG() {
+			return this.props.state.axisOnTop === true ? React.createElement('g', null, React.createElement(Curves, { state: this.props.state.curves }), React.createElement(Axes, { state: this.props.state.axes })) : React.createElement('g', null, React.createElement(Axes, { state: this.props.state.axes }), React.createElement(Curves, { state: this.props.state.curves }));
+		}
+	}, {
+		key: 'render',
+		value: function render() {
+			var state = this.props.state;
+			return React.createElement('svg', { width: state.width, height: state.height }, state.cadre ? React.createElement(Cadre, { width: state.width, height: state.height }) : null, React.createElement(Background, { state: state.background }), React.createElement(Title, { state: state.title }), this.orderAG(), React.createElement(Foreground, { state: state.foreground, pWidth: state.width, pHeight: state.height }));
+		}
+	}]);
+
+	return Drawer;
+}(React.Component);
+
+module.exports = Drawer;
 
 },{"10":10,"11":11,"12":12,"14":14,"16":16,"26":26,"9":9,"react":"react"}],14:[function(require,module,exports){
 'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var _extends = Object.assign || function (target) {
 	for (var i = 1; i < arguments.length; i++) {
@@ -6452,38 +6665,80 @@ var _extends = Object.assign || function (target) {
 		}
 	}return target;
 };
+
+var _createClass = function () {
+	function defineProperties(target, props) {
+		for (var i = 0; i < props.length; i++) {
+			var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+		}
+	}return function (Constructor, protoProps, staticProps) {
+		if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+	};
+}();
+
+function _classCallCheck(instance, Constructor) {
+	if (!(instance instanceof Constructor)) {
+		throw new TypeError("Cannot call a class as a function");
+	}
+}
+
+function _possibleConstructorReturn(self, call) {
+	if (!self) {
+		throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+	}return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+	if (typeof superClass !== "function" && superClass !== null) {
+		throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+	}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
 
 var React = require("react");
 var utils = require(35);
 var imUtils = require(26);
 var sptr = require(33);
 
-var Foreground = React.createClass({
-	displayName: 'Foreground',
+var Foreground = function (_React$Component) {
+	_inherits(Foreground, _React$Component);
 
-	shouldComponentUpdate: function shouldComponentUpdate(props) {
-		return !imUtils.isEqual(props.state, this.props.state);
-	},
+	function Foreground() {
+		_classCallCheck(this, Foreground);
 
-	render: function render() {
-		if (utils.isNil(this.props.state.content)) {
-			return null;
-		}
-		var wxc = utils.isNil(this.props.state.x) ? utils.isNil(this.props.state.ix) ? this.props.state.cx - this.props.state.width / 2 + this.props.pWidth / 2 : //pixels
-		sptr.fromPic(this.props.state.ds.x, this.props.state.ix) : // implicit system
-		sptr.toC(this.props.state.ds.x, this.props.state.x); // data space
-		var wyc = utils.isNil(this.props.state.y) ? utils.isNil(this.props.state.iy) ? this.props.state.cy + this.props.state.height / 2 + this.props.pHeight / 2 : //pixels
-		sptr.fromPic(this.props.state.ds.y, this.props.state.iy) : // implicit
-		sptr.toC(this.props.state.ds.y, this.props.state.y);
-		var trans = 'translate(' + wxc + ',' + wyc + ')';
-		return React.createElement('g', _extends({ transform: trans }, this.props.state), this.props.state.content());
+		return _possibleConstructorReturn(this, (Foreground.__proto__ || Object.getPrototypeOf(Foreground)).apply(this, arguments));
 	}
-});
+
+	_createClass(Foreground, [{
+		key: 'shouldComponentUpdate',
+		value: function shouldComponentUpdate(props) {
+			return !imUtils.isEqual(props.state, this.props.state);
+		}
+	}, {
+		key: 'render',
+		value: function render() {
+			if (utils.isNil(this.props.state.content)) {
+				return null;
+			}
+			var wxc = utils.isNil(this.props.state.x) ? utils.isNil(this.props.state.ix) ? this.props.state.cx - this.props.state.width / 2 + this.props.pWidth / 2 : //pixels
+			sptr.fromPic(this.props.state.ds.x, this.props.state.ix) : // implicit system
+			sptr.toC(this.props.state.ds.x, this.props.state.x); // data space
+			var wyc = utils.isNil(this.props.state.y) ? utils.isNil(this.props.state.iy) ? this.props.state.cy + this.props.state.height / 2 + this.props.pHeight / 2 : //pixels
+			sptr.fromPic(this.props.state.ds.y, this.props.state.iy) : // implicit
+			sptr.toC(this.props.state.ds.y, this.props.state.y);
+			var trans = 'translate(' + wxc + ',' + wyc + ')';
+			return React.createElement('g', _extends({ transform: trans }, this.props.state), this.props.state.content());
+		}
+	}]);
+
+	return Foreground;
+}(React.Component);
 
 module.exports = Foreground;
 
 },{"26":26,"33":33,"35":35,"react":"react"}],15:[function(require,module,exports){
 'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var _extends = Object.assign || function (target) {
 	for (var i = 1; i < arguments.length; i++) {
@@ -6494,6 +6749,34 @@ var _extends = Object.assign || function (target) {
 		}
 	}return target;
 };
+
+var _createClass = function () {
+	function defineProperties(target, props) {
+		for (var i = 0; i < props.length; i++) {
+			var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+		}
+	}return function (Constructor, protoProps, staticProps) {
+		if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+	};
+}();
+
+function _classCallCheck(instance, Constructor) {
+	if (!(instance instanceof Constructor)) {
+		throw new TypeError("Cannot call a class as a function");
+	}
+}
+
+function _possibleConstructorReturn(self, call) {
+	if (!self) {
+		throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+	}return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+	if (typeof superClass !== "function" && superClass !== null) {
+		throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+	}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
 
 var React = require("react");
 var Drawer = require(13);
@@ -6501,102 +6784,196 @@ var Drawer = require(13);
 var core = require(30);
 var _ = require(8);
 
-var Graph = React.createClass({
-	displayName: 'Graph',
+var Graph = function (_React$Component) {
+	_inherits(Graph, _React$Component);
 
-	componentWillMount: function componentWillMount() {
-		if (this.props.__preprocessed) {
-			this.props.updateGraph(this);
+	function Graph() {
+		_classCallCheck(this, Graph);
+
+		return _possibleConstructorReturn(this, (Graph.__proto__ || Object.getPrototypeOf(Graph)).apply(this, arguments));
+	}
+
+	_createClass(Graph, [{
+		key: 'componentWillMount',
+		value: function componentWillMount() {
+			if (this.props.__preprocessed) {
+				this.props.updateGraph(this);
+			}
 		}
-	},
+	}, {
+		key: 'render',
+		value: function render() {
 
-	render: function render() {
+			var props = this.props.__preprocessed ? this.props.props() : core.process(this.props).get();
 
-		var props = this.props.__preprocessed ? this.props.props() : core.process(this.props).get();
+			return React.createElement(Drawer, { state: props });
+		}
+	}]);
 
-		return React.createElement(Drawer, { state: props });
+	return Graph;
+}(React.Component);
+
+var Legend = function (_React$Component2) {
+	_inherits(Legend, _React$Component2);
+
+	function Legend() {
+		_classCallCheck(this, Legend);
+
+		return _possibleConstructorReturn(this, (Legend.__proto__ || Object.getPrototypeOf(Legend)).apply(this, arguments));
 	}
-});
 
-Graph.Legend = React.createClass({
-	displayName: 'Legend',
+	_createClass(Legend, [{
+		key: 'table',
+		value: function table(tab) {
 
-	getDefaultProps: function getDefaultProps() {
-		return {
-			state: null
-		};
-	},
-
-	table: function table(tab) {
-
-		var tabline = function tabline(line, idx) {
-			var icon = {
-				width: line.icon.props.width
+			var tabline = function tabline(line, idx) {
+				var icon = {
+					width: line.icon.props.width
+				};
+				return React.createElement('tr', { key: idx }, React.createElement('td', { style: icon }, line.icon), React.createElement('td', null, line.label));
 			};
-			return React.createElement('tr', { key: idx }, React.createElement('td', { style: icon }, line.icon), React.createElement('td', null, line.label));
-		};
 
-		return React.createElement('table', this.props, React.createElement('tbody', null, _.map(tab, function (line, idx) {
-			return tabline(line, idx);
-		})));
-	},
-
-	line: function line(leg) {
-		var print = function print(l, idx) {
-			// a little depth to the icon
-			// a little space to breathe
-			// here to avoid use of CSS, easyness of use
-			// for a third party
-			var margin = {
-				style: {
-					marginRight: '10pt'
-				}
+			return React.createElement('table', this.props, React.createElement('tbody', null, _.map(tab, function (line, idx) {
+				return tabline(line, idx);
+			})));
+		}
+	}, {
+		key: 'line',
+		value: function line(leg) {
+			var print = function print(l, idx) {
+				// a little depth to the icon
+				// a little space to breathe
+				// here to avoid use of CSS, easyness of use
+				// for a third party
+				var margin = {
+					style: {
+						marginRight: '10pt'
+					}
+				};
+				return React.createElement('span', _extends({ key: idx }, margin), React.createElement('span', { verticalAlign: 'sub' }, l.icon), React.createElement('span', null, l.label));
 			};
-			return React.createElement('span', _extends({ key: idx }, margin), React.createElement('span', { verticalAlign: 'sub' }, l.icon), React.createElement('span', null, l.label));
-		};
 
-		return React.createElement('div', this.props, _.map(leg, function (l, idx) {
-			return print(l, idx);
-		}));
-	},
+			return React.createElement('div', this.props, _.map(leg, function (l, idx) {
+				return print(l, idx);
+			}));
+		}
+	}, {
+		key: 'legend',
+		value: function legend(leg) {
+			return !!this.props.line ? this.line(leg) : this.table(leg);
+		}
+	}, {
+		key: 'render',
+		value: function render() {
+			var legend = this.props.preprocessed === true ? this.props.legend() : core.processLegend(this.props);
+			return !!legend ? this.legend(legend) : null;
+		}
+	}]);
 
-	legend: function legend(leg) {
-		return !!this.props.line ? this.line(leg) : this.table(leg);
-	},
+	return Legend;
+}(React.Component);
 
-	render: function render() {
-		var legend = this.props.preprocessed === true ? this.props.legend() : core.processLegend(this.props);
-		return !!legend ? this.legend(legend) : null;
-	}
-});
+Graph.Legend = Legend;
 
 module.exports = Graph;
 
 },{"13":13,"30":30,"8":8,"react":"react"}],16:[function(require,module,exports){
 'use strict';
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () {
+	function defineProperties(target, props) {
+		for (var i = 0; i < props.length; i++) {
+			var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+		}
+	}return function (Constructor, protoProps, staticProps) {
+		if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+	};
+}();
+
+function _classCallCheck(instance, Constructor) {
+	if (!(instance instanceof Constructor)) {
+		throw new TypeError("Cannot call a class as a function");
+	}
+}
+
+function _possibleConstructorReturn(self, call) {
+	if (!self) {
+		throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+	}return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+	if (typeof superClass !== "function" && superClass !== null) {
+		throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+	}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
 var React = require("react");
 
 var imUtils = require(26);
 
-var Title = React.createClass({
-	displayName: 'Title',
+var Title = function (_React$Component) {
+	_inherits(Title, _React$Component);
 
-	shouldComponentUpdate: function shouldComponentUpdate(props) {
-		return !imUtils.isEqual(props.state, this.props.state);
-	},
+	function Title() {
+		_classCallCheck(this, Title);
 
-	render: function render() {
-		var xT = this.props.state.width / 2;
-		var yT = this.props.state.FSize + 5; // see defaults in space-mgr, its 10 px margin
-		return !!this.props.state.title && this.props.state.title.length !== 0 ? React.createElement('text', { textAnchor: 'middle', fontSize: this.props.state.FSize, x: xT, y: yT }, this.props.state.title) : null;
+		return _possibleConstructorReturn(this, (Title.__proto__ || Object.getPrototypeOf(Title)).apply(this, arguments));
 	}
-});
+
+	_createClass(Title, [{
+		key: 'shouldComponentUpdate',
+		value: function shouldComponentUpdate(props) {
+			return !imUtils.isEqual(props.state, this.props.state);
+		}
+	}, {
+		key: 'render',
+		value: function render() {
+			var xT = this.props.state.width / 2;
+			var yT = this.props.state.FSize + 5; // see defaults in space-mgr, its 10 px margin
+			return !!this.props.state.title && this.props.state.title.length !== 0 ? React.createElement('text', { textAnchor: 'middle', fontSize: this.props.state.FSize, x: xT, y: yT }, this.props.state.title) : null;
+		}
+	}]);
+
+	return Title;
+}(React.Component);
 
 module.exports = Title;
 
 },{"26":26,"react":"react"}],17:[function(require,module,exports){
 'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () {
+	function defineProperties(target, props) {
+		for (var i = 0; i < props.length; i++) {
+			var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+		}
+	}return function (Constructor, protoProps, staticProps) {
+		if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+	};
+}();
+
+function _classCallCheck(instance, Constructor) {
+	if (!(instance instanceof Constructor)) {
+		throw new TypeError("Cannot call a class as a function");
+	}
+}
+
+function _possibleConstructorReturn(self, call) {
+	if (!self) {
+		throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+	}return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+	if (typeof superClass !== "function" && superClass !== null) {
+		throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+	}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
 
 var React = require("react");
 var Tick = require(20);
@@ -6611,29 +6988,46 @@ var imUtils = require(26);
 	}
 */
 
-var Axe = React.createClass({
-	displayName: 'Axe',
+var Axe = function (_React$Component) {
+	_inherits(Axe, _React$Component);
 
-	shouldComponentUpdate: function shouldComponentUpdate(props) {
-		return !imUtils.isEqual(props.state, this.props.state);
-	},
+	function Axe() {
+		_classCallCheck(this, Axe);
 
-	render: function render() {
-		var _this = this;
-
-		var axisName = this.props.className + 'Line';
-		var tickName = this.props.className + 'Tick';
-
-		return React.createElement('g', null, _.map(this.props.state.ticks, function (tick) {
-			return React.createElement(Tick, { className: tickName, css: _this.props.css, key: tick.key, state: tick });
-		}), React.createElement(AxisLine, { className: axisName, css: this.props.css, state: this.props.state.axisLine }));
+		return _possibleConstructorReturn(this, (Axe.__proto__ || Object.getPrototypeOf(Axe)).apply(this, arguments));
 	}
-});
+
+	_createClass(Axe, [{
+		key: 'shouldComponentUpdate',
+		value: function shouldComponentUpdate(props) {
+			return !imUtils.isEqual(props.state, this.props.state);
+		}
+	}, {
+		key: 'render',
+		value: function render() {
+			var _props = this.props,
+			    state = _props.state,
+			    className = _props.className,
+			    css = _props.css;
+
+			var axisName = className + 'Line';
+			var tickName = className + 'Tick';
+
+			return React.createElement('g', null, _.map(state.ticks, function (tick) {
+				return React.createElement(Tick, { className: tickName, css: css, key: tick.key, state: tick });
+			}), React.createElement(AxisLine, { className: axisName, css: css, state: state.axisLine }));
+		}
+	}]);
+
+	return Axe;
+}(React.Component);
 
 module.exports = Axe;
 
 },{"18":18,"20":20,"26":26,"8":8,"react":"react"}],18:[function(require,module,exports){
 'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var _extends = Object.assign || function (target) {
 	for (var i = 1; i < arguments.length; i++) {
@@ -6645,10 +7039,41 @@ var _extends = Object.assign || function (target) {
 	}return target;
 };
 
+var _createClass = function () {
+	function defineProperties(target, props) {
+		for (var i = 0; i < props.length; i++) {
+			var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+		}
+	}return function (Constructor, protoProps, staticProps) {
+		if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+	};
+}();
+
+function _classCallCheck(instance, Constructor) {
+	if (!(instance instanceof Constructor)) {
+		throw new TypeError("Cannot call a class as a function");
+	}
+}
+
+function _possibleConstructorReturn(self, call) {
+	if (!self) {
+		throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+	}return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+	if (typeof superClass !== "function" && superClass !== null) {
+		throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+	}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
 var React = require("react");
 var Label = require(19);
 var utils = require(35);
 var imUtils = require(26);
+
+var _require = require(31),
+    defMargins = _require.defMargins;
 
 /*
 	{
@@ -6681,88 +7106,109 @@ var imUtils = require(26);
 
 */
 
-var AxisLine = React.createClass({
-	displayName: 'AxisLine',
+var AxisLine = function (_React$Component) {
+	_inherits(AxisLine, _React$Component);
 
-	shouldComponentUpdate: function shouldComponentUpdate(props) {
-		return !imUtils.isEqual(props.state, this.props.state);
-	},
+	function AxisLine() {
+		_classCallCheck(this, AxisLine);
 
-	axis: function axis() {
-		var lprops = this.props.state.line;
-
-		var lp = this.props.css ? null : {
-			stroke: lprops.color,
-			strokeWidth: lprops.width
-		};
-
-		switch (lprops.CS) {
-			case 'cart':
-				return React.createElement('line', _extends({ className: this.props.className }, lp, {
-					x1: lprops.start.x, x2: lprops.end.x, y1: lprops.start.y, y2: lprops.end.y }));
-			case 'polar':
-				return React.createElement('ellipse', _extends({ className: this.props.className }, lp, {
-					cx: lprops.origin.x, cy: lprops.origin.y, rx: lprops.radius.x, ry: lprops.radius.y }));
-			default:
-				throw new Error('Unknown coordinate system: "' + this.props.state.CS + '"');
-		}
-	},
-
-	textOffset: function textOffset(fs, text, dir) {
-
-		var fd = 0.25 * fs; // font depth, 25 %
-		var fh = 0.75 * fs; // font height, 75 %
-
-		// arbitrary values, from some font:
-		// width "m" = 40 px
-		// width "M" = 45 px => used
-		var labelWidthOff = -text.length * 22.5;
-		var labelHeightOff = function labelHeightOff(dir) {
-			return dir > 0 ? fh : fd;
-		};
-
-		return {
-			x: dir.x !== 0 ? labelHeightOff(dir.x) : labelWidthOff,
-			y: dir.y !== 0 ? labelHeightOff(dir.y) : labelWidthOff
-		};
-	},
-
-	factor: function factor() {
-		var props = this.props.state.comFac;
-		if (utils.isNil(props.factor) || props.factor === 1) {
-			return null;
-		}
-
-		var dir = utils.direction(this.props.state.line);
-		dir.x = Math.sqrt(dir.x / dir.line);
-		dir.y = Math.sqrt(dir.y / dir.line);
-
-		var offset = this.textOffset(props.Fsize, '10-10', dir); // if more than that, there are questions to be asked...
-
-		var fac = {
-			x: props.offset.x + this.props.state.line.end.x + dir.x * (offset.x + 10),
-			y: -props.offset.y + this.props.state.line.end.y + dir.y * (offset.y + 10)
-		};
-		var trans = 'translate(' + fac.x + ',' + fac.y + ')';
-
-		var mgr = utils.mgr(props.factor);
-		var om = mgr.orderMag(props.factor);
-		return React.createElement('g', { transform: trans }, React.createElement('circle', { x: '0', y: '0', r: '1' }), React.createElement('text', { x: '0', y: '0', fill: props.color, textAnchor: 'end', fontSize: props.Fsize }, '10'), React.createElement('text', { x: '0', y: -0.5 * props.Fsize, fontSize: props.Fsize, textAnchor: 'start' }, om));
-	},
-
-	render: function render() {
-
-		var labName = this.props.className + 'Label';
-
-		return this.props.state.show === false ? null : React.createElement('g', null, this.axis(), React.createElement(Label, { className: labName, css: this.props.css, state: this.props.state.label }), this.factor());
+		return _possibleConstructorReturn(this, (AxisLine.__proto__ || Object.getPrototypeOf(AxisLine)).apply(this, arguments));
 	}
 
-});
+	_createClass(AxisLine, [{
+		key: 'shouldComponentUpdate',
+		value: function shouldComponentUpdate(props) {
+			return !imUtils.isEqual(props.state, this.props.state);
+		}
+	}, {
+		key: 'axis',
+		value: function axis() {
+			var lprops = this.props.state.line;
+
+			var lp = this.props.css ? null : {
+				stroke: lprops.color,
+				strokeWidth: lprops.width
+			};
+
+			switch (lprops.CS) {
+				case 'cart':
+					return React.createElement('line', _extends({ className: this.props.className }, lp, {
+						x1: lprops.start.x, x2: lprops.end.x, y1: lprops.start.y, y2: lprops.end.y }));
+				case 'polar':
+					return React.createElement('ellipse', _extends({ className: this.props.className }, lp, {
+						cx: lprops.origin.x, cy: lprops.origin.y, rx: lprops.radius.x, ry: lprops.radius.y }));
+				default:
+					throw new Error('Unknown coordinate system: "' + this.props.state.CS + '"');
+			}
+		}
+	}, {
+		key: 'factor',
+		value: function factor() {
+			var state = this.props.state;
+			var comFac = state.comFac,
+			    line = state.line;
+			var factor = comFac.factor,
+			    Fsize = comFac.Fsize,
+			    offset = comFac.offset,
+			    color = comFac.color,
+			    ds = comFac.ds;
+
+			if (utils.isNil(factor) || factor === 1) {
+				return null;
+			}
+
+			var dir = utils.direction(line, ds);
+			dir.x = Math.sqrt(dir.x / dir.line);
+			dir.y = Math.sqrt(dir.y / dir.line);
+
+			var mgr = utils.mgr(factor);
+			var om = mgr.orderMag(factor);
+
+			var labMar = defMargins.outer.label.bottom; // = top, left, right
+			var width = 5 * (3 + (om > 100 ? 0.8 : om > 10 ? 0.5 : 0.2)); // 5px for 10^(123)
+			var height = Fsize;
+
+			var off = { x: 0, y: 0 };
+			switch (dir.corner) {
+				case '01':
+					off.x = -width;
+					off.y = -height;
+					break;
+				case '11':
+					off.x = width * (dir.y - dir.x) + dir.y * labMar;
+					off.y = height * (dir.y - dir.x) - dir.x * labMar - dir.y * labMar * 0.5;
+					break;
+				case '10':
+					off.x = width;
+					off.y = height + labMar;
+			}
+
+			var pos = {
+				x: offset.x + line.end.x + off.x,
+				y: offset.y + line.end.y + off.y
+			};
+
+			return React.createElement('text', _extends({}, pos, { fill: color, fontSize: Fsize }), React.createElement('tspan', { textAnchor: 'end' }, '\xB710'), React.createElement('tspan', { dy: -0.5 * Fsize, textAnchor: 'start' }, om));
+		}
+	}, {
+		key: 'render',
+		value: function render() {
+
+			var labName = this.props.className + 'Label';
+
+			return this.props.state.show === false ? null : React.createElement('g', null, this.axis(), this.factor(), React.createElement(Label, { className: labName, css: this.props.css, state: this.props.state.label }));
+		}
+	}]);
+
+	return AxisLine;
+}(React.Component);
 
 module.exports = AxisLine;
 
-},{"19":19,"26":26,"35":35,"react":"react"}],19:[function(require,module,exports){
+},{"19":19,"26":26,"31":31,"35":35,"react":"react"}],19:[function(require,module,exports){
 'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var _extends = Object.assign || function (target) {
 	for (var i = 1; i < arguments.length; i++) {
@@ -6773,6 +7219,34 @@ var _extends = Object.assign || function (target) {
 		}
 	}return target;
 };
+
+var _createClass = function () {
+	function defineProperties(target, props) {
+		for (var i = 0; i < props.length; i++) {
+			var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+		}
+	}return function (Constructor, protoProps, staticProps) {
+		if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+	};
+}();
+
+function _classCallCheck(instance, Constructor) {
+	if (!(instance instanceof Constructor)) {
+		throw new TypeError("Cannot call a class as a function");
+	}
+}
+
+function _possibleConstructorReturn(self, call) {
+	if (!self) {
+		throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+	}return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+	if (typeof superClass !== "function" && superClass !== null) {
+		throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+	}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
 
 var React = require("react");
 
@@ -6794,43 +7268,84 @@ var imUtils = require(26);
 	},
 */
 
-var Label = React.createClass({
-	displayName: 'Label',
+var Label = function (_React$Component) {
+	_inherits(Label, _React$Component);
 
-	shouldComponentUpdate: function shouldComponentUpdate(props) {
-		return !imUtils.isEqual(props.state, this.props.state);
-	},
+	function Label() {
+		_classCallCheck(this, Label);
 
-	render: function render() {
-		if (this.props.state.label.length === 0) {
-			return null;
-		}
-
-		// label
-		// => theta = arctan(y/x) [-90,90]
-
-		var state = this.props.state;
-
-		var xL = (state.transform ? space.toC(state.ds.x, state.position.x) : state.position.x) + state.offset.x;
-		var yL = (state.transform ? space.toC(state.ds.y, state.position.y) : state.position.y) + state.offset.y;
-
-		var theta = state.rotate ? Math.floor(Math.atan(-Math.sqrt(state.dir.y / state.dir.x)) * 180 / Math.PI) : 0; // in degrees
-
-		var rotate = 'rotate(' + theta + ' ' + xL + ' ' + yL + ')';
-
-		var labProps = this.props.css ? null : {
-			fill: state.color,
-			fontSize: state.FSize
-		};
-
-		return React.createElement('text', _extends({ className: this.props.className, x: xL, y: yL, transform: rotate, textAnchor: state.anchor }, labProps), state.label);
+		return _possibleConstructorReturn(this, (Label.__proto__ || Object.getPrototypeOf(Label)).apply(this, arguments));
 	}
-});
+
+	_createClass(Label, [{
+		key: 'shouldComponentUpdate',
+		value: function shouldComponentUpdate(props) {
+			return !imUtils.isEqual(props.state, this.props.state);
+		}
+	}, {
+		key: 'power',
+		value: function power(label, labProps, props) {
+			var base = label.base,
+			    power = label.power;
+
+			return React.createElement('text', _extends({}, props, labProps), React.createElement('tspan', null, base), power !== 0 ? React.createElement('tspan', null, '\xB710') : null, power !== 0 ? React.createElement('tspan', { dy: -0.5 * labProps.fontSize }, power) : null);
+		}
+	}, {
+		key: 'render',
+		value: function render() {
+
+			if (this.props.state.label.length === 0) {
+				return null;
+			}
+
+			// label
+			// => theta = arctan(y/x) [-90,90]
+
+			var _props$state = this.props.state,
+			    transform = _props$state.transform,
+			    ds = _props$state.ds,
+			    position = _props$state.position,
+			    offset = _props$state.offset,
+			    rotate = _props$state.rotate,
+			    dir = _props$state.dir,
+			    color = _props$state.color,
+			    FSize = _props$state.FSize,
+			    anchor = _props$state.anchor,
+			    label = _props$state.label;
+
+			var xL = (transform ? space.toC(ds.x, position.x) : position.x) + offset.x;
+			var yL = (transform ? space.toC(ds.y, position.y) : position.y) + offset.y;
+
+			var theta = rotate ? Math.floor(Math.atan(-Math.sqrt(dir.y / dir.x)) * 180 / Math.PI) : 0; // in degrees
+
+			var rotation = 'rotate(' + theta + ' ' + xL + ' ' + yL + ')';
+
+			var labProps = this.props.css ? null : {
+				fill: color,
+				fontSize: FSize
+			};
+
+			var props = {
+				className: this.props.className,
+				x: xL,
+				y: yL,
+				transform: rotation,
+				textAnchor: anchor
+			};
+
+			return typeof label === 'string' ? React.createElement('text', _extends({}, props, labProps), label) : this.power(label, labProps, props);
+		}
+	}]);
+
+	return Label;
+}(React.Component);
 
 module.exports = Label;
 
 },{"26":26,"33":33,"react":"react"}],20:[function(require,module,exports){
 'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var _extends = Object.assign || function (target) {
 	for (var i = 1; i < arguments.length; i++) {
@@ -6841,6 +7356,34 @@ var _extends = Object.assign || function (target) {
 		}
 	}return target;
 };
+
+var _createClass = function () {
+	function defineProperties(target, props) {
+		for (var i = 0; i < props.length; i++) {
+			var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+		}
+	}return function (Constructor, protoProps, staticProps) {
+		if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+	};
+}();
+
+function _classCallCheck(instance, Constructor) {
+	if (!(instance instanceof Constructor)) {
+		throw new TypeError("Cannot call a class as a function");
+	}
+}
+
+function _possibleConstructorReturn(self, call) {
+	if (!self) {
+		throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+	}return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+	if (typeof superClass !== "function" && superClass !== null) {
+		throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+	}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
 
 var React = require("react");
 var Label = require(19);
@@ -6875,79 +7418,97 @@ var imUtils = require(26);
 	}
 */
 
-var Tick = React.createClass({
-	displayName: 'Tick',
+var Tick = function (_React$Component) {
+	_inherits(Tick, _React$Component);
 
-	shouldComponentUpdate: function shouldComponentUpdate(props) {
-		return !imUtils.isEqual(props.state, this.props.state);
-	},
+	function Tick() {
+		_classCallCheck(this, Tick);
 
-	// grid
-	grid: function grid() {
-
-		var gprops = this.props.state.grid;
-
-		if (gprops.show === false) {
-			return null;
-		}
-
-		var start = {
-			x: sp.toC(this.props.state.tick.ds.x, this.props.state.tick.position.x),
-			y: sp.toC(this.props.state.tick.ds.y, this.props.state.tick.position.y)
-		};
-
-		var end = {
-			x: start.x + this.props.state.tick.dir.x * sp.toCwidth(this.props.state.tick.ds.x, gprops.length),
-			y: start.y - this.props.state.tick.dir.y * sp.toCwidth(this.props.state.tick.ds.y, gprops.length)
-		};
-
-		var gridName = this.props.className + 'Grid';
-		var tickProps = this.props.css ? null : {
-			stroke: gprops.color,
-			strokeWidth: gprops.width
-		};
-
-		return React.createElement('line', _extends({ className: gridName, x1: start.x, x2: end.x, y1: start.y, y2: end.y }, tickProps));
-	},
-
-	tick: function tick() {
-
-		var tprops = this.props.state.tick;
-
-		if (tprops.show === false) {
-			return null;
-		}
-
-		var x1 = sp.toC(tprops.ds.x, tprops.position.x) - tprops.dir.x * tprops.length * tprops.out;
-		var y1 = sp.toC(tprops.ds.y, tprops.position.y) + tprops.dir.y * tprops.length * tprops.out; // beware about y sign!!
-		var x2 = x1 + tprops.dir.x * tprops.length;
-		var y2 = y1 - tprops.dir.y * tprops.length; // beware about y sign!!
-
-		var linePar = this.props.css ? null : {
-			stroke: tprops.color,
-			strokeWidth: tprops.width
-		};
-
-		return React.createElement('line', _extends({ className: this.props.className, x1: x1, x2: x2, y1: y1, y2: y2 }, linePar));
-	},
-
-	label: function label() {
-		if (this.props.state.label.show === false) {
-			return null;
-		}
-		var labelName = this.props.className + 'Label';
-		return React.createElement(Label, { className: labelName, css: this.props.css, state: this.props.state.label });
-	},
-
-	noShow: function noShow() {
-		return !(this.props.state.tick.show || this.props.state.grid.show || this.props.state.label.show);
-	},
-
-	render: function render() {
-
-		return this.noShow() ? null : React.createElement('g', null, this.grid(), this.tick(), this.label());
+		return _possibleConstructorReturn(this, (Tick.__proto__ || Object.getPrototypeOf(Tick)).apply(this, arguments));
 	}
-});
+
+	_createClass(Tick, [{
+		key: 'shouldComponentUpdate',
+		value: function shouldComponentUpdate(props) {
+			return !imUtils.isEqual(props.state, this.props.state);
+		}
+
+		// grid
+
+	}, {
+		key: 'grid',
+		value: function grid() {
+
+			var gprops = this.props.state.grid;
+
+			if (gprops.show === false) {
+				return null;
+			}
+
+			var start = {
+				x: sp.toC(this.props.state.tick.ds.x, this.props.state.tick.position.x),
+				y: sp.toC(this.props.state.tick.ds.y, this.props.state.tick.position.y)
+			};
+
+			var end = {
+				x: start.x + this.props.state.tick.dir.x * sp.toCwidth(this.props.state.tick.ds.x, gprops.length),
+				y: start.y - this.props.state.tick.dir.y * sp.toCwidth(this.props.state.tick.ds.y, gprops.length)
+			};
+
+			var gridName = this.props.className + 'Grid';
+			var tickProps = this.props.css ? null : {
+				stroke: gprops.color,
+				strokeWidth: gprops.width
+			};
+
+			return React.createElement('line', _extends({ className: gridName, x1: start.x, x2: end.x, y1: start.y, y2: end.y }, tickProps));
+		}
+	}, {
+		key: 'tick',
+		value: function tick() {
+
+			var tprops = this.props.state.tick;
+
+			if (tprops.show === false) {
+				return null;
+			}
+
+			var x1 = sp.toC(tprops.ds.x, tprops.position.x) - tprops.dir.x * tprops.length * tprops.out;
+			var y1 = sp.toC(tprops.ds.y, tprops.position.y) + tprops.dir.y * tprops.length * tprops.out; // beware about y sign!!
+			var x2 = x1 + tprops.dir.x * tprops.length;
+			var y2 = y1 - tprops.dir.y * tprops.length; // beware about y sign!!
+
+			var linePar = this.props.css ? null : {
+				stroke: tprops.color,
+				strokeWidth: tprops.width
+			};
+
+			return React.createElement('line', _extends({ className: this.props.className, x1: x1, x2: x2, y1: y1, y2: y2 }, linePar));
+		}
+	}, {
+		key: 'label',
+		value: function label() {
+			if (this.props.state.label.show === false) {
+				return null;
+			}
+			var labelName = this.props.className + 'Label';
+			return React.createElement(Label, { className: labelName, css: this.props.css, state: this.props.state.label });
+		}
+	}, {
+		key: 'noShow',
+		value: function noShow() {
+			return !(this.props.state.tick.show || this.props.state.grid.show || this.props.state.label.show);
+		}
+	}, {
+		key: 'render',
+		value: function render() {
+
+			return this.noShow() ? null : React.createElement('g', null, this.grid(), this.tick(), this.label());
+		}
+	}]);
+
+	return Tick;
+}(React.Component);
 
 module.exports = Tick;
 
@@ -7119,12 +7680,18 @@ m.VM = function (ds, props, partnerDs, dir) {
  		}
  */
 
+	var fds = {};
+
+	fds[dir] = ds;
+	fds[othdir] = partnerDs;
+
 	var comFac = {
 		factor: props.factor,
 		offset: props.factorOffset,
 		anchor: props.factorAnchor,
 		Fsize: props.factorFSize,
-		color: props.factorColor
+		color: props.factorColor,
+		ds: fds
 	};
 
 	return {
@@ -7261,6 +7828,12 @@ m.VM = function (ds, partner, bounds, dir, locProps, comFac, axisKey) {
   		}
   */
 
+		// label
+		if (typeof p.labelize === 'string') {
+			var lmgr = utils.mgr(tick.position);
+			var maxDist = ds[dir].d.max - ds[dir].d.min;
+			p.labelize = lmgr.labelize(p.labelize, maxDist);
+		}
 		var labelProps = {
 			ds: ds,
 			label: p.labelize(tick.position) === false ? tick.label : p.labelize(tick.position),
@@ -7360,8 +7933,8 @@ m.VM = function (ds, partner, bounds, dir, locProps, comFac, axisKey) {
 		};
 
 		var cus = tick.grid || {};
-		for (u in tmp) {
-			gridProps[u] = utils.isNil(cus[u]) ? p[u] : cus[u];
+		for (var _u in tmp) {
+			gridProps[_u] = utils.isNil(cus[_u]) ? p[_u] : cus[_u];
 		}
 		gridProps.length = partner.length;
 
@@ -7691,21 +8264,22 @@ var im = {
 	}
 };
 
-var pow = Math.pow;
-var floor = Math.floor;
-var log = Math.log;
-var min = Math.min;
-var max = Math.max;
-var abs = Math.abs;
-var LN10 = Math.LN10;
+var pow = Math.pow,
+    floor = Math.floor,
+    log = Math.log,
+    min = Math.min,
+    max = Math.max,
+    abs = Math.abs,
+    LN10 = Math.LN10;
 
 // period = {
 //	years : ,
 //	months : ,
 //	weeks : ,
 //	days : ,
-//  total: *nb days*
+//	total: *nb days*
 // }
+
 var processPeriod = function processPeriod(period) {
 
 	if (im.isImm(period)) {
@@ -7958,22 +8532,18 @@ var equal = function equal(v1, v2, type) {
 };
 
 var addPer = function addPer(p1, p2) {
-	p1 = processPeriod(p1);
-	return makePeriod(moment.duration(p1).add(moment.duration(p2)));
+	return makePeriod(moment.duration(processPeriod(p1)).add(moment.duration(p2)));
 };
 
 var subPer = function subPer(p1, p2) {
-	p1 = processPeriod(p1);
-	return makePeriod(moment.duration(p1).subtract(moment.duration(p2)));
+	return makePeriod(moment.duration(processPeriod(p1)).subtract(moment.duration(p2)));
 };
 
 var m = {};
 
 // date / distance methods
 m.orderMag = function (dop) {
-	var ms = dop instanceof Date ? dop.getTime() : moment.duration({ days: processPeriod(dop).total }).asMilliseconds();
-
-	return floor(log(ms) / LN10);
+	return floor(log(dop instanceof Date ? dop.getTime() : moment.duration({ days: processPeriod(dop).total }).asMilliseconds()) / LN10);
 };
 
 m.orderMagValue = function (last, first) {
@@ -8151,7 +8721,8 @@ m.extraTicks = function (step, start, end, already) {
 	var startYear = start.getFullYear();
 	var lastYear = end.getFullYear();
 	// every year, whatever happens
-	for (var ye = startYear; ye <= lastYear; ye++) {
+
+	var _loop = function _loop(ye) {
 		var dat = new Date(ye, 0, 1);
 		var idx = _.findIndex(already, function (a) {
 			return m.equal(a.position, dat);
@@ -8159,7 +8730,7 @@ m.extraTicks = function (step, start, end, already) {
 		if (idx !== -1) {
 			already[idx].grid = {};
 			already[idx].grid.show = true;
-			continue;
+			return 'continue';
 		}
 		if (m.lowerThan(start, dat) && m.lowerThan(dat, end)) {
 			out.push({
@@ -8178,6 +8749,12 @@ m.extraTicks = function (step, start, end, already) {
 				}
 			});
 		}
+	};
+
+	for (var ye = startYear; ye <= lastYear; ye++) {
+		var _ret = _loop(ye);
+
+		if (_ret === 'continue') continue;
 	}
 	return out;
 };
@@ -8198,6 +8775,11 @@ m.value = function (num) {
 // in years
 m.step = function (num) {
 	return makePeriod({ years: num });
+};
+
+// no
+m.labelize = function () {
+	return false;
 };
 
 m.labelF = 0.75;
@@ -8417,6 +8999,22 @@ var pow = Math.pow,
     abs = Math.abs,
     LN10 = Math.LN10;
 
+var suffixes = {
+	18: 'E', // exa
+	15: 'P', // peta
+	12: 'T', // tera
+	9: 'G', // giga
+	6: 'M', // mega
+	3: 'k', // kilo
+	0: '', // unit
+	'-3': 'm', // milli
+	'-6': '\u03BC', // micro
+	'-9': 'n', // nano
+	'-12': 'p', // pico
+	'-15': 'f', // femto
+	'-18': 'a' // atto
+};
+
 var m = {};
 
 var firstDigit = function firstDigit(r) {
@@ -8424,6 +9022,23 @@ var firstDigit = function firstDigit(r) {
 	var str = '' + res;
 	var out = str[0] || 0;
 	return Number(out);
+};
+
+var firstNonNull = function firstNonNull(v) {
+	var str = v + '';
+	var com = str.indexOf('.');
+	if (com < 0) {
+		return 0;
+	}
+	var i = void 0,
+	    out = void 0;
+	for (i = str.length - 1; i >= 0; i--) {
+		if (str[i] !== '0') {
+			break;
+		}
+	}
+	out = i - com;
+	return max(out, 0);
 };
 
 var roundMe = function roundMe(min, max) {
@@ -8445,6 +9060,67 @@ var roundMe = function roundMe(min, max) {
 		}
 	}
 	return val;
+};
+
+var scientific = function scientific(val, orMax) {
+	var om = m.orderMag(val);
+	var face = val / pow(10, om);
+	while (face >= 10) {
+		face /= 10;
+		om += 1;
+	}
+
+	var maxV = max(om - orMax + 1, 0);
+	var f = min(firstNonNull(face), maxV);
+
+	return { base: face.toFixed(f), power: om };
+};
+
+var suffixe = function suffixe(order) {
+	var num = order % 3 === 0 ? order : (order - 1) % 3 === 0 ? order - 1 : order - 2;
+	return {
+		num: num,
+		string: suffixes[num]
+	};
+};
+
+var natural = function natural(val, orMax) {
+	var om = m.orderMag(val);
+
+	var _suffixe = suffixe(om),
+	    num = _suffixe.num,
+	    string = _suffixe.string;
+
+	var base = val / pow(10, num);
+	while (base >= 1e3) {
+		base /= 1e3;
+		om += 3;
+		string = suffixe(om).string;
+	}
+
+	var maxV = max(om - orMax + 1, 0);
+	var comp = firstNonNull(base);
+	var f = min(comp, maxV);
+
+	return base.toFixed(f) + string;
+};
+
+var labelFromType = function labelFromType(type, dist) {
+
+	switch (type) {
+		case 'sci':
+			return function (val) {
+				return scientific(val, m.orderMag(dist));
+			};
+		case 'nat':
+			return function (val) {
+				return natural(val, m.orderMag(dist));
+			};
+		default:
+			return function () {
+				return false;
+			};
+	}
 };
 
 // distance methods
@@ -8497,22 +9173,6 @@ m.roundDown = function (r) {
 	return cand;
 };
 
-m.multiply = function (d, f) {
-	return d * f;
-};
-
-m.divide = function (d, f) {
-	return d / f;
-};
-
-m.increase = function (d1, d2) {
-	return d1 + d2;
-};
-
-m.offset = function () /*d*/{
-	return 0;
-};
-
 // value methods
 m.closestRoundUp = function (ref, dist) {
 
@@ -8551,6 +9211,7 @@ m.closestRoundDown = function (ref, dist) {
 	return start;
 };
 
+// value & distance methods
 m.closestRound = function (ref, om, type) {
 	return type === 'up' ? m.closestRoundUp(ref, om) : m.closestRoundDown(ref, om);
 };
@@ -8564,11 +9225,26 @@ m.max = function (values) {
 };
 
 m.label = function (value, useless, fac) {
-	var out = (value / fac).toFixed(1);
-	return out;
+	return (value / fac).toFixed(1);
 };
 
-// value & distance methods
+m.multiply = function (d, f) {
+	return d * f;
+};
+
+m.divide = function (d, f) {
+	return d / f;
+};
+
+m.increase = function (d1, d2) {
+	return d1 + d2;
+};
+
+m.offset = function () {
+	return (/*d*/0
+	);
+};
+
 m.add = function (d1, d2) {
 	return d1 + d2;
 };
@@ -8594,7 +9270,6 @@ m.equal = function (v1, v2) {
 };
 
 // some management
-
 m.extraTicks = function () {
 	return [];
 };
@@ -8607,9 +9282,23 @@ m.smallestStep = function () {
 	return 1;
 };
 
+// management
+m.labelize = function (type, dist) {
+	return labelFromType(type, dist);
+};
+
 m.labelF = 0.75;
 
 m.type = 'number';
+
+m.autoFactor = function (ma, mi) {
+	var orMax = m.orderMag(ma);
+	var orMin = m.orderMag(mi);
+	var a = min(orMax, orMin);
+	var b = max(orMax, orMin);
+
+	return b - a < 3 ? pow(10, a) : pow(10, b);
+};
 
 module.exports = m;
 
@@ -8624,7 +9313,7 @@ var vm = require(23);
 var im = require(26);
 var legender = require(27);
 
-var defaultTheProps = function defaultTheProps(props) {
+var preprocessAxis = function preprocessAxis(props) {
 
 	// axisProps is an Array, 
 	// can be given as a non array
@@ -8672,7 +9361,7 @@ var defaultTheProps = function defaultTheProps(props) {
 		}))
 	};
 
-	// empty graph
+	// default
 	if (axis.abs.length === 0) {
 		axis.abs.push('bottom');
 	}
@@ -8680,8 +9369,76 @@ var defaultTheProps = function defaultTheProps(props) {
 		axis.ord.push('left');
 	}
 
+	return axis;
+};
+
+var postprocessAxis = function postprocessAxis(props) {
+
+	var fetchBounds = function fetchBounds(type, where) {
+		var serie = [];
+		for (var id = 0; id < props.data.length; id++) {
+			var dataW = !!props.data[id][type] && !!props.data[id][type].axis ? props.data[id][type].axis : type === 'abs' ? 'bottom' : 'left';
+			if (dataW === where) {
+				serie = serie.concat(_.pluck(props.data[id].series, type === 'abs' ? 'x' : 'y'));
+			}
+		}
+
+		var mgr = utils.mgr(serie[0]);
+		return {
+			max: mgr.max(serie),
+			min: mgr.min(serie),
+			mgr: mgr
+		};
+	};
+
+	var cores = function cores(wa) {
+		switch (wa) {
+			case 'left':
+			case 'right':
+				return 'top';
+			case 'top':
+			case 'bottom':
+				return 'right';
+		}
+	};
+
+	/// common factor, should we add some margin?
+	for (var ax in { abs: true, ord: true }) {
+
+		for (var ia = 0; ia < props.axisProps[ax].length; ia++) {
+
+			var axisProps = props.axisProps[ax][ia];
+
+			if (axisProps.factor === 'auto') {
+				var _fetchBounds = fetchBounds(ax, axisProps.placement),
+				    max = _fetchBounds.max,
+				    min = _fetchBounds.min,
+				    mgr = _fetchBounds.mgr;
+
+				if (mgr.type === 'number') {
+					axisProps.factor = mgr.autoFactor(max, min);
+					if (axisProps.factor !== 1) {
+						var sax = cores(axisProps.placement);
+						props.factorMargin[sax] = gProps.defMargins.outer.factor[sax];
+					}
+				} else {
+					axisProps.factor = 1;
+				}
+			} else {
+				axisProps.factor = 1;
+			}
+		}
+	}
+};
+
+var defaultTheProps = function defaultTheProps(props) {
+
+	var axis = preprocessAxis(props);
+
 	// fill by default
 	var fullprops = utils.deepCp(utils.deepCp({}, gProps.Graph(axis)), props);
+
+	postprocessAxis(fullprops);
 
 	// default for pie !!!bad coding!!!, Pie should do it (how?)
 	var noMark = function noMark(idx) {
@@ -8935,7 +9692,7 @@ var makeSpan = function makeSpan(series, data) {
 var spanify = function spanify(serie, data) {
 	var out = {};
 	if (utils.isNil(data.span) || data.span === 0) {
-		var d;
+		var d = void 0;
 		var dir = data.type[0] === 'y' ? 'y' : 'x';
 
 		var mgr = utils.mgr(serie[0][dir]);
@@ -9010,9 +9767,9 @@ m.process = function (rawProps) {
 
 	// so we have all the keywords
 	var marginalize = function marginalize(mar) {
-		for (var m in { left: true, right: true, bottom: true, top: true }) {
-			if (!mar[m]) {
-				mar[m] = undefined;
+		for (var _m in { left: true, right: true, bottom: true, top: true }) {
+			if (!mar[_m]) {
+				mar[_m] = undefined;
 			}
 		}
 
@@ -9027,7 +9784,8 @@ m.process = function (rawProps) {
 	_.each(props.data, function (dat, idx) {
 		var locObDir = { x: 'abs', y: 'ord' };
 		var ser = state.series[idx];
-		for (var u in locObDir) {
+
+		var _loop = function _loop(u) {
 			var dir = locObDir[u];
 			var locAxis = _.find(props.axisProps[dir], function (ax) {
 				return ax.placement === dat[dir].axis;
@@ -9038,6 +9796,10 @@ m.process = function (rawProps) {
 					locAxis.tickLabels.push({ coord: point[u], label: point.label[u] });
 				}
 			}
+		};
+
+		for (var u in locObDir) {
+			_loop(u);
 		}
 	});
 
@@ -9045,17 +9807,18 @@ m.process = function (rawProps) {
 		ord: ord,
 		abs: abs,
 		marginsO: marginalize(props.outerMargin),
-		marginsI: marginalize(props.axisMargin)
+		marginsF: marginalize(props.factorMargin),
+		marginsI: marginalize(props.innerMargin)
 	};
 
 	// xmin, xmax...
 	var obDir = { x: 'abs', y: 'ord' };
 	var obMM = { min: true, max: true };
-	for (var dir in obDir) {
+	for (var _dir in obDir) {
 		for (var type in obMM) {
-			var tmp = dir + type; //xmin, xmax, ...
+			var tmp = _dir + type; //xmin, xmax, ...
 			if (!utils.isNil(props[tmp])) {
-				borders[obDir[dir]][0][type] = props[tmp];
+				borders[obDir[_dir]][0][type] = props[tmp];
 			}
 		}
 	}
@@ -9068,7 +9831,7 @@ m.process = function (rawProps) {
 	// span and offet pointwise
 	// drops if required and not given (default value)
 	_.each(state.series, function (serie, idx) {
-		var dir;
+		var dir = void 0;
 		switch (props.data[idx].type) {
 			case 'Bars':
 			case 'bars':
@@ -9115,7 +9878,8 @@ m.process = function (rawProps) {
 
 	// defaut drops for those that don't have them
 	state.series = _.map(state.series, function (serie, idx) {
-		var dir, ds;
+		var dir = void 0,
+		    ds = void 0;
 		switch (props.data[idx].type) {
 			case 'Bars':
 			case 'bars':
@@ -9202,9 +9966,9 @@ m.process = function (rawProps) {
 	// 6 - Curves
 	imVM.curves = vm.curves(props, state);
 
-	var le = legender(props);
+	// 7 - legend
 	imVM.legend = function () {
-		return le;
+		return legender(props);
 	};
 
 	return im.freeze(imVM, props.freeze);
@@ -9342,7 +10106,6 @@ graph.common = function () {
 };
 
 graph.Bars = graph.bars = function () {
-
 	return _.extend(utils.deepCp({}, graph.common()), {
 		color: 'none',
 		width: 0,
@@ -9363,7 +10126,6 @@ graph.Bars = graph.bars = function () {
 };
 
 graph.yBars = graph.ybars = function () {
-
 	return _.extend(utils.deepCp({}, graph.Bars()), {
 		dir: {
 			x: true,
@@ -9502,7 +10264,12 @@ m.Graph = function (axis) {
 		titleFSize: 30,
 		axisOnTop: false,
 		// margins
-		axisMargin: { left: 10, bottom: 10, right: 10, top: 10 }, // left, bottom, right, top
+		innerMargin: {}, // left, bottom, right, top
+		// defMargins.axis.ticks
+		// if defined, overwrite
+		factorMargin: {}, // left, bottom, right, top
+		// factorMargin + defMargins.axis.label + defMargins.axis.ticks
+		// if defined, overwrite
 		outerMargin: {}, // left, bottom, right, top
 		// data
 		data: [],
@@ -9549,6 +10316,48 @@ m.marksDefault = function (key) {
 	return marks[key]();
 };
 
+/* If no marginsO are defined, here are the rules:
+ *  - ticks and ticks labels are 20 px in the y dir (height of text),
+ *			40 px in the x dir (length of text).
+ *  - we take a 10px margin on title and labels
+ *  - bottom and right margin:
+ *			- 20px + ({x,y}LabelFSize + 10 px) if a {x,y}Label is defined,
+ *  - top and left margin:
+ *			- 20px + ({x,y}LabelFSize	+ 10 px) if a {x,y}Label is defined,
+ *  - top margin takes a titleFSize + 10px more if a title is defined
+ */
+m.defMargins = {
+	outer: {
+		label: {
+			bottom: 20,
+			top: 20,
+			left: 20,
+			right: 20,
+			mar: 10
+		},
+		ticks: {
+			left: 20,
+			right: 20,
+			bottom: 15,
+			top: 15
+		},
+		factor: {
+			right: 30,
+			top: 25
+		},
+		min: 3
+	},
+	inner: {
+		left: 10,
+		bottom: 10,
+		right: 10,
+		top: 10
+	},
+	title: 10,
+	min: 0,
+	max: 4
+};
+
 module.exports = m;
 
 },{"35":35,"8":8}],32:[function(require,module,exports){
@@ -9563,37 +10372,8 @@ module.exports = m;
 var _ = require(8);
 var utils = require(35);
 
-/* If no marginsO are defined, here are the rules:
- *  - ticks and ticks labels are 20 px in the y dir (height of text),
- *			40 px in the x dir (length of text).
- *  - we take a 10px margin on title and labels
- *  - bottom and right margin:
- *			- 20px + ({x,y}LabelFSize + 10 px) if a {x,y}Label is defined,
- *  - top and left margin:
- *			- 20px + ({x,y}LabelFSize	+ 10 px) if a {x,y}Label is defined,
- *  - top margin takes a titleFSize + 10px more if a title is defined
- */
-var defaults = {
-	axis: {
-		label: {
-			bottom: 20,
-			top: 20,
-			left: 20,
-			right: 20,
-			mar: 10
-		},
-		ticks: {
-			left: 20,
-			right: 20,
-			bottom: 15,
-			top: 15
-		},
-		min: 3
-	},
-	title: 10,
-	min: 0,
-	max: 4
-};
+var _require = require(31),
+    defMargins = _require.defMargins;
 
 var m = {};
 
@@ -9694,21 +10474,21 @@ var space = function space(datas, universe, borders, title) {
 	// min and max of coord space
 	// margins between borders and axis
 	var margins = {};
-	for (p = 0; p < places.length; p++) {
-		margins[places[p]] = defaults.min;
+	for (var _p = 0; _p < places.length; _p++) {
+		margins[places[_p]] = defMargins.min;
 	}
 
 	// fetch the margin (label + ticks + default) for an axis
 	var margin = function margin(axis) {
 		if (!axis.show) {
-			return defaults.axis.min;
+			return defMargins.outer.min;
 		}
-		var marg = defaults.axis.label[axis.placement];
+		var marg = defMargins.outer.label[axis.placement];
 		if (!axis.empty) {
-			marg += defaults.axis.ticks[axis.placement];
+			marg += defMargins.outer.ticks[axis.placement];
 		}
 		if (axis.label.length !== 0) {
-			marg += axis.labelFSize + defaults.axis.label.mar;
+			marg += axis.labelFSize + defMargins.outer.label.mar;
 		}
 		return marg;
 	};
@@ -9721,7 +10501,7 @@ var space = function space(datas, universe, borders, title) {
 
 	// title is at the top
 	if (!utils.isNil(margins.top) && !utils.isNil(title)) {
-		margins.top += title.title.length !== 0 ? title.titleFSize + defaults.title : 0;
+		margins.top += title.title.length !== 0 ? title.titleFSize + defMargins.title : 0;
 	}
 
 	// more suppleness, but less
@@ -9729,30 +10509,32 @@ var space = function space(datas, universe, borders, title) {
 	// margins computed whatever
 	// happens, overwrite here
 	// if defined
-	for (p = 0; p < places.length; p++) {
-		var k = places[p];
+	for (var _p2 = 0; _p2 < places.length; _p2++) {
+		var k = places[_p2];
 		if (!utils.isNil(borders.marginsO[k])) {
 			margins[k] = borders.marginsO[k];
 		}
-		margins[k] = Math.max(margins[k], defaults.axis.min);
+		margins[k] = Math.max(margins[k], defMargins.outer.min);
 	}
 
 	// we have the world's corners
 	// the transformation between data space and the world space is
 	// given by data space scaled to (world size - inner margins) and
 	// placed at (origin.x.x + inner x margin, origin.y.y - inner y margin)
-	var min, max;
-	var rmin, rmax;
+	var min = void 0,
+	    max = void 0;
+	var rmin = void 0,
+	    rmax = void 0;
 	if (utils.isNil(margins.left)) {
 		min = universe - margins.bottom;
-		max = margins.top;
-		rmin = min - borders.marginsI.bottom;
-		rmax = max + borders.marginsI.top;
+		max = margins.top + (borders.marginsF.top || 0);
+		rmin = min - (borders.marginsI.bottom || defMargins.inner.bottom);
+		rmax = max + (borders.marginsI.top || defMargins.inner.top);
 	} else {
 		min = margins.left;
-		max = universe - margins.right;
-		rmin = min + borders.marginsI.left;
-		rmax = max - borders.marginsI.right;
+		max = universe - margins.right - +(borders.marginsF.right || 0);
+		rmin = min + (borders.marginsI.left || defMargins.inner.left);
+		rmax = max - (borders.marginsI.right || defMargins.inner.right);
 	}
 
 	var cWorld = {
@@ -9908,15 +10690,20 @@ m.spaces = function (datas, universe, borders, title) {
 
 	var ob = { right: 'ord', left: 'ord', top: 'abs', bottom: 'abs' };
 	var dats = {};
-	for (var w in ob) {
+
+	var _loop = function _loop(w) {
 		dats[w] = _.filter(datas, function (series) {
 			return !!series[ob[w]] && series[ob[w]].axis === w;
 		});
+	};
+
+	for (var w in ob) {
+		_loop(w);
 	}
 
 	var mins = {};
 	var maxs = {};
-	for (w in ob) {
+	for (var w in ob) {
 		mins[w] = null;
 		maxs[w] = null;
 		for (var i = 0; i < borders[ob[w]].length; i++) {
@@ -9924,7 +10711,7 @@ m.spaces = function (datas, universe, borders, title) {
 				continue;
 			}
 			// min
-			var mgr;
+			var mgr = void 0;
 			if (!utils.isNil(borders[ob[w]][i].min)) {
 				mgr = utils.mgr(borders[ob[w]][i].min);
 				if (utils.isNil(mins[w]) || mgr.lowerThan(borders[ob[w]][i].min, mins[w])) {
@@ -9951,19 +10738,21 @@ m.spaces = function (datas, universe, borders, title) {
 	border.ord = {
 		marginsO: { top: borders.marginsO.top, bottom: borders.marginsO.bottom },
 		marginsI: { top: borders.marginsI.top, bottom: borders.marginsI.bottom },
+		marginsF: { top: borders.marginsF.top, bottom: borders.marginsF.bottom },
 		axis: borders.abs
 	};
 
 	border.abs = {
 		marginsO: { left: borders.marginsO.left, right: borders.marginsO.right },
 		marginsI: { left: borders.marginsI.left, right: borders.marginsI.right },
+		marginsF: { left: borders.marginsF.left, right: borders.marginsF.right },
 		axis: borders.ord
 	};
 
 	var bor = {};
-	for (w in ob) {
+	for (var _w in ob) {
 		// copy/expand
-		bor[w] = _.extend(_.extend({}, border[ob[w]]), { min: mins[w], max: maxs[w] });
+		bor[_w] = _.extend(_.extend({}, border[ob[_w]]), { min: mins[_w], max: maxs[_w] });
 	}
 
 	return {
@@ -9980,7 +10769,7 @@ m.spaces = function (datas, universe, borders, title) {
 
 module.exports = m;
 
-},{"35":35,"8":8}],33:[function(require,module,exports){
+},{"31":31,"35":35,"8":8}],33:[function(require,module,exports){
 'use strict';
 
 /*
@@ -10226,7 +11015,7 @@ m.toValue = function (val) {
 	return m.isDate(val) ? date.getValue(val) : val;
 };
 
-m.direction = function (line) {
+m.direction = function (line, ds) {
 	// line is AC
 	//
 	//             C
@@ -10245,7 +11034,16 @@ m.direction = function (line) {
 	var AB = distSqr(line.start, B);
 	var BC = distSqr(B, line.end);
 
-	return { x: AB, y: BC, line: distSqr(line.end, line.start) };
+	var hor = '-1';
+	var ver = '-1';
+	if (!!ds) {
+		// 0: left, 1: right
+		hor = Math.abs(line.end.x - ds.x.c.min) < Math.abs(ds.x.c.max - line.end.x) ? '0' : '1';
+		// 0: bottom, 1: top
+		ver = Math.abs(line.end.y - ds.y.c.min) < Math.abs(ds.y.c.max - line.end.y) ? '0' : '1';
+	}
+
+	return { x: AB, y: BC, line: distSqr(line.end, line.start), corner: hor + ver };
 };
 
 // to make proper period objects
@@ -10255,6 +11053,36 @@ module.exports = m;
 
 },{"25":25,"28":28,"29":29}],36:[function(require,module,exports){
 'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () {
+	function defineProperties(target, props) {
+		for (var i = 0; i < props.length; i++) {
+			var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+		}
+	}return function (Constructor, protoProps, staticProps) {
+		if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+	};
+}();
+
+function _classCallCheck(instance, Constructor) {
+	if (!(instance instanceof Constructor)) {
+		throw new TypeError("Cannot call a class as a function");
+	}
+}
+
+function _possibleConstructorReturn(self, call) {
+	if (!self) {
+		throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+	}return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+	if (typeof superClass !== "function" && superClass !== null) {
+		throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+	}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
 
 var React = require("react");
 var Mark = require(50);
@@ -10268,29 +11096,71 @@ var imUtils = require(26);
 	}
 */
 
-var BarChart = React.createClass({
-	displayName: 'BarChart',
+var BarChart = function (_React$Component) {
+	_inherits(BarChart, _React$Component);
 
-	shouldComponentUpdate: function shouldComponentUpdate(props) {
-		return !imUtils.isEqual(props.state, this.props.state);
-	},
+	function BarChart() {
+		_classCallCheck(this, BarChart);
 
-	render: function render() {
-
-		if (this.props.state.marks.length === 0) {
-			return null;
-		}
-
-		return React.createElement('g', null, _.map(this.props.state.marks, function (bar) {
-			return React.createElement(Mark, { key: bar.key, state: bar, type: 'bar' });
-		}));
+		return _possibleConstructorReturn(this, (BarChart.__proto__ || Object.getPrototypeOf(BarChart)).apply(this, arguments));
 	}
-});
+
+	_createClass(BarChart, [{
+		key: 'shouldComponentUpdate',
+		value: function shouldComponentUpdate(props) {
+			return !imUtils.isEqual(props.state, this.props.state);
+		}
+	}, {
+		key: 'render',
+		value: function render() {
+
+			if (this.props.state.marks.length === 0) {
+				return null;
+			}
+
+			return React.createElement('g', null, _.map(this.props.state.marks, function (bar) {
+				return React.createElement(Mark, { key: bar.key, state: bar, type: 'bar' });
+			}));
+		}
+	}]);
+
+	return BarChart;
+}(React.Component);
 
 module.exports = BarChart;
 
 },{"26":26,"50":50,"8":8,"react":"react"}],37:[function(require,module,exports){
 'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () {
+	function defineProperties(target, props) {
+		for (var i = 0; i < props.length; i++) {
+			var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+		}
+	}return function (Constructor, protoProps, staticProps) {
+		if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+	};
+}();
+
+function _classCallCheck(instance, Constructor) {
+	if (!(instance instanceof Constructor)) {
+		throw new TypeError("Cannot call a class as a function");
+	}
+}
+
+function _possibleConstructorReturn(self, call) {
+	if (!self) {
+		throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+	}return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+	if (typeof superClass !== "function" && superClass !== null) {
+		throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+	}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
 
 var React = require("react");
 
@@ -10318,138 +11188,182 @@ var utils = require(35);
 	}
 */
 
-var Bins = React.createClass({
-	displayName: 'Bins',
+var Bins = function (_React$Component) {
+	_inherits(Bins, _React$Component);
 
-	shouldComponentUpdate: function shouldComponentUpdate(props) {
-		return !imUtils.isEqual(props.state, this.props.state);
-	},
+	function Bins() {
+		_classCallCheck(this, Bins);
 
-	bin: function bin(point, drop, delta, idx) {
-
-		var state = this.props.state;
-
-		var p = {
-			x: space.toC(state.ds.x, point.x),
-			y: space.toC(state.ds.y, point.y)
-		};
-
-		var d = {
-			x: space.toC(state.ds.x, drop.x),
-			y: space.toC(state.ds.y, drop.y)
-		};
-
-		var del = space.toCwidth(state.ds.x, delta);
-
-		var path = '';
-		switch (state.stairs) {
-			case 'right':
-				var pr1 = p.x + ' ' + d.y;
-				var pr2 = p.x + ' ' + p.y;
-				var pr3 = p.x + del + ' ' + p.y;
-				var pr4 = p.x + del + ' ' + d.y;
-				path = 'M ' + pr1 + ' L ' + pr2 + ' L ' + pr3 + ' L ' + pr4;
-				break;
-			case 'left':
-				var pl1 = p.x - del + ' ' + d.y;
-				var pl2 = p.x - del + ' ' + p.y;
-				var pl3 = p.x + ' ' + p.y;
-				var pl4 = p.x + ' ' + d.y;
-				path = 'M ' + pl1 + ' L ' + pl2 + ' L ' + pl3 + ' L ' + pl4;
-				break;
-		}
-
-		var color = point.fill || state.fill;
-		var shade = state.shade || 1;
-
-		return React.createElement('path', { key: idx, d: path, strokeWidth: 0, fill: color, opacity: shade });
-	},
-
-	path: function path() {
-
-		var state = this.props.state;
-		if (state.positions.length === 0) {
-			return null;
-		}
-		var positions = state.positions;
-		var ds = state.ds;
-		var drops = state.drops;
-
-		var coord = function coord(idx, idy) {
-			idy = utils.isNil(idy) ? idx : idy;
-			return space.toC(ds.x, positions[idx].x) + ',' + space.toC(ds.y, positions[idy].y);
-		};
-
-		var dropy = function dropy(idx) {
-			return space.toC(ds.x, positions[idx].x) + ',' + space.toC(ds.y, drops[idx].y);
-		};
-
-		var dropx = function dropx(idx) {
-			return space.toC(ds.x, drops[idx].x) + ',' + space.toC(ds.y, positions[idx].y);
-		};
-
-		var Nd = state.positions.length;
-		var data = '';
-		var delta = state.positions.length > 1 ? space.toCwidth(ds.x, positions[1].x - positions[0].x) : 10;
-		switch (state.stairs) {
-			case 'right':
-				// right stairs
-				data = (state.dropLine.y ? dropy(0) + ' ' : '') + coord(0);
-				for (var i = 1; i < Nd; i++) {
-					data += ' ' + coord(i, i - 1) + ' ' + coord(i);
-					if (state.dropLine.y) {
-						data += ' ' + dropy(i) + ' ' + coord(i);
-					}
-					if (state.dropLine.x) {
-						data += ' ' + dropx(i) + ' ' + coord(i);
-					}
-				}
-				data += ' ' + (space.toC(ds.x, positions[Nd - 1].x) + delta) + ',' + space.toC(ds.y, positions[Nd - 1].y); // point
-				if (state.dropLine.y) {
-					data += ' ' + (space.toC(ds.x, positions[Nd - 1].x) + delta) + ',' + space.toC(ds.y, drops[Nd - 1].y); // drop
-				}
-				break;
-			case 'left':
-				// left stairs
-				if (state.dropLine.y) {
-					data += space.toC(ds.x, positions[0].x) - delta + ',' + space.toC(ds.y, drops[0].y); // drop
-				}
-				data += ' ' + (space.toC(ds.x, positions[0].x) - delta) + ',' + space.toC(ds.y, positions[0].y); // point
-				data += ' ' + coord(0);
-				for (i = 1; i < Nd; i++) {
-					if (state.dropLine.x) {
-						data += ' ' + dropx(i - 1) + ' ' + coord(i - 1);
-					}
-					if (state.dropLine.y) {
-						data += ' ' + dropy(i - 1) + ' ' + coord(i - 1);
-					}
-					data += ' ' + coord(i - 1, i) + ' ' + coord(i);
-				}
-				data += state.dropLine.y ? ' ' + dropy(Nd - 1) : '';
-				break;
-			default:
-				throw 'Stairs are either right or left';
-		}
-
-		return React.createElement('polyline', { points: data, stroke: state.color, strokeWidth: state.width, fill: 'none' });
-	},
-
-	render: function render() {
-
-		var state = this.props.state;
-		var delta = state.positions.length > 1 ? state.positions[1].x - state.positions[0].x : 1;
-		var me = this;
-
-		return React.createElement('g', null, _.map(state.positions, function (pos, idx) {
-			return me.bin(pos, state.drops[idx], delta, idx);
-		}), this.path());
+		return _possibleConstructorReturn(this, (Bins.__proto__ || Object.getPrototypeOf(Bins)).apply(this, arguments));
 	}
-});
+
+	_createClass(Bins, [{
+		key: 'shouldComponentUpdate',
+		value: function shouldComponentUpdate(props) {
+			return !imUtils.isEqual(props.state, this.props.state);
+		}
+	}, {
+		key: 'bin',
+		value: function bin(point, drop, delta, idx) {
+
+			var state = this.props.state;
+
+			var p = {
+				x: space.toC(state.ds.x, point.x),
+				y: space.toC(state.ds.y, point.y)
+			};
+
+			var d = {
+				x: space.toC(state.ds.x, drop.x),
+				y: space.toC(state.ds.y, drop.y)
+			};
+
+			var del = space.toCwidth(state.ds.x, delta);
+
+			var path = '';
+			switch (state.stairs) {
+				case 'right':
+					var pr1 = p.x + ' ' + d.y;
+					var pr2 = p.x + ' ' + p.y;
+					var pr3 = p.x + del + ' ' + p.y;
+					var pr4 = p.x + del + ' ' + d.y;
+					path = 'M ' + pr1 + ' L ' + pr2 + ' L ' + pr3 + ' L ' + pr4;
+					break;
+				case 'left':
+					var pl1 = p.x - del + ' ' + d.y;
+					var pl2 = p.x - del + ' ' + p.y;
+					var pl3 = p.x + ' ' + p.y;
+					var pl4 = p.x + ' ' + d.y;
+					path = 'M ' + pl1 + ' L ' + pl2 + ' L ' + pl3 + ' L ' + pl4;
+					break;
+			}
+
+			var color = point.fill || state.fill;
+			var shade = state.shade || 1;
+
+			return React.createElement('path', { key: idx, d: path, strokeWidth: 0, fill: color, opacity: shade });
+		}
+	}, {
+		key: 'path',
+		value: function path() {
+
+			var state = this.props.state;
+			if (state.positions.length === 0) {
+				return null;
+			}
+			var positions = state.positions;
+			var ds = state.ds;
+			var drops = state.drops;
+
+			var coord = function coord(idx, idy) {
+				idy = utils.isNil(idy) ? idx : idy;
+				return space.toC(ds.x, positions[idx].x) + ',' + space.toC(ds.y, positions[idy].y);
+			};
+
+			var dropy = function dropy(idx) {
+				return space.toC(ds.x, positions[idx].x) + ',' + space.toC(ds.y, drops[idx].y);
+			};
+
+			var dropx = function dropx(idx) {
+				return space.toC(ds.x, drops[idx].x) + ',' + space.toC(ds.y, positions[idx].y);
+			};
+
+			var Nd = state.positions.length;
+			var data = '';
+			var delta = state.positions.length > 1 ? space.toCwidth(ds.x, positions[1].x - positions[0].x) : 10;
+			switch (state.stairs) {
+				case 'right':
+					// right stairs
+					data = (state.dropLine.y ? dropy(0) + ' ' : '') + coord(0);
+					for (var i = 1; i < Nd; i++) {
+						data += ' ' + coord(i, i - 1) + ' ' + coord(i);
+						if (state.dropLine.y) {
+							data += ' ' + dropy(i) + ' ' + coord(i);
+						}
+						if (state.dropLine.x) {
+							data += ' ' + dropx(i) + ' ' + coord(i);
+						}
+					}
+					data += ' ' + (space.toC(ds.x, positions[Nd - 1].x) + delta) + ',' + space.toC(ds.y, positions[Nd - 1].y); // point
+					if (state.dropLine.y) {
+						data += ' ' + (space.toC(ds.x, positions[Nd - 1].x) + delta) + ',' + space.toC(ds.y, drops[Nd - 1].y); // drop
+					}
+					break;
+				case 'left':
+					// left stairs
+					if (state.dropLine.y) {
+						data += space.toC(ds.x, positions[0].x) - delta + ',' + space.toC(ds.y, drops[0].y); // drop
+					}
+					data += ' ' + (space.toC(ds.x, positions[0].x) - delta) + ',' + space.toC(ds.y, positions[0].y); // point
+					data += ' ' + coord(0);
+					for (var _i = 1; _i < Nd; _i++) {
+						if (state.dropLine.x) {
+							data += ' ' + dropx(_i - 1) + ' ' + coord(_i - 1);
+						}
+						if (state.dropLine.y) {
+							data += ' ' + dropy(_i - 1) + ' ' + coord(_i - 1);
+						}
+						data += ' ' + coord(_i - 1, _i) + ' ' + coord(_i);
+					}
+					data += state.dropLine.y ? ' ' + dropy(Nd - 1) : '';
+					break;
+				default:
+					throw 'Stairs are either right or left';
+			}
+
+			return React.createElement('polyline', { points: data, stroke: state.color, strokeWidth: state.width, fill: 'none' });
+		}
+	}, {
+		key: 'render',
+		value: function render() {
+
+			var state = this.props.state;
+			var delta = state.positions.length > 1 ? state.positions[1].x - state.positions[0].x : 1;
+			var me = this;
+
+			return React.createElement('g', null, _.map(state.positions, function (pos, idx) {
+				return me.bin(pos, state.drops[idx], delta, idx);
+			}), this.path());
+		}
+	}]);
+
+	return Bins;
+}(React.Component);
 
 module.exports = Bins;
 
 },{"26":26,"33":33,"35":35,"8":8,"react":"react"}],38:[function(require,module,exports){
 'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () {
+	function defineProperties(target, props) {
+		for (var i = 0; i < props.length; i++) {
+			var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+		}
+	}return function (Constructor, protoProps, staticProps) {
+		if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+	};
+}();
+
+function _classCallCheck(instance, Constructor) {
+	if (!(instance instanceof Constructor)) {
+		throw new TypeError("Cannot call a class as a function");
+	}
+}
+
+function _possibleConstructorReturn(self, call) {
+	if (!self) {
+		throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+	}return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+	if (typeof superClass !== "function" && superClass !== null) {
+		throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+	}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
 
 var React = require("react");
 
@@ -10481,188 +11395,272 @@ var imUtils = require(26);
 	}
 */
 
-var Path = React.createClass({
-	displayName: 'Path',
+var Path = function (_React$Component) {
+	_inherits(Path, _React$Component);
 
-	shouldComponentUpdate: function shouldComponentUpdate(props) {
-		return !imUtils.isEqual(props.state, this.props.state);
-	},
+	function Path() {
+		_classCallCheck(this, Path);
 
-	render: function render() {
-
-		var state = this.props.state;
-
-		if (state.show === false || state.positions.length === 0) {
-			return null;
-		}
-
-		var ds = state.ds;
-		var pos = state.positions;
-		var drops = state.drops;
-
-		var coord = function coord(idx) {
-			return space.toC(ds.x, pos[idx].x) + ',' + space.toC(ds.y, pos[idx].y);
-		};
-
-		var dropx = function dropx(idx) {
-			return space.toC(ds.x, drops[idx].x) + ',' + space.toC(ds.y, pos[idx].y);
-		};
-
-		var dropy = function dropy(idx) {
-			return space.toC(ds.x, pos[idx].x) + ',' + space.toC(ds.y, drops[idx].y);
-		};
-
-		var points = 'M ' + coord(0);
-		for (var i = 1; i < state.positions.length; i++) {
-			points += ' L ' + coord(i);
-		}
-
-		// we close the curve if wanted
-		// y dir has prevalence
-		var filling = points;
-		if (state.close.y) {
-			for (i = drops.length - 1; i >= 0; i--) {
-				filling += ' L ' + dropy(i);
-			}
-		} else if (state.close.x) {
-			for (i = drops.length - 1; i >= 0; i--) {
-				filling += ' L ' + dropx(i);
-			}
-		}
-		filling += 'z';
-
-		// droplines
-		var dropLines = [];
-		var color = state.color;
-		var width = state.width;
-		var shade = state.shade;
-
-		if (state.dropLine.y) {
-			dropLines = _.map(state.positions, function (pos, idx) {
-				var path = 'M ' + coord(idx) + ' L ' + dropy(idx);
-				var key = state.key + '.dl.' + idx;
-				return React.createElement('path', { key: key, d: path, stroke: color, strokeWidth: width, opacity: shade });
-			});
-		}
-		if (state.dropLine.x) {
-			dropLines = _.map(state.positions, function (pos, idx) {
-				var path = 'M ' + coord(idx) + ' L ' + dropx(idx);
-				var key = state.key + '.dl.' + idx;
-				return React.createElement('path', { key: key, d: path, stroke: color, strokeWidth: width, opacity: shade });
-			});
-		}
-
-		return React.createElement('g', null, state.close.y || state.close.x ? React.createElement('path', {
-			d: filling,
-			strokeWidth: 0,
-			opacity: shade,
-			fill: state.fill }) : null, React.createElement('path', {
-			d: points,
-			stroke: color,
-			strokeWidth: width,
-			opacity: shade,
-			fill: 'none' }), dropLines);
+		return _possibleConstructorReturn(this, (Path.__proto__ || Object.getPrototypeOf(Path)).apply(this, arguments));
 	}
 
-});
+	_createClass(Path, [{
+		key: 'shouldComponentUpdate',
+		value: function shouldComponentUpdate(props) {
+			return !imUtils.isEqual(props.state, this.props.state);
+		}
+	}, {
+		key: 'render',
+		value: function render() {
+
+			var state = this.props.state;
+
+			if (state.show === false || state.positions.length === 0) {
+				return null;
+			}
+
+			var ds = state.ds;
+			var pos = state.positions;
+			var drops = state.drops;
+
+			var coord = function coord(idx) {
+				return space.toC(ds.x, pos[idx].x) + ',' + space.toC(ds.y, pos[idx].y);
+			};
+
+			var dropx = function dropx(idx) {
+				return space.toC(ds.x, drops[idx].x) + ',' + space.toC(ds.y, pos[idx].y);
+			};
+
+			var dropy = function dropy(idx) {
+				return space.toC(ds.x, pos[idx].x) + ',' + space.toC(ds.y, drops[idx].y);
+			};
+
+			var points = 'M ' + coord(0);
+			for (var i = 1; i < state.positions.length; i++) {
+				points += ' L ' + coord(i);
+			}
+
+			// we close the curve if wanted
+			// y dir has prevalence
+			var filling = points;
+			if (state.close.y) {
+				for (var _i = drops.length - 1; _i >= 0; _i--) {
+					filling += ' L ' + dropy(_i);
+				}
+			} else if (state.close.x) {
+				for (var _i2 = drops.length - 1; _i2 >= 0; _i2--) {
+					filling += ' L ' + dropx(_i2);
+				}
+			}
+			filling += 'z';
+
+			// droplines
+			var dropLines = [];
+			var color = state.color;
+			var width = state.width;
+			var shade = state.shade;
+
+			if (state.dropLine.y) {
+				dropLines = _.map(state.positions, function (pos, idx) {
+					var path = 'M ' + coord(idx) + ' L ' + dropy(idx);
+					var key = state.key + '.dl.' + idx;
+					return React.createElement('path', { key: key, d: path, stroke: color, strokeWidth: width, opacity: shade });
+				});
+			}
+			if (state.dropLine.x) {
+				dropLines = _.map(state.positions, function (pos, idx) {
+					var path = 'M ' + coord(idx) + ' L ' + dropx(idx);
+					var key = state.key + '.dl.' + idx;
+					return React.createElement('path', { key: key, d: path, stroke: color, strokeWidth: width, opacity: shade });
+				});
+			}
+
+			return React.createElement('g', null, state.close.y || state.close.x ? React.createElement('path', {
+				d: filling,
+				strokeWidth: 0,
+				opacity: shade,
+				fill: state.fill }) : null, React.createElement('path', {
+				d: points,
+				stroke: color,
+				strokeWidth: width,
+				opacity: shade,
+				fill: 'none' }), dropLines);
+		}
+	}]);
+
+	return Path;
+}(React.Component);
 
 module.exports = Path;
 
 },{"26":26,"33":33,"8":8,"react":"react"}],39:[function(require,module,exports){
 'use strict';
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () {
+	function defineProperties(target, props) {
+		for (var i = 0; i < props.length; i++) {
+			var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+		}
+	}return function (Constructor, protoProps, staticProps) {
+		if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+	};
+}();
+
+function _classCallCheck(instance, Constructor) {
+	if (!(instance instanceof Constructor)) {
+		throw new TypeError("Cannot call a class as a function");
+	}
+}
+
+function _possibleConstructorReturn(self, call) {
+	if (!self) {
+		throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+	}return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+	if (typeof superClass !== "function" && superClass !== null) {
+		throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+	}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
 var React = require("react");
 
 var imUtils = require(26);
 
-var Pie = React.createClass({
-	displayName: 'Pie',
+var Pie = function (_React$Component) {
+	_inherits(Pie, _React$Component);
 
-	shouldComponentUpdate: function shouldComponentUpdate(props) {
-		return !imUtils.isEqual(props.state, this.props.state);
-	},
+	function Pie() {
+		_classCallCheck(this, Pie);
 
-	render: function render() {
-
-		var labels = this.props.state.path.labels;
-		var positions = this.props.state.path.positions;
-		if (positions.length === 0) {
-			return null;
-		}
-		var pinRad = this.props.state.path.pinRadius;
-		var pinLen = this.props.state.path.pinLength;
-		var pinOff = this.props.state.path.pinHook;
-		var pinDraw = this.props.state.path.pinDraw;
-		var pfs = this.props.state.path.pinFontSize;
-		//var ds = state.ds;
-
-		var abs = function abs(ang, rad, or) {
-			return rad * Math.cos(ang * Math.PI / 180) + or.x;
-		};
-		var coo = function coo(ang, rad, or) {
-			return -rad * Math.sin(ang * Math.PI / 180) + or.y;
-		};
-
-		var ori = this.props.state.path.origin;
-		var oldT = 0;
-		var out = [];
-		var r = this.props.state.path.radius;
-		var rin = this.props.state.path.toreRadius;
-		var x = abs(oldT, r, ori);
-		var y = coo(oldT, r, ori);
-		for (var p = 0; p < positions.length; p++) {
-
-			var color = positions[p].color;
-			var theta = Math.min(positions[p].value, 359.9640); // more than 99.99% is a circle (not supported by arc anyway)
-			var label = !!labels[p] ? labels[p] : null;
-			var x1 = abs(oldT, rin, ori);
-			var y1 = coo(oldT, rin, ori);
-			var x2 = abs(oldT, r, ori);
-			var y2 = coo(oldT, r, ori);
-			var x3 = abs(theta + oldT, r, ori);
-			var y3 = coo(theta + oldT, r, ori);
-			var x4 = abs(theta + oldT, rin, ori);
-			var y4 = coo(theta + oldT, rin, ori);
-
-			// large-arc-flag, true if theta > 180
-			var laf = theta > 180 ? 1 : 0;
-			var path = 'M' + x1 + ',' + y1 + ' L' + x2 + ',' + y2 + ' A' + r + ',' + r + ' 0 ' + laf + ',0 ' + x3 + ',' + y3 + ' L ' + x4 + ',' + y4 + ' A' + rin + ',' + rin + ' 0 ' + laf + ',1 ' + x1 + ',' + y1;
-
-			out.push(React.createElement('path', { key: p, fill: color, stroke: 'none', strokeWidth: '0', d: path }));
-
-			if (!!label) {
-				var curAng = theta / 2 + oldT;
-				var offset = curAng === 90 || curAng === 270 ? 0 : curAng > 90 && curAng < 270 ? -pinOff : pinOff;
-				var xc1 = abs(curAng, pinRad, ori);
-				var yc1 = coo(curAng, pinRad, ori);
-				var xc2 = abs(curAng, pinRad + pinLen, ori);
-				var yc2 = coo(curAng, pinRad + pinLen, ori);
-				var xc3 = xc2 + offset;
-				var yc3 = yc2;
-				var xc = xc3 + offset / 2;
-				var yc = yc2 + (curAng === 90 ? -5 : curAng === 270 ? 5 : 0);
-				var lstyle = {
-					textAnchor: curAng === 90 || curAng === 270 ? 'center' : curAng > 90 && curAng < 270 ? 'end' : 'start'
-				};
-				if (pinDraw) {
-					var lpath = 'M' + xc1 + ',' + yc1 + ' L' + xc2 + ',' + yc2 + ' L' + xc3 + ',' + yc3;
-					out.push(React.createElement('path', { key: p + '.ll', strokeWidth: '1', stroke: 'black', fill: 'none', d: lpath }));
-				}
-				out.push(React.createElement('text', { fontSize: pfs, key: p + '.l', x: xc, y: yc, style: lstyle }, label));
-			}
-			x = x2;
-			y = y2;
-			oldT += theta;
-		}
-
-		return React.createElement('g', null, out);
+		return _possibleConstructorReturn(this, (Pie.__proto__ || Object.getPrototypeOf(Pie)).apply(this, arguments));
 	}
-});
+
+	_createClass(Pie, [{
+		key: 'shouldComponentUpdate',
+		value: function shouldComponentUpdate(props) {
+			return !imUtils.isEqual(props.state, this.props.state);
+		}
+	}, {
+		key: 'render',
+		value: function render() {
+			var path = this.props.state.path;
+			var labels = path.labels,
+			    positions = path.positions,
+			    pinRadius = path.pinRadius,
+			    pinLength = path.pinLength,
+			    pinHook = path.pinHook,
+			    pinDraw = path.pinDraw,
+			    pinFontSize = path.pinFontSize,
+			    origin = path.origin,
+			    radius = path.radius,
+			    toreRadius = path.toreRadius;
+
+			if (positions.length === 0) {
+				return null;
+			}
+
+			var abs = function abs(ang, rad, or) {
+				return rad * Math.cos(ang * Math.PI / 180) + or.x;
+			};
+			var coo = function coo(ang, rad, or) {
+				return -rad * Math.sin(ang * Math.PI / 180) + or.y;
+			};
+
+			var oldT = 0;
+			var out = [];
+			var x = abs(oldT, radius, origin);
+			var y = coo(oldT, radius, origin);
+
+			for (var p = 0; p < positions.length; p++) {
+
+				var color = positions[p].color;
+				var theta = Math.min(positions[p].value, 359.9640); // more than 99.99% is a circle (not supported by arc anyway)
+				var label = !!labels[p] ? labels[p] : null;
+				var x1 = abs(oldT, toreRadius, origin);
+				var y1 = coo(oldT, toreRadius, origin);
+				var x2 = abs(oldT, radius, origin);
+				var y2 = coo(oldT, radius, origin);
+				var x3 = abs(theta + oldT, radius, origin);
+				var y3 = coo(theta + oldT, radius, origin);
+				var x4 = abs(theta + oldT, toreRadius, origin);
+				var y4 = coo(theta + oldT, toreRadius, origin);
+
+				// large-arc-flag, true if theta > 180
+				var laf = theta > 180 ? 1 : 0;
+				var _path = 'M' + x1 + ',' + y1 + ' L' + x2 + ',' + y2 + ' A' + radius + ',' + radius + ' 0 ' + laf + ',0 ' + x3 + ',' + y3 + ' L ' + x4 + ',' + y4 + ' A' + toreRadius + ',' + toreRadius + ' 0 ' + laf + ',1 ' + x1 + ',' + y1;
+
+				out.push(React.createElement('path', { key: p, fill: color, stroke: 'none', strokeWidth: '0', d: _path }));
+
+				if (!!label) {
+					var curAng = theta / 2 + oldT;
+					var offset = curAng === 90 || curAng === 270 ? 0 : curAng > 90 && curAng < 270 ? -pinHook : pinHook;
+					var xc1 = abs(curAng, pinRadius, origin);
+					var yc1 = coo(curAng, pinRadius, origin);
+					var xc2 = abs(curAng, pinRadius + pinLength, origin);
+					var yc2 = coo(curAng, pinRadius + pinLength, origin);
+					var xc3 = xc2 + offset;
+					var yc3 = yc2;
+					var xc = xc3 + offset / 2;
+					var yc = yc2 + (curAng === 90 ? -5 : curAng === 270 ? 5 : 0);
+					var lstyle = {
+						textAnchor: curAng === 90 || curAng === 270 ? 'center' : curAng > 90 && curAng < 270 ? 'end' : 'start'
+					};
+					if (pinDraw) {
+						var lpath = 'M' + xc1 + ',' + yc1 + ' L' + xc2 + ',' + yc2 + ' L' + xc3 + ',' + yc3;
+						out.push(React.createElement('path', { key: p + '.ll', strokeWidth: '1', stroke: 'black', fill: 'none', d: lpath }));
+					}
+					out.push(React.createElement('text', { fontSize: pinFontSize, key: p + '.l', x: xc, y: yc, style: lstyle }, label));
+				}
+				x = x2;
+				y = y2;
+				oldT += theta;
+			}
+
+			return React.createElement('g', null, out);
+		}
+	}]);
+
+	return Pie;
+}(React.Component);
 
 module.exports = Pie;
 
 },{"26":26,"react":"react"}],40:[function(require,module,exports){
 'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () {
+	function defineProperties(target, props) {
+		for (var i = 0; i < props.length; i++) {
+			var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+		}
+	}return function (Constructor, protoProps, staticProps) {
+		if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+	};
+}();
+
+function _classCallCheck(instance, Constructor) {
+	if (!(instance instanceof Constructor)) {
+		throw new TypeError("Cannot call a class as a function");
+	}
+}
+
+function _possibleConstructorReturn(self, call) {
+	if (!self) {
+		throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+	}return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+	if (typeof superClass !== "function" && superClass !== null) {
+		throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+	}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
 
 var React = require("react");
 var Path = require(38);
@@ -10678,27 +11676,70 @@ var imUtils = require(26);
 		marks: [Dot || Square]
 	}
 */
-var PlainChart = React.createClass({
-	displayName: 'PlainChart',
 
-	shouldComponentUpdate: function shouldComponentUpdate(props) {
-		return !imUtils.isEqual(props.state, this.props.state);
-	},
+var PlainChart = function (_React$Component) {
+	_inherits(PlainChart, _React$Component);
 
-	render: function render() {
-		var _this = this;
+	function PlainChart() {
+		_classCallCheck(this, PlainChart);
 
-		var marks = this.props.state.marks;
-		return marks.length === 0 ? React.createElement(Path, { state: this.props.state.path }) : React.createElement('g', null, React.createElement(Path, { state: this.props.state.path }), _.map(marks, function (point) {
-			return React.createElement(Mark, { key: point.key, state: point, type: _this.props.state.markType });
-		}));
+		return _possibleConstructorReturn(this, (PlainChart.__proto__ || Object.getPrototypeOf(PlainChart)).apply(this, arguments));
 	}
-});
+
+	_createClass(PlainChart, [{
+		key: 'shouldComponentUpdate',
+		value: function shouldComponentUpdate(props) {
+			return !imUtils.isEqual(props.state, this.props.state);
+		}
+	}, {
+		key: 'render',
+		value: function render() {
+			var _this2 = this;
+
+			var marks = this.props.state.marks;
+			return marks.length === 0 ? React.createElement(Path, { state: this.props.state.path }) : React.createElement('g', null, React.createElement(Path, { state: this.props.state.path }), _.map(marks, function (point) {
+				return React.createElement(Mark, { key: point.key, state: point, type: _this2.props.state.markType });
+			}));
+		}
+	}]);
+
+	return PlainChart;
+}(React.Component);
 
 module.exports = PlainChart;
 
 },{"26":26,"38":38,"50":50,"8":8,"react":"react"}],41:[function(require,module,exports){
 'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () {
+	function defineProperties(target, props) {
+		for (var i = 0; i < props.length; i++) {
+			var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+		}
+	}return function (Constructor, protoProps, staticProps) {
+		if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+	};
+}();
+
+function _classCallCheck(instance, Constructor) {
+	if (!(instance instanceof Constructor)) {
+		throw new TypeError("Cannot call a class as a function");
+	}
+}
+
+function _possibleConstructorReturn(self, call) {
+	if (!self) {
+		throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+	}return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+	if (typeof superClass !== "function" && superClass !== null) {
+		throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+	}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
 
 var React = require("react");
 var Bins = require(37);
@@ -10715,22 +11756,34 @@ var imUtils = require(26);
 	}
 */
 
-var StairsChart = React.createClass({
-	displayName: 'StairsChart',
+var StairsChart = function (_React$Component) {
+	_inherits(StairsChart, _React$Component);
 
-	shouldComponentUpdate: function shouldComponentUpdate(props) {
-		return !imUtils.isEqual(props.state, this.props.state);
-	},
+	function StairsChart() {
+		_classCallCheck(this, StairsChart);
 
-	render: function render() {
-		var _this = this;
-
-		var marks = this.props.state.marks;
-		return marks.length === 0 ? React.createElement(Bins, { state: this.props.state.path }) : React.createElement('g', null, React.createElement(Bins, { state: this.props.state.path }), _.map(marks, function (point) {
-			return React.createElement(Mark, { key: point.key, state: point, type: _this.props.state.markType });
-		}));
+		return _possibleConstructorReturn(this, (StairsChart.__proto__ || Object.getPrototypeOf(StairsChart)).apply(this, arguments));
 	}
-});
+
+	_createClass(StairsChart, [{
+		key: 'shouldComponentUpdate',
+		value: function shouldComponentUpdate(props) {
+			return !imUtils.isEqual(props.state, this.props.state);
+		}
+	}, {
+		key: 'render',
+		value: function render() {
+			var _this2 = this;
+
+			var marks = this.props.state.marks;
+			return marks.length === 0 ? React.createElement(Bins, { state: this.props.state.path }) : React.createElement('g', null, React.createElement(Bins, { state: this.props.state.path }), _.map(marks, function (point) {
+				return React.createElement(Mark, { key: point.key, state: point, type: _this2.props.state.markType });
+			}));
+		}
+	}]);
+
+	return StairsChart;
+}(React.Component);
 
 module.exports = StairsChart;
 
@@ -10740,7 +11793,7 @@ module.exports = StairsChart;
 var m = {};
 
 m.VM = function () {
-	return null;
+  return null;
 };
 
 module.exports = m;
@@ -10958,6 +12011,7 @@ module.exports = m;
 var React = require("react");
 
 var icon = {};
+
 icon.square = icon.Square = function (data, open) {
 	var l = Math.min(data.width, data.height) * 3 / 5;
 	var x = data.hMargin + (data.width - l) / 2;
@@ -11021,6 +12075,36 @@ module.exports = m;
 },{"react":"react"}],48:[function(require,module,exports){
 'use strict';
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () {
+	function defineProperties(target, props) {
+		for (var i = 0; i < props.length; i++) {
+			var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+		}
+	}return function (Constructor, protoProps, staticProps) {
+		if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+	};
+}();
+
+function _classCallCheck(instance, Constructor) {
+	if (!(instance instanceof Constructor)) {
+		throw new TypeError("Cannot call a class as a function");
+	}
+}
+
+function _possibleConstructorReturn(self, call) {
+	if (!self) {
+		throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+	}return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+	if (typeof superClass !== "function" && superClass !== null) {
+		throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+	}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
 var React = require("react");
 var dataScale = require(33);
 var utils = require(35);
@@ -11049,73 +12133,114 @@ var imUtils = require(26);
 	}
 */
 
-var BarMark = React.createClass({
-	displayName: 'BarMark',
+var BarMark = function (_React$Component) {
+	_inherits(BarMark, _React$Component);
 
-	shouldComponentUpdate: function shouldComponentUpdate(props) {
-		return !imUtils.isEqual(props.state, this.props.state);
-	},
+	function BarMark() {
+		_classCallCheck(this, BarMark);
 
-	render: function render() {
-
-		var state = this.props.state;
-
-		var mgr = {
-			x: utils.mgr(state.position.x),
-			y: utils.mgr(state.position.y)
-		};
-
-		var ds = state.ds;
-
-		var position = state.position;
-
-		var span = {
-			x: utils.isNil(state.span.x) ? 0 : state.span.x,
-			y: utils.isNil(state.span.y) ? 0 : state.span.y
-		};
-
-		var drop = {
-			x: utils.isNil(state.drop.x) ? state.position.x : state.drop.x,
-			y: utils.isNil(state.drop.y) ? state.position.y : state.drop.y
-		};
-
-		var toC = function toC(dir) {
-			var op = dir === 'y' ? 'add' : 'subtract';
-			return dataScale.toC(ds[dir], mgr[dir][op](position[dir], mgr[dir].divide(span[dir], 2))); // all in dataSpace
-		};
-
-		var x = toC('x');
-		var y = toC('y');
-
-		var toCwidth = function toCwidth(dir) {
-			return dataScale.toCwidth(ds[dir], mgr[dir].add(mgr[dir].distance(drop[dir], position[dir]), span[dir]));
-		};
-
-		var height = toCwidth('y');
-		var width = toCwidth('x');
-		if (mgr.y.lowerThan(position.y, drop.y)) {
-			y -= height;
-		}
-		if (mgr.x.greaterThan(position.x, drop.x)) {
-			x -= width;
-		}
-
-		var color = state.color || state.fill || 'none';
-		var stroke = state.draw ? color : null;
-		if (drop.y > state.y) {
-			y -= height;
-		}
-
-		return React.createElement('rect', { x: x, y: y, height: height, width: width,
-			stroke: stroke, strokeWidth: state.strokeWidth,
-			fill: color, opacity: state.shade });
+		return _possibleConstructorReturn(this, (BarMark.__proto__ || Object.getPrototypeOf(BarMark)).apply(this, arguments));
 	}
-});
+
+	_createClass(BarMark, [{
+		key: 'shouldComponentUpdate',
+		value: function shouldComponentUpdate(props) {
+			return !imUtils.isEqual(props.state, this.props.state);
+		}
+	}, {
+		key: 'render',
+		value: function render() {
+			var state = this.props.state;
+
+			var mgr = {
+				x: utils.mgr(state.position.x),
+				y: utils.mgr(state.position.y)
+			};
+
+			var ds = state.ds;
+
+			var position = state.position;
+
+			var span = {
+				x: utils.isNil(state.span.x) ? 0 : state.span.x,
+				y: utils.isNil(state.span.y) ? 0 : state.span.y
+			};
+
+			var drop = {
+				x: utils.isNil(state.drop.x) ? state.position.x : state.drop.x,
+				y: utils.isNil(state.drop.y) ? state.position.y : state.drop.y
+			};
+
+			var toC = function toC(dir) {
+				var op = dir === 'y' ? 'add' : 'subtract';
+				return dataScale.toC(ds[dir], mgr[dir][op](position[dir], mgr[dir].divide(span[dir], 2))); // all in dataSpace
+			};
+
+			var x = toC('x');
+			var y = toC('y');
+
+			var toCwidth = function toCwidth(dir) {
+				return dataScale.toCwidth(ds[dir], mgr[dir].add(mgr[dir].distance(drop[dir], position[dir]), span[dir]));
+			};
+
+			var height = toCwidth('y');
+			var width = toCwidth('x');
+			if (mgr.y.lowerThan(position.y, drop.y)) {
+				y -= height;
+			}
+			if (mgr.x.greaterThan(position.x, drop.x)) {
+				x -= width;
+			}
+
+			var color = state.color || state.fill || 'none';
+			var stroke = state.draw ? color : null;
+			if (drop.y > state.y) {
+				y -= height;
+			}
+
+			return React.createElement('rect', { x: x, y: y, height: height, width: width,
+				stroke: stroke, strokeWidth: state.strokeWidth,
+				fill: color, opacity: state.shade });
+		}
+	}]);
+
+	return BarMark;
+}(React.Component);
 
 module.exports = BarMark;
 
 },{"26":26,"33":33,"35":35,"react":"react"}],49:[function(require,module,exports){
 'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () {
+	function defineProperties(target, props) {
+		for (var i = 0; i < props.length; i++) {
+			var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+		}
+	}return function (Constructor, protoProps, staticProps) {
+		if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+	};
+}();
+
+function _classCallCheck(instance, Constructor) {
+	if (!(instance instanceof Constructor)) {
+		throw new TypeError("Cannot call a class as a function");
+	}
+}
+
+function _possibleConstructorReturn(self, call) {
+	if (!self) {
+		throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+	}return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+	if (typeof superClass !== "function" && superClass !== null) {
+		throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+	}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
 
 var React = require("react");
 var dataScale = require(33);
@@ -11141,29 +12266,79 @@ var imUtils = require(26);
 	}
 */
 
-var DotMark = React.createClass({
-	displayName: 'DotMark',
+var DotMark = function (_React$Component) {
+	_inherits(DotMark, _React$Component);
 
-	shouldComponentUpdate: function shouldComponentUpdate(props) {
-		return !imUtils.isEqual(props.state, this.props.state);
-	},
+	function DotMark() {
+		_classCallCheck(this, DotMark);
 
-	render: function render() {
-		var state = this.props.state;
-
-		var x = dataScale.toC(state.ds.x, state.position.x);
-		var y = dataScale.toC(state.ds.y, state.position.y);
-		var r = state.radius || state.size;
-		var f = state.fill || state.color;
-
-		return React.createElement('circle', { cx: x, cy: y, r: r, fill: f, opacity: state.shade, stroke: state.color, strokeWidth: state.width });
+		return _possibleConstructorReturn(this, (DotMark.__proto__ || Object.getPrototypeOf(DotMark)).apply(this, arguments));
 	}
-});
+
+	_createClass(DotMark, [{
+		key: 'shouldComponentUpdate',
+		value: function shouldComponentUpdate(props) {
+			return !imUtils.isEqual(props.state, this.props.state);
+		}
+	}, {
+		key: 'render',
+		value: function render() {
+			var _props$state = this.props.state,
+			    ds = _props$state.ds,
+			    position = _props$state.position,
+			    size = _props$state.size,
+			    color = _props$state.color,
+			    radius = _props$state.radius,
+			    fill = _props$state.fill,
+			    shade = _props$state.shade,
+			    width = _props$state.width;
+
+			var x = dataScale.toC(ds.x, position.x);
+			var y = dataScale.toC(ds.y, position.y);
+			var r = radius || size;
+			var f = fill || color;
+
+			return React.createElement('circle', { cx: x, cy: y, r: r, fill: f, opacity: shade, stroke: color, strokeWidth: width });
+		}
+	}]);
+
+	return DotMark;
+}(React.Component);
 
 module.exports = DotMark;
 
 },{"26":26,"33":33,"react":"react"}],50:[function(require,module,exports){
 'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () {
+	function defineProperties(target, props) {
+		for (var i = 0; i < props.length; i++) {
+			var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+		}
+	}return function (Constructor, protoProps, staticProps) {
+		if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+	};
+}();
+
+function _classCallCheck(instance, Constructor) {
+	if (!(instance instanceof Constructor)) {
+		throw new TypeError("Cannot call a class as a function");
+	}
+}
+
+function _possibleConstructorReturn(self, call) {
+	if (!self) {
+		throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+	}return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+	if (typeof superClass !== "function" && superClass !== null) {
+		throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+	}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
 
 var React = require("react");
 
@@ -11173,46 +12348,90 @@ var Square = require(51);
 
 var imUtils = require(26);
 
-var Mark = React.createClass({
-	displayName: 'Mark',
+var Mark = function (_React$Component) {
+	_inherits(Mark, _React$Component);
 
-	shouldComponentUpdate: function shouldComponentUpdate(props) {
-		return !imUtils.isEqual(props.state, this.props.state);
-	},
+	function Mark() {
+		_classCallCheck(this, Mark);
 
-	mark: function mark(state) {
-		switch (this.props.type) {
-			case 'square':
-			case 'Square':
-			case 'opensquare':
-			case 'OpenSquare':
-				return React.createElement(Square, { state: state });
-			case 'dot':
-			case 'Dot':
-			case 'opendot':
-			case 'OpenDot':
-				return React.createElement(Dot, { state: state });
-			case 'bar':
-			case 'Bar':
-				return React.createElement(Bar, { state: state });
-			default:
-				throw new Error('unrecognized mark type: "' + this.props.type + '"');
-		}
-	},
-
-	pin: function pin(pinS) {
-		return !!pinS.path ? React.createElement('g', null, React.createElement('path', { strokeWidth: '1', stroke: pinS.pinColor, fill: 'none', d: pinS.path }), React.createElement('text', { fontSize: pinS.labelFS, style: { textAnchor: pinS.labelAnc }, fill: pinS.color, x: pinS.xL, y: pinS.yL }, pinS.label)) : React.createElement('text', { fontSize: pinS.labelFS, style: { textAnchor: pinS.labelAnc }, fill: pinS.color, x: pinS.xL, y: pinS.yL }, pinS.label);
-	},
-
-	render: function render() {
-		return this.props.state.pin ? React.createElement('g', null, this.mark(this.props.state), this.pin(this.props.state.pin)) : this.mark(this.props.state);
+		return _possibleConstructorReturn(this, (Mark.__proto__ || Object.getPrototypeOf(Mark)).apply(this, arguments));
 	}
-});
+
+	_createClass(Mark, [{
+		key: 'shouldComponentUpdate',
+		value: function shouldComponentUpdate(props) {
+			return !imUtils.isEqual(props.state, this.props.state);
+		}
+	}, {
+		key: 'mark',
+		value: function mark(state) {
+			switch (this.props.type) {
+				case 'square':
+				case 'Square':
+				case 'opensquare':
+				case 'OpenSquare':
+					return React.createElement(Square, { state: state });
+				case 'dot':
+				case 'Dot':
+				case 'opendot':
+				case 'OpenDot':
+					return React.createElement(Dot, { state: state });
+				case 'bar':
+				case 'Bar':
+					return React.createElement(Bar, { state: state });
+				default:
+					throw new Error('unrecognized mark type: "' + this.props.type + '"');
+			}
+		}
+	}, {
+		key: 'pin',
+		value: function pin(pinS) {
+			return !!pinS.path ? React.createElement('g', null, React.createElement('path', { strokeWidth: '1', stroke: pinS.pinColor, fill: 'none', d: pinS.path }), React.createElement('text', { fontSize: pinS.labelFS, style: { textAnchor: pinS.labelAnc }, fill: pinS.color, x: pinS.xL, y: pinS.yL }, pinS.label)) : React.createElement('text', { fontSize: pinS.labelFS, style: { textAnchor: pinS.labelAnc }, fill: pinS.color, x: pinS.xL, y: pinS.yL }, pinS.label);
+		}
+	}, {
+		key: 'render',
+		value: function render() {
+			return this.props.state.pin ? React.createElement('g', null, this.mark(this.props.state), this.pin(this.props.state.pin)) : this.mark(this.props.state);
+		}
+	}]);
+
+	return Mark;
+}(React.Component);
 
 module.exports = Mark;
 
 },{"26":26,"48":48,"49":49,"51":51,"react":"react"}],51:[function(require,module,exports){
 'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () {
+	function defineProperties(target, props) {
+		for (var i = 0; i < props.length; i++) {
+			var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+		}
+	}return function (Constructor, protoProps, staticProps) {
+		if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+	};
+}();
+
+function _classCallCheck(instance, Constructor) {
+	if (!(instance instanceof Constructor)) {
+		throw new TypeError("Cannot call a class as a function");
+	}
+}
+
+function _possibleConstructorReturn(self, call) {
+	if (!self) {
+		throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+	}return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+	if (typeof superClass !== "function" && superClass !== null) {
+		throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+	}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
 
 var React = require("react");
 var dataScale = require(33);
@@ -11237,23 +12456,42 @@ var imUtils = require(26);
 	}
 */
 
-var SquareMark = React.createClass({
-	displayName: 'SquareMark',
+var SquareMark = function (_React$Component) {
+	_inherits(SquareMark, _React$Component);
 
-	shouldComponentUpdate: function shouldComponentUpdate(props) {
-		return !imUtils.isEqual(props.state, this.props.state);
-	},
+	function SquareMark() {
+		_classCallCheck(this, SquareMark);
 
-	render: function render() {
-		var state = this.props.state;
-
-		var x = dataScale.toC(state.ds.x, state.position.x) - state.size;
-		var y = dataScale.toC(state.ds.y, state.position.y) - state.size;
-		var f = state.fill || state.color;
-
-		return React.createElement('rect', { x: x, y: y, width: 2 * state.size, height: 2 * state.size, fill: f, opacity: state.shade, stroke: state.color, strokeWidth: state.width });
+		return _possibleConstructorReturn(this, (SquareMark.__proto__ || Object.getPrototypeOf(SquareMark)).apply(this, arguments));
 	}
-});
+
+	_createClass(SquareMark, [{
+		key: 'shouldComponentUpdate',
+		value: function shouldComponentUpdate(props) {
+			return !imUtils.isEqual(props.state, this.props.state);
+		}
+	}, {
+		key: 'render',
+		value: function render() {
+			var _props$state = this.props.state,
+			    ds = _props$state.ds,
+			    position = _props$state.position,
+			    size = _props$state.size,
+			    fill = _props$state.fill,
+			    color = _props$state.color,
+			    shade = _props$state.shade,
+			    width = _props$state.width;
+
+			var x = dataScale.toC(ds.x, position.x) - size;
+			var y = dataScale.toC(ds.y, position.y) - size;
+			var f = fill || color;
+
+			return React.createElement('rect', { x: x, y: y, width: 2 * size, height: 2 * size, fill: f, opacity: shade, stroke: color, strokeWidth: width });
+		}
+	}]);
+
+	return SquareMark;
+}(React.Component);
 
 module.exports = SquareMark;
 
@@ -11363,11 +12601,11 @@ var angle = function angle(deg) {
 // in fct so we don't compute if
 // no tag
 // tag = {
-//   pin: true || false // show the line
-//   pinHook:  // horizontal line
-//   pinLength: // length to mark
-//   print: // how to print
-//   theta: // angle from mark
+//	 pin: true || false // show the line
+//	 pinHook:  // horizontal line
+//	 pinLength: // length to mark
+//	 print: // how to print
+//	 theta: // angle from mark
 // }
 var pin = function pin(pos, tag, ds) {
 	// angle

@@ -1,11 +1,11 @@
 /*
 	all the proprieties
 */
-var _ = require('underscore');
-var utils = require('./utils.js');
+let _ = require('underscore');
+let utils = require('./utils.js');
 
 // defaults for marks
-var marks = {};
+let marks = {};
 
 marks.dot = marks.Dot = () => {
 	return {
@@ -72,7 +72,7 @@ marks.bar = marks.Bar = () => {
 };
 
 // defaults for graphs
-var graph = {};
+let graph = {};
 graph.common = () => {
 	return {
 		color: 'black',
@@ -108,55 +108,47 @@ graph.common = () => {
 	};
 };
 
-graph.Bars = graph.bars = () => {
-
-	return _.extend(utils.deepCp({},graph.common()), {
-		color: 'none',
+graph.Bars = graph.bars = () => _.extend(utils.deepCp({},graph.common()), {
+	color: 'none',
+	width: 0,
+	dir: {
+		x: false,
+		y: true
+	},
+	drop: {x: undefined, y: 0},
+	markType: 'bar',
+	markProps: {
 		width: 0,
-		dir: {
-			x: false,
-			y: true
-		},
-		drop: {x: undefined, y: 0},
-		markType: 'bar',
-		markProps: {
-			width: 0,
-			draw: false
-		},
-		// Number or {}
-		span: undefined, // auto compute
-		offset: {x: 0, y: 0}
-	});
-};
+		draw: false
+	},
+	// Number or {}
+	span: undefined, // auto compute
+	offset: {x: 0, y: 0}
+});
 
-graph.yBars = graph.ybars = () => {
+graph.yBars = graph.ybars = () => _.extend(utils.deepCp({},graph.Bars()),{
+	dir: {
+		x: true,
+		y: false
+	},
+});
 
-	return _.extend(utils.deepCp({},graph.Bars()),{
-		dir: {
-			x: true,
-			y: false
-		},
-	});
-};
-
-graph.Pie = graph.pie = () => {
-	return _.extend(utils.deepCp({},graph.common()),{
-		pie: 'disc', // tore
-		pieOrigin: {x: 0, y:0}, // offset from center
-		pieRadius: undefined, // 2/3 of world
-		pieToreRadius: 0, // 0: no hole, 1 : no border!
-		tag: {
-			show: false, // show the tag
-			print: (t) => t + '',
-			pin: false, // show the pin
-			pinColor: 'black', // color or the pin
-			pinLength: 0.35, // 10 px as pin length
-			pinRadius: 0.75, // 3/4 of pie size
-			pinHook: 10, // absolute length
-			color: 'black' // color of the tag
-		}
-	});
-};
+graph.Pie = graph.pie = () => _.extend(utils.deepCp({},graph.common()),{
+	pie: 'disc', // tore
+	pieOrigin: {x: 0, y:0}, // offset from center
+	pieRadius: undefined, // 2/3 of world
+	pieToreRadius: 0, // 0: no hole, 1 : no border!
+	tag: {
+		show: false, // show the tag
+		print: (t) => t + '',
+		pin: false, // show the pin
+		pinColor: 'black', // color or the pin
+		pinLength: 0.35, // 10 px as pin length
+		pinRadius: 0.75, // 3/4 of pie size
+		pinHook: 10, // absolute length
+		color: 'black' // color of the tag
+	}
+});
 
 //graph.Bars = graph.common;
 graph.Plain = graph.plain = graph.Stairs = graph.stairs = graph.common;
@@ -165,7 +157,7 @@ graph.Plain = graph.plain = graph.Stairs = graph.stairs = graph.common;
 // major / minor props
 /////////////
 
-var m = {};
+let m = {};
 
 // that's a major
 m.Grid = {
@@ -191,7 +183,7 @@ m.Tick = {
 
 
 //
-var axe = {
+let axe = {
 	ticks: {
 		major: m.Tick,
 		minor: _.extendOwn(_.extend({},m.Tick),{
@@ -261,7 +253,12 @@ m.Graph = (axis) => {
 		titleFSize: 30,
 		axisOnTop: false,
 		// margins
-		axisMargin: {left: 10, bottom: 10, right: 10, top: 10}, // left, bottom, right, top
+		innerMargin: {}, // left, bottom, right, top
+		// defMargins.axis.ticks
+		// if defined, overwrite
+		factorMargin: {},  // left, bottom, right, top
+		// factorMargin + defMargins.axis.label + defMargins.axis.ticks
+		// if defined, overwrite
 		outerMargin: {}, // left, bottom, right, top
 		// data
 		data: [],
@@ -284,7 +281,7 @@ m.Graph = (axis) => {
 	};
 };
 
-var data = 	{
+let data = 	{
 	type: 'Plain', // Plain, Bars, yBars, Stairs
 	series:[], // x, y
 	phantomSeries:[], // added points to play on the world's limit
@@ -300,12 +297,50 @@ var data = 	{
 	}
 };
 
-m.defaults = function(key){
-	return key === 'data' ? data : graph[key]();
-};
+m.defaults     = (key) => key === 'data' ? data : graph[key]();
 
-m.marksDefault = function(key){
-	return marks[key]();
+m.marksDefault = (key) => marks[key]();
+
+/* If no marginsO are defined, here are the rules:
+ *  - ticks and ticks labels are 20 px in the y dir (height of text),
+ *			40 px in the x dir (length of text).
+ *  - we take a 10px margin on title and labels
+ *  - bottom and right margin:
+ *			- 20px + ({x,y}LabelFSize + 10 px) if a {x,y}Label is defined,
+ *  - top and left margin:
+ *			- 20px + ({x,y}LabelFSize	+ 10 px) if a {x,y}Label is defined,
+ *  - top margin takes a titleFSize + 10px more if a title is defined
+ */
+m.defMargins = {
+	outer: {
+		label: {
+			bottom: 20,
+			top: 20,
+			left: 20,
+			right: 20,
+			mar: 10
+		},
+		ticks: {
+			left: 20,
+			right: 20,
+			bottom: 15,
+			top: 15
+		},
+		factor: {
+			right: 30,
+			top: 25
+		},
+		min: 3
+	},
+	inner: {
+		left: 10, 
+		bottom: 10, 
+		right: 10, 
+		top: 10
+	},
+	title: 10,
+	min: 0,
+	max: 4
 };
 
 module.exports = m;

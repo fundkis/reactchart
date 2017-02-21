@@ -1,8 +1,8 @@
-var React = require('react');
-var Tick = require('./Tick.jsx');
-var AxisLine = require('./AxisLine.jsx');
-var _ = require('underscore');
-var imUtils = require('../core/im-utils.js');
+let React = require('react');
+let Tick = require('./Tick.jsx');
+let AxisLine = require('./AxisLine.jsx');
+let _ = require('underscore');
+let imUtils = require('../core/im-utils.js');
 
 /*
 	{
@@ -11,23 +11,23 @@ var imUtils = require('../core/im-utils.js');
 	}
 */
 
-var Axe = React.createClass({
-	shouldComponentUpdate: function(props){
+class Axe extends React.Component {
+	shouldComponentUpdate(props){
 		return !imUtils.isEqual(props.state,this.props.state);
-	},
+	}
 
-	render: function(){
+	render(){
 
-    var axisName = this.props.className + 'Line';
-    var tickName = this.props.className + 'Tick';
+		let { state, className, css } = this.props;
+
+		let axisName = className + 'Line';
+		let tickName = className + 'Tick';
 
 		return <g>
-			{_.map(this.props.state.ticks, (tick) => {
-				return <Tick className={tickName} css={this.props.css} key={tick.key} state={tick}/>;
-			})}
-			<AxisLine className={axisName} css={this.props.css} state={this.props.state.axisLine}/>
+			{ _.map(state.ticks, (tick) => <Tick className={tickName} css={css} key={tick.key} state={tick}/> ) }
+			<AxisLine className={axisName} css={css} state={state.axisLine}/>
 		</g>;
+	}
 }
-});
 
 module.exports = Axe;

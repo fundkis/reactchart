@@ -1,7 +1,7 @@
-var React = require('react');
+let React = require('react');
 
-var space = require('../core/space-transf.js');
-var imUtils = require('../core/im-utils.js');
+let space = require('../core/space-transf.js');
+let imUtils = require('../core/im-utils.js');
 
 /*
 	{
@@ -18,12 +18,23 @@ var imUtils = require('../core/im-utils.js');
 	},
 */
 
-var Label = React.createClass({
-	shouldComponentUpdate: function(props){
-		return !imUtils.isEqual(props.state,this.props.state);
-	},
+class Label extends React.Component {
 
-	render: function(){
+	shouldComponentUpdate(props){
+		return !imUtils.isEqual(props.state,this.props.state);
+	}
+
+	power(label, labProps, props){
+		let { base, power } = label;
+		return <text {...props} {...labProps}>
+			<tspan>{base}</tspan>
+			{ power !== 0 ? <tspan>&#183;10</tspan> : null }
+			{ power !== 0 ? <tspan dy={-0.5 * labProps.fontSize}>{power}</tspan> : null }
+		</text>;
+	}
+
+	render(){
+
 		if(this.props.state.label.length === 0){
 			return null;
 		}
@@ -31,25 +42,32 @@ var Label = React.createClass({
 // label
 		// => theta = arctan(y/x) [-90,90]
 
-		var state = this.props.state;
+		let { transform, ds, position, offset, rotate, dir, color, FSize, anchor, label } = this.props.state;
 
-		var xL = ( state.transform ? space.toC(state.ds.x,state.position.x) : state.position.x ) + state.offset.x;
-		var yL = ( state.transform ? space.toC(state.ds.y,state.position.y) : state.position.y ) + state.offset.y;
+		let xL = ( transform ? space.toC(ds.x,position.x) : position.x ) + offset.x;
+		let yL = ( transform ? space.toC(ds.y,position.y) : position.y ) + offset.y;
 
-		var theta = state.rotate ? Math.floor( Math.atan( - Math.sqrt( state.dir.y / state.dir.x ) ) * 180 / Math.PI ) : 0; // in degrees
+		let theta = rotate ? Math.floor( Math.atan( - Math.sqrt( dir.y / dir.x ) ) * 180 / Math.PI ) : 0; // in degrees
 
-		var rotate = 'rotate(' + theta + ' ' + xL + ' ' + yL + ')';
+		let rotation = 'rotate(' + theta + ' ' + xL + ' ' + yL + ')';
 
-    var labProps = this.props.css ? null :
+		let labProps = this.props.css ? null :
 			{
-				fill: state.color,
-				fontSize: state.FSize
+				fill: color,
+				fontSize: FSize
 			};
 
-		return <text className={this.props.className} x={xL} y={yL} transform={rotate} textAnchor={state.anchor} {...labProps}>
-			{state.label}
-		</text>;
+		let props = {
+			className: this.props.className,
+			x: xL,
+			y: yL,
+			transform: rotation,
+			textAnchor: anchor
+		};
+
+		return typeof label === 'string' ? <text {...props} {...labProps}>
+			{label}</text> : this.power(label,labProps, props);
 	}
-});
+}
 
 module.exports = Label;

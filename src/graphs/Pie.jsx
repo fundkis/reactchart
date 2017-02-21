@@ -1,84 +1,75 @@
-var React = require('react');
+let React = require('react');
 
-var imUtils = require('../core/im-utils.js');
+let imUtils = require('../core/im-utils.js');
 
-var Pie = React.createClass({
+class Pie extends React.Component {
 
-	shouldComponentUpdate: function(props){
+	shouldComponentUpdate(props){
 		return !imUtils.isEqual(props.state,this.props.state);
-	},
+	}
 
-	render: function(){
+	render(){
 
-		var labels = this.props.state.path.labels;
-		var positions = this.props.state.path.positions;
-    if(positions.length === 0){
-      return null;
-    }
-		var pinRad = this.props.state.path.pinRadius;
-		var pinLen = this.props.state.path.pinLength;
-		var pinOff = this.props.state.path.pinHook;
-		var pinDraw = this.props.state.path.pinDraw;
-		var pfs = this.props.state.path.pinFontSize;
-		//var ds = state.ds;
+		let { path } = this.props.state;
+		let { labels, positions, 
+			pinRadius, pinLength, pinHook, pinDraw, pinFontSize, 
+			origin, radius, toreRadius } = path;
 
-		var abs = function(ang,rad,or){
-			return rad * Math.cos(ang * Math.PI / 180) + or.x;
-		};
-		var coo = function(ang,rad,or){
-			return - rad * Math.sin(ang * Math.PI / 180) + or.y;
-		};
+		if(positions.length === 0){
+			return null;
+		}
 
-		var ori = this.props.state.path.origin;
-		var oldT = 0;
-		var out = [];
-		var r = this.props.state.path.radius;
-		var rin = this.props.state.path.toreRadius;
-		var x = abs(oldT,r,ori);
-		var y = coo(oldT,r,ori);
-		for(var p = 0; p < positions.length; p++){
+		let abs = (ang,rad,or) =>   rad * Math.cos(ang * Math.PI / 180) + or.x;
+		let coo = (ang,rad,or) => - rad * Math.sin(ang * Math.PI / 180) + or.y;
 
-			var color = positions[p].color;
-			var theta = Math.min(positions[p].value, 359.9640);// more than 99.99% is a circle (not supported by arc anyway)
-			var label = !!labels[p] ? labels[p] : null;
-			var x1 = abs(oldT,rin,ori);
-			var y1 = coo(oldT,rin,ori);
-			var x2 = abs(oldT,r,ori);
-			var y2 = coo(oldT,r,ori);
-			var x3 = abs(theta + oldT,r,ori);
-			var y3 = coo(theta + oldT,r,ori);
-			var x4 = abs(theta + oldT,rin,ori);
-			var y4 = coo(theta + oldT,rin,ori);
+		let oldT = 0;
+		let out = [];
+		let x = abs(oldT,radius,origin);
+		let y = coo(oldT,radius,origin);
+
+		for(let p = 0; p < positions.length; p++){
+
+			let color = positions[p].color;
+			let theta = Math.min(positions[p].value, 359.9640);// more than 99.99% is a circle (not supported by arc anyway)
+			let label = !!labels[p] ? labels[p] : null;
+			let x1 = abs(oldT,toreRadius,origin);
+			let y1 = coo(oldT,toreRadius,origin);
+			let x2 = abs(oldT,radius,origin);
+			let y2 = coo(oldT,radius,origin);
+			let x3 = abs(theta + oldT,radius,origin);
+			let y3 = coo(theta + oldT,radius,origin);
+			let x4 = abs(theta + oldT,toreRadius,origin);
+			let y4 = coo(theta + oldT,toreRadius,origin);
 
 			// large-arc-flag, true if theta > 180
-			var laf = theta > 180 ? 1 : 0;
-			var path = 'M' + x1 + ',' + y1 + 
-				' L' + x2 + ',' + y2 + ' A' + r   + ',' + r   + ' 0 ' + laf + ',0 ' + x3 + ',' + y3 +
-				' L '+ x4 + ',' + y4 + ' A' + rin + ',' + rin + ' 0 ' + laf + ',1 ' + x1 + ',' + y1;
+			let laf = theta > 180 ? 1 : 0;
+			let path = 'M' + x1 + ',' + y1 + 
+				' L' + x2 + ',' + y2 + ' A' + radius     + ',' + radius     + ' 0 ' + laf + ',0 ' + x3 + ',' + y3 +
+				' L '+ x4 + ',' + y4 + ' A' + toreRadius + ',' + toreRadius + ' 0 ' + laf + ',1 ' + x1 + ',' + y1;
 
 			out.push(<path key={p} fill={color} stroke='none' strokeWidth='0' d={path}/>);
 
 			if(!!label){
-				var curAng = theta / 2 + oldT;
-				var offset = curAng === 90 || curAng === 270 ? 0 :
-					curAng > 90 && curAng < 270 ? - pinOff : pinOff;
-				var xc1 = abs(curAng, pinRad, ori);
-				var yc1 = coo(curAng, pinRad, ori);
-				var xc2 = abs(curAng, pinRad + pinLen, ori);
-				var yc2 = coo(curAng, pinRad + pinLen, ori);
-				var xc3 = xc2 + offset;
-				var yc3 = yc2;
-				var xc = xc3 + offset / 2;
-				var yc = yc2 + ( curAng === 90 ? - 5 : curAng === 270 ? 5 : 0) ;
-				var lstyle = {
+				let curAng = theta / 2 + oldT;
+				let offset = curAng === 90 || curAng === 270 ? 0 :
+					curAng > 90 && curAng < 270 ? - pinHook : pinHook;
+				let xc1 = abs(curAng, pinRadius, origin);
+				let yc1 = coo(curAng, pinRadius, origin);
+				let xc2 = abs(curAng, pinRadius + pinLength, origin);
+				let yc2 = coo(curAng, pinRadius + pinLength, origin);
+				let xc3 = xc2 + offset;
+				let yc3 = yc2;
+				let xc = xc3 + offset / 2;
+				let yc = yc2 + ( curAng === 90 ? - 5 : curAng === 270 ? 5 : 0) ;
+				let lstyle = {
 					textAnchor: curAng === 90 || curAng === 270 ? 'center' :
 							curAng > 90 && curAng < 270 ? 'end' : 'start'
 				};
 				if(pinDraw){
-					var lpath = 'M' + xc1 + ',' + yc1 +  ' L' + xc2 + ',' + yc2 +  ' L' + xc3 + ',' + yc3;
+					let lpath = 'M' + xc1 + ',' + yc1 +  ' L' + xc2 + ',' + yc2 +  ' L' + xc3 + ',' + yc3;
 					out.push(<path key={p + '.ll'} strokeWidth='1' stroke='black' fill='none' d={lpath}/>);
 				}
-				out.push(<text fontSize={pfs} key={p + '.l'} x={xc} y={yc} style={lstyle}>{label}</text>);
+				out.push(<text fontSize={pinFontSize} key={p + '.l'} x={xc} y={yc} style={lstyle}>{label}</text>);
 			}
 			x = x2;
 			y = y2;
@@ -87,6 +78,6 @@ var Pie = React.createClass({
 
 		return <g>{out}</g>;
 	}
-});
+}
 
 module.exports = Pie;

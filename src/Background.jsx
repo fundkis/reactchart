@@ -1,6 +1,6 @@
-var React = require('react');
+let React = require('react');
 
-var imUtils = require('./core/im-utils.js');
+let imUtils = require('./core/im-utils.js');
 
 /*
 	{
@@ -18,20 +18,20 @@ var imUtils = require('./core/im-utils.js');
 	}
 */
 
-var Background = React.createClass({
+class Background extends React.Component {
 
-	shouldComponentUpdate: function(props){
+	shouldComponentUpdate(props){
 		return !imUtils.isEqual(props.state,this.props.state);
-	},
+	}
 
-	render: function(){
-		var x = this.props.state.spaceX.min;
-		var y = this.props.state.spaceY.max;
-		var width = this.props.state.spaceX.max - this.props.state.spaceX.min;
-		var height = this.props.state.spaceY.min - this.props.state.spaceY.max;
+	render(){
+		let x = this.props.state.spaceX.min;
+		let y = this.props.state.spaceY.max;
+		let width = this.props.state.spaceX.max - this.props.state.spaceX.min;
+		let height = this.props.state.spaceY.min - this.props.state.spaceY.max;
 		return this.props.state.color === 'none' ? null : <rect width={width} height={height} strokeWidth='0' fill={this.props.state.color} x={x} y={y}/>;
 
 	}
-});
+}
 
 module.exports = Background;

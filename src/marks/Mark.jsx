@@ -1,18 +1,18 @@
-var React = require('react');
+let React = require('react');
 
-var Dot = require('./Dot.jsx');
-var Bar = require('./Bar.jsx');
-var Square = require('./Square.jsx');
+let Dot = require('./Dot.jsx');
+let Bar = require('./Bar.jsx');
+let Square = require('./Square.jsx');
 
-var imUtils = require('../core/im-utils.js');
+let imUtils = require('../core/im-utils.js');
 
-var Mark = React.createClass({
+class Mark extends React.Component {
 
-	shouldComponentUpdate: function(props){
+	shouldComponentUpdate(props){
 		return !imUtils.isEqual(props.state,this.props.state);
-	},
+	}
 
-	mark: function(state){
+	mark(state){
 		switch(this.props.type){
 			case 'square':
 			case 'Square':
@@ -30,22 +30,22 @@ var Mark = React.createClass({
 			default:
 				throw new Error('unrecognized mark type: "' + this.props.type + '"');
 		}
-	},
+	}
 
-	pin: function(pinS){
+	pin(pinS){
 		return !!pinS.path ? <g>
 			<path strokeWidth='1' stroke={pinS.pinColor} fill='none' d={pinS.path}/>
 			<text fontSize={pinS.labelFS} style={{textAnchor: pinS.labelAnc}} fill={pinS.color} x={pinS.xL} y={pinS.yL}>{pinS.label}</text>
 		</g> : 
 		<text fontSize={pinS.labelFS} style={{textAnchor: pinS.labelAnc}} fill={pinS.color} x={pinS.xL} y={pinS.yL}>{pinS.label}</text>;
-	},
+	}
 
-	render: function(){
+	render(){
 		return this.props.state.pin ? <g>
 			{this.mark(this.props.state)}
 			{this.pin(this.props.state.pin)}
 		</g> : this.mark(this.props.state);
 	}
-});
+}
 
 module.exports = Mark;

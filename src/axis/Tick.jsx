@@ -1,8 +1,8 @@
-var React = require('react');
-var Label = require('./Label.jsx');
+let React = require('react');
+let Label = require('./Label.jsx');
 
-var sp = require('../core/space-transf.js');
-var imUtils = require('../core/im-utils.js');
+let sp = require('../core/space-transf.js');
+let imUtils = require('../core/im-utils.js');
 
 /*
 	{
@@ -31,75 +31,75 @@ var imUtils = require('../core/im-utils.js');
 	}
 */
 
-var Tick = React.createClass({
-	shouldComponentUpdate: function(props){
-		return !imUtils.isEqual(props.state,this.props.state);
-	},
+class Tick extends React.Component {
 
+	shouldComponentUpdate(props){
+		return !imUtils.isEqual(props.state,this.props.state);
+	}
 
 	// grid
-	grid: function(){
+	grid(){
 
-		var gprops = this.props.state.grid;
+		let gprops = this.props.state.grid;
 
 		if(gprops.show === false){
 			return null;
 		}
 
-		var start = {
+		let start = {
 			x: sp.toC(this.props.state.tick.ds.x, this.props.state.tick.position.x),
 			y: sp.toC(this.props.state.tick.ds.y, this.props.state.tick.position.y)
 		};
 
-		var end = {
+		let end = {
 			x: start.x + this.props.state.tick.dir.x * sp.toCwidth(this.props.state.tick.ds.x,gprops.length),
 			y: start.y - this.props.state.tick.dir.y * sp.toCwidth(this.props.state.tick.ds.y,gprops.length)
 		};
 
-		var gridName = this.props.className + 'Grid';
-		var tickProps = this.props.css ? null : {
+		let gridName = this.props.className + 'Grid';
+		let tickProps = this.props.css ? null : {
 			stroke: gprops.color, 
 			strokeWidth: gprops.width
 		};
 
 
 		return <line className={gridName} x1={start.x} x2={end.x} y1={start.y} y2={end.y} {...tickProps} />;
-	},
+	}
 
-	tick: function(){
+	tick(){
 
-		var tprops = this.props.state.tick;
+		let tprops = this.props.state.tick;
 
 		if(tprops.show === false){
 			return null;
 		}
 
-		var x1 = sp.toC(tprops.ds.x, tprops.position.x) - tprops.dir.x * tprops.length * tprops.out;
-		var y1 = sp.toC(tprops.ds.y, tprops.position.y) + tprops.dir.y * tprops.length * tprops.out; // beware about y sign!!
-		var x2 = x1 + tprops.dir.x * tprops.length;
-		var y2 = y1 - tprops.dir.y * tprops.length; // beware about y sign!!
+		let x1 = sp.toC(tprops.ds.x, tprops.position.x) - tprops.dir.x * tprops.length * tprops.out;
+		let y1 = sp.toC(tprops.ds.y, tprops.position.y) + tprops.dir.y * tprops.length * tprops.out; // beware about y sign!!
+		let x2 = x1 + tprops.dir.x * tprops.length;
+		let y2 = y1 - tprops.dir.y * tprops.length; // beware about y sign!!
 
-		var linePar = this.props.css ? null : {
+		let linePar = this.props.css ? null : {
 			stroke: tprops.color, 
 			strokeWidth: tprops.width
 		};
 
 		return <line className={this.props.className} x1={x1} x2={x2} y1={y1} y2={y2} {...linePar}/>;
-	},
+	}
 
-	label: function(){
+	label(){
 		if(this.props.state.label.show === false){
 			return null;
 		}
-		var labelName = this.props.className + 'Label';
+		let labelName = this.props.className + 'Label';
 		return <Label className={labelName} css={this.props.css} state={this.props.state.label}/>;
-	},
+	}
 
-	noShow: function(){
+	noShow(){
 		return !( this.props.state.tick.show || this.props.state.grid.show || this.props.state.label.show);
-	},
+	}
 
-	render: function(){
+	render(){
 
 		return this.noShow() ? null : <g>
 				{this.grid()}
@@ -107,6 +107,6 @@ var Tick = React.createClass({
 				{this.label()}
 		</g>;
 	}
-});
+}
 
 module.exports = Tick;

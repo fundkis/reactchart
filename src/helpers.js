@@ -1,17 +1,17 @@
-var core = require('./core/process.js');
-var utils = require('./core/utils.js');
-var space = require('./core/space-transf.js');
+let core = require('./core/process.js');
+let utils = require('./core/utils.js');
+let space = require('./core/space-transf.js');
 
-var m = {};
+let m = {};
 
 m.init = function(rawProps,type){
 
-	var props = utils.deepCp({},rawProps);
+	let props = utils.deepCp({},rawProps);
 	props.freeze = type;
 
-	var freezer = core.process(props);
+	let freezer = core.process(props);
 
-	var rc = {};
+	let rc = {};
 
 	rc.props = () => freezer.get();
 

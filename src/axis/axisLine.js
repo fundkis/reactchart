@@ -1,4 +1,4 @@
-var utils = require('../core/utils.js');
+let utils = require('../core/utils.js');
 
 /*
 	{
@@ -34,11 +34,11 @@ var utils = require('../core/utils.js');
 	}
 */
 
-var m ={};
+let m ={};
 
 m.VM = function(ds,props,partnerDs,dir){
 
-	var show = props.show;
+	let show = props.show;
 
 /*
 		line: {
@@ -52,14 +52,14 @@ m.VM = function(ds,props,partnerDs,dir){
 		},
 */
 
-	var line = {};
+	let line = {};
 
-	var tmp = {
+	let tmp = {
 		color: true,
 		width: true
 	};
 
-	var othdir = dir === 'x' ? 'y' : 'x';
+	let othdir = dir === 'x' ? 'y' : 'x';
 	line.CS = props.CS;
 		// cart
 	line.start = {};
@@ -76,7 +76,7 @@ m.VM = function(ds,props,partnerDs,dir){
 	line.radius[dir] = Math.abs(ds.c.max - ds.c.min) / 2;
 	line.radius[othdir] = Math.abs(partnerDs.c.max - partnerDs.c.min) / 2;
 
-	for(var u in tmp){
+	for(let u in tmp){
 		line[u] = props[u];
 	}
 
@@ -93,8 +93,8 @@ m.VM = function(ds,props,partnerDs,dir){
 		},
 */
 
-	var lineDir = utils.direction(line);
-	var label = {
+	let lineDir = utils.direction(line);
+	let label = {
 		label: props.label,
 		FSize: props.labelFSize,
 		anchor: props.labelAnchor,
@@ -113,11 +113,11 @@ m.VM = function(ds,props,partnerDs,dir){
 	};
 
 	// & anchoring the text
-	var fd = 0.25 * label.FSize; // font depth, 25 %
-	var fh = 0.75 * label.FSize; // font height, 75 %
-	var defOff = props.empty ? 20 : 40;
+	let fd = 0.25 * label.FSize; // font depth, 25 %
+	let fh = 0.75 * label.FSize; // font height, 75 %
+	let defOff = props.empty ? 20 : 40;
 
-	var offsetLab = (() => {
+	let offsetLab = (() => {
 		switch(props.placement){
 			case 'top':
 				return {
@@ -163,12 +163,18 @@ m.VM = function(ds,props,partnerDs,dir){
 		}
 */
 
-	var comFac = {
-		factor: props.factor,
-		offset: props.factorOffset,
-		anchor: props.factorAnchor,
-		Fsize:  props.factorFSize,
-		color:  props.factorColor,
+	let fds = {};
+	
+	fds[dir]    = ds;
+	fds[othdir] = partnerDs;
+
+	let comFac = {
+		factor:     props.factor,
+		offset:     props.factorOffset,
+		anchor:     props.factorAnchor,
+		Fsize:	    props.factorFSize,
+		color:	    props.factorColor,
+		ds:         fds
 	};
 
 
